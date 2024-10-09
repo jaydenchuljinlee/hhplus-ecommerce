@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor User as 사용자
+    participant ProductController
+    participant ProductFacade
+    participant ProductService
+    participant ProductRepository
+
+    User->>ProductController: 상품 정보 조회 요청 (상품 ID)
+    opt 유효성 검사
+        ProductController->>User: 400 Error
+    end
+    ProductController->>ProductFacade: 유효한 파라미터 전달
+    ProductFacade->>ProductRepository: 상품 정보 조회
+    alt 상품 정보 조회
+        ProductRepository-->>ProductService: 상품 조회 정보 반환
+    else 상품 정보 미존재
+        ProductRepository-->>ProductService: 상품 정보 조회 500 Error
+    end
+    ProductRepository-->>ProductFacade: 상품 정보 전달
+    ProductFacade->>ProductFacade: 상품 정보 가공 (필요 시)
+    ProductFacade-->>ProductController: 최종 상품 정보 반환
+    ProductController-->>User: 상품 정보 조회 결과 반환
