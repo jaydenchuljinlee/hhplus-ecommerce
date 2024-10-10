@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.api.balance.controller
 
+import com.hhplus.ecommerce.api.ApiResponse
 import com.hhplus.ecommerce.api.balance.dto.BalanceRequest
 import com.hhplus.ecommerce.api.balance.dto.BalanceResponse
 import com.hhplus.ecommerce.common.exception.balance.BalanceLimitExceededException
@@ -16,7 +17,7 @@ class BalanceController {
     private val MAX_BALANCE = 100_000_000
 
     @PatchMapping("charge")
-    fun charge(request: BalanceRequest.Charge): BalanceResponse.Charge {
+    fun charge(request: BalanceRequest.Charge): ApiResponse<BalanceResponse.Charge> {
 
         if (request.userId == 1L) throw UserNotFoundException()
 
@@ -28,19 +29,21 @@ class BalanceController {
         val newBalance = result.amount + request.amount
         if (newBalance > MAX_BALANCE) throw BalanceLimitExceededException()
 
-        return BalanceResponse.Charge(
+        val response = BalanceResponse.Charge(
             userId = request.userId,
             amount = newBalance,
             transactionType = "CHARGE"
         )
+
+        return ApiResponse.success(response)
     }
 
     @GetMapping("view")
-    fun getBalance(request: BalanceRequest.View): BalanceResponse.View {
+    fun getBalance(request: BalanceRequest.View): ApiResponse<BalanceResponse.View> {
         if (request.userId == 1L) throw UserNotFoundException()
 
         if (request.userId == 2L) throw BalanceNotFoundException()
 
-        return BalanceResponse.View.getInstance()
+        return ApiResponse.success(BalanceResponse.View.getInstance())
     }
 }

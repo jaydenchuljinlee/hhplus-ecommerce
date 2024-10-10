@@ -25,7 +25,7 @@ class BalanceControllerTest {
     fun successBalanceCharge() {
         val request = BalanceRequest.Charge(0L, 1000)
 
-        val response = balanceController.charge(request)
+        val response = balanceController.charge(request).data!!
 
         assertEquals(response.userId, 0L)
         assertEquals(response.amount, 2000)
@@ -37,7 +37,7 @@ class BalanceControllerTest {
     fun successBalanceGet() {
         val request = BalanceRequest.View(0L)
 
-        val response = balanceController.getBalance(request)
+        val response = balanceController.getBalance(request).data!!
 
         assertEquals(response.userId, 0L)
         assertEquals(response.balance, 1000)
