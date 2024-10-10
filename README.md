@@ -33,14 +33,54 @@
 
 ---
 
-### Step 5 자료
-마일스톤 -> src/main/resources/docs/MILESTONE.md  
-시퀀스 다이어그램 -> src/main/resources/docs/SEQUANCE_DIAGRAM.md
+## Step 5 자료
+- 마일스톤 -> [마일스톤 문서](docs/MILESTONE.md)  
+- 시퀀스 다이어그램 -> [시퀀스_다이어그램 문서](docs/SEQUANCE_DIAGRAM.md)
 
-### Step 6 자료
-ERD -> src/main/resources/docs/ERD.md  
-API 스펙 -> src/main/resources/docs/API_SPEC.md  
-API 실행 자료 -> src/main/resources/docs/postman.json
+## Step 6 자료
+- ERD -> [ERD 문서](docs/ERD.md)  
+- API 스펙 -> [API_SPEC 문서](docs/API_SPEC.md)  
+- API 실행 자료 -> [POSTMAN 문서](docs/postman.json)
+
+---
+
+## 프로젝트 구조
+```java
+ecommerce  
+└─api  
+    └─balance
+    └─product
+    └─cart
+    └─order
+    └─payment
+└─domain
+    └─balance
+    └─product
+    └─cart
+    └─order
+    └─payment
+└─infrastructure
+    └─balance
+    └─product
+    └─cart
+    └─order
+    └─payment
+└─usecase
+    └─balance
+    └─product
+    └─cart
+    └─order
+    └─payment
+```
+
+---
+
+## 기술스택
+- SpringBoot 3.3.4
+- Gradle KotlinDSL 8.8
+- JDK 17
+- JPA 1.9.25
+
 ---
 
 
