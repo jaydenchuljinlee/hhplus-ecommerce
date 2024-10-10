@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor User
+    participant BalanceController
+    participant BalanceFacade
+    participant UserService
+    participant BalanceService
+    participant BalanceRepository
+
+    alt 잔액 조회 요청
+        User->>BalanceController: 잔액 조회 요청
+    else 파라미터 유효성
+        BalanceController->>User: 유효성 Error(400)
+    end
+    BalanceController->>BalanceFacade: 유효한 파라미터 전달
+    alt 유저 정보 존재
+        BalanceFacade->>UserService: 유저 존재 여부 검사
+    else 유저 정보 미존재
+        UserService->>BalanceFacade: 유저 미존재 Error(500)
+    end
+    BalanceFacade->>BalanceService: 잔액 조회
+    alt 잔액 정보 조회 존재
+        BalanceService->>BalanceRepository: 잔액 정보 조회
+    else 잔액 정보 미존재
+        BalanceRepository->>BalanceService: 잔액 정보 미존재 Error(500)
+    end
+    BalanceRepository-->>BalanceService: 잔액 정보 반환
+    BalanceService-->>BalanceFacade: 조회된 잔액 정보 전달
+    BalanceFacade-->>BalanceController: 조회된 잔액 정보 전달
+    BalanceController-->>User: 잔액 조회 결과 반환
