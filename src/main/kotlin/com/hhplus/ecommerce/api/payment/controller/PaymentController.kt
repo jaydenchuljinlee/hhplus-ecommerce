@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.api.payment.controller
 
+import com.hhplus.ecommerce.api.ApiResponse
 import com.hhplus.ecommerce.api.payment.dto.PaymentRequest
 import com.hhplus.ecommerce.api.payment.dto.PaymentResponse
 import com.hhplus.ecommerce.common.exception.payment.ExternalPaymentException
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class PaymentController {
     @PostMapping()
-    fun payment(request: PaymentRequest.Payment): PaymentResponse.Payment {
+    fun payment(request: PaymentRequest.Payment): ApiResponse<PaymentResponse.Payment> {
 
         if (request.orderId == 1L) throw ExternalPaymentException()
 
-        return PaymentResponse.Payment.getInstance()
+        return ApiResponse.success(PaymentResponse.Payment.getInstance())
     }
 }

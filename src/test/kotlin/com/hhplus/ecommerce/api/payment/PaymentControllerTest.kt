@@ -21,7 +21,7 @@ class PaymentControllerTest {
     @Test
     fun successPayment() {
         val request = PaymentRequest.Payment(0L)
-        val response = paymentController.payment(request)
+        val response = paymentController.payment(request).data!!
 
         assertEquals(response.id, 0L)
         assertEquals(response.userId, 0L)
