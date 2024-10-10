@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.api.cart.controller
 
+import com.hhplus.ecommerce.api.ApiResponse
 import com.hhplus.ecommerce.api.cart.dto.CartRequest
 import com.hhplus.ecommerce.api.cart.dto.CartResponse
 import com.hhplus.ecommerce.common.exception.cart.CartNotFoundException
@@ -15,21 +16,24 @@ import org.springframework.web.bind.annotation.RestController
 class CartController {
 
     @PostMapping()
-    fun addCart(request: CartRequest.Add): CartResponse.Item {
+    fun addCart(request: CartRequest.Add): ApiResponse<CartResponse.Item> {
         // 중복 체크
         if (request.productId == 1L) throw DuplicatedProductException()
 
-        return CartResponse.Item.getInstance()
+        return ApiResponse.success(CartResponse.Item.getInstance())
     }
 
     @DeleteMapping("{productId}")
-    fun deleteCart(request: CartRequest.Delete) {
+    fun deleteCart(request: CartRequest.Delete): ApiResponse<Long> {
         // 존재 여부 체크
         if (request.cartId == 1L) throw CartNotFoundException()
+
+        return ApiResponse.success(0L)
     }
 
     @GetMapping("list")
-    fun getCartList(): List<CartResponse.Item> {
-        return listOf(CartResponse.Item.getInstance())
+    fun getCartList(): ApiResponse<List<CartResponse.Item>> {
+        val results = listOf(CartResponse.Item.getInstance())
+        return ApiResponse.success(results)
     }
 }

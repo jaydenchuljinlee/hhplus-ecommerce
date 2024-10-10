@@ -25,9 +25,11 @@ class CartControllerTest {
         val request = CartRequest.Add(0L, 0L)
 
         // When
-        val result = cartController.addCart(request)
+        val result = cartController.addCart(request).data!!
 
         // Then
+        assertEquals(result.cartId, 0L)
+        assertEquals(result.productId, 0L)
 
     }
 
@@ -37,14 +39,22 @@ class CartControllerTest {
         // Given
         val request = CartRequest.Delete(0L)
 
-        // When & Then
-        cartController.deleteCart(request)
+        // When
+        val result = cartController.deleteCart(request).data!!
+
+        // Then
+        assertEquals(result, 0L)
     }
 
     @DisplayName("success: 장바구니 조회 API")
     fun successCartListTest() {
         // Given & When & Then
-        cartController.getCartList()
+        val results = cartController.getCartList().data!!
+
+        assertEquals(results.size, 1)
+        assertEquals(results[0].cartId, 0L)
+        assertEquals(results[0].userId, 0L)
+        assertEquals(results[0].productId, 0L)
     }
 
     @DisplayName("중복 된 장바구니가 존재하면, DuplicatedProductException이 발생한다.")
