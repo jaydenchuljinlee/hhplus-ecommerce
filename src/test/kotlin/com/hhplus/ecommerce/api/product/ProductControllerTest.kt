@@ -23,7 +23,7 @@ class ProductControllerTest {
     fun successGetProduct() {
         val request = ProductRequest.View(0L)
 
-        val result= productController.getProduct(request)
+        val result= productController.getProduct(request).data!!
 
         val fakeResponse = ProductResponse.Detail.getInstance()
 
@@ -38,7 +38,7 @@ class ProductControllerTest {
     @DisplayName("success: 상품 Top 5 조회 API")
     @Test
     fun successGetTopFiveProduct() {
-        val result= productController.getProductTopFive()
+        val result= productController.getProductTopFive().data!!
 
         val fakeResponse = ProductResponse.TopFiveResult.getInstance().products[0]
 
