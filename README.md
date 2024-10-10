@@ -40,7 +40,7 @@
 ## Step 6 자료
 - ERD -> [ERD 문서](docs/ERD.md)  
 - API 스펙 -> [API_SPEC 문서](docs/API_SPEC.md)  
-- API 실행 자료 -> [POSTMAN 문서](docs/postman.json)
+- API 실행 자료 -> [POSTMAN 문서](docs/postman/postman.json)
 
 ---
 
