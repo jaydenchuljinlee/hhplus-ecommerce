@@ -100,7 +100,75 @@ sequenceDiagram
 ```
 ---
 
-- ### 주문 및 결제
+- ### 장바구니 목록 정보 조회
+
+```mermaid
+sequenceDiagram
+    actor User as 사용자
+    participant CartController
+    participant CartFacade
+    participant CartService
+    participant CartRepository
+
+    User->>CartController: 장바구니 목록 조회 요청
+
+    CartFacade->>CartRepository: 장바구니 목록 정보 조회
+    CartRepository-->>CartFacade: 장바구니 목록 정보 전달
+    CartFacade->>CartFacade: 장바구니 정보 가공 (필요 시)
+    CartFacade-->>CartController: 최종 장바구니 목록 반환
+    ProductController-->>User: 최종 장바구니 목록 조회 결과 반환
+
+```
+---
+
+- ### 장바구니 추가
+
+```mermaid
+sequenceDiagram
+    actor User as 사용자
+    participant CartController
+    participant CartFacade
+    participant CartService
+    participant CartRepository
+
+    User->>CartController: 장바구니 추가 요청 (유저 ID, 상품 ID)
+    opt 유효성 검사
+        CartController->>User: 400 Error
+    end
+    CartController->>CartFacade: 유효한 파라미터 전달
+    CartFacade->>CartService: 장바구니 정보 전달
+    CartService-->>CartRepository: 장바구니 정보 저장
+    opt 장바구니 중복 Error
+        CartRepository-->>CartService: 장바구니 중복 500 Error
+    end
+
+```
+
+- ### 장바구니 삭제
+
+```mermaid
+sequenceDiagram
+    actor User as 사용자
+    participant CartController
+    participant CartFacade
+    participant CartService
+    participant CartRepository
+
+    User->>CartController: 장바구니 삭제 요청 (장바구니 ID)
+    opt 유효성 검사
+        CartController->>User: 400 Error
+    end
+    CartController->>CartFacade: 유효한 파라미터 전달
+    CartFacade->>CartService: 장바구니 정보 전달
+    CartService-->>CartRepository: 장바구니 삭제
+    opt 장바구니 미존재 Error
+        CartRepository-->>CartService: 장바구니 미존재 500 Error
+    end
+
+```
+
+---
+- ### 주문
 ```mermaid
 sequenceDiagram
     actor User as 사용자
@@ -113,9 +181,6 @@ sequenceDiagram
     participant OrderService
 
     participant OrderRepository
-    participant OrderSnapshotRepository
-    participant OrderHistoryRepository
-    participant PaymentAPI as 외부 결제 API
 
     User->>OrderController: 주문 결제 요청 (user ID, product ID)
     opt 유효성 검사
@@ -147,18 +212,38 @@ sequenceDiagram
     else 잔액 정보 미존재
         BalanceService->>OrderFacade: 잔액 정보 조회 500 Error
     end
+    OrderFacade->>OrderService: 주문 정보 전달
     OrderService->>OrderRepository: 주문 정보 저장
-    OrderService->>OrderSnapshotRepository: 주문 요청 스냅샷 저장
-    OrderService->>OrderHistoryRepository: 주문 히스토리 저장
 
-    OrderService->>PaymentAPI: 외부 결제 API 요청
-    PaymentAPI-->>OrderService: 결제 승인 or 실패 응답
-    alt 결제 성공
-        OrderService->>OrderRepository: 결제 정보 저장 (상태값 "결제 완료")
-        OrderService->>OrderRepository: 결제 이력 저장
-    else 결제 실패
-        OrderService->>OrderRepository: 주문 상태를 "주문 완료"
+```
+
+- ### 결제
+```mermaid
+sequenceDiagram
+    actor User as 사용자
+    participant PaymentController
+    participant PaymentFacade
+    participant OrderService
+    participant PaymentService
+    participant PaymentRepository
+    participant OrderService
+
+    participant PaymentAPI as 외부 결제 API
+
+    User->>PaymentController: 결제 요청 (order ID)
+    opt 유효성 검사
+        PaymentController->>User: 400 Error
     end
-    OrderService-->>User: 최종 주문 결제 결과 반환
-
+    PaymentController->>PaymentFacade: 유효한 파라미터 전달
+    PaymentFacade->>OrderService: 주문정보 조회
+    OrderService->>PaymentFacade: 주문정보 반환
+    PaymentFacade->>PaymentService: 주문정보 전달
+    PaymentService->>PaymentRepository: 결제 정보 저장
+    PaymentService->>PaymentRepository: 결제 이력 저장
+    alt 외부 PG 결제 성공
+        PaymentService->>PaymentAPI: 외부 PG 결제 요청
+        PaymentAPI->>PaymentService: 외부 PG 결제 성곰응답 반환
+    else 외부 PG 요청 실패
+        PaymentAPI->>PaymentService: 외부 PG 결제 실패응답 반환
+    end
 ```
