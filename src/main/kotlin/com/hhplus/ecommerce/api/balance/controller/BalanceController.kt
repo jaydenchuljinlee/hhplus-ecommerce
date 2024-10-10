@@ -6,18 +6,15 @@ import com.hhplus.ecommerce.api.balance.dto.BalanceResponse
 import com.hhplus.ecommerce.common.exception.balance.BalanceLimitExceededException
 import com.hhplus.ecommerce.common.exception.balance.BalanceNotFoundException
 import com.hhplus.ecommerce.common.exception.user.UserNotFoundException
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
-@RequestMapping("account")
+@RequestMapping("balance")
 @RestController
 class BalanceController {
     private val MAX_BALANCE = 100_000_000
 
     @PatchMapping("charge")
-    fun charge(request: BalanceRequest.Charge): ApiResponse<BalanceResponse.Charge> {
+    fun charge(@RequestBody request: BalanceRequest.Charge): ApiResponse<BalanceResponse.Charge> {
 
         if (request.userId == 1L) throw UserNotFoundException()
 
@@ -38,8 +35,8 @@ class BalanceController {
         return ApiResponse.success(response)
     }
 
-    @GetMapping("view")
-    fun getBalance(request: BalanceRequest.View): ApiResponse<BalanceResponse.View> {
+    @GetMapping()
+    fun getBalance(@RequestBody request: BalanceRequest.View): ApiResponse<BalanceResponse.View> {
         if (request.userId == 1L) throw UserNotFoundException()
 
         if (request.userId == 2L) throw BalanceNotFoundException()
