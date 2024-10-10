@@ -12,10 +12,8 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ApiResponse<Any> {
-        return ApiResponse(
-            code = 500,
+        return ApiResponse.fail(
             message = e.message.toString(),
-            data = null
         )
     }
 }

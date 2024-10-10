@@ -14,5 +14,12 @@ data class ApiResponse<T>(
             )
         }
 
+        fun fail(message: String): ApiResponse<Any> {
+            return ApiResponse(
+                code = 500,
+                message = message,
+                data = null
+            )
+        }
     }
 }
