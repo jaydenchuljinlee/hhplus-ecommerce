@@ -25,7 +25,7 @@ class OrderControllerTest {
         val request = OrderRequest.Preparation(0L, 0L, 1, 1000)
 
         // When
-        val response = orderController.prepareOrder(request)
+        val response = orderController.prepareOrder(request).data!!
 
         // Then
         assertEquals(response.orderId, 0L)
