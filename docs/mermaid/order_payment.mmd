@@ -1,0 +1,58 @@
+sequenceDiagram
+    actor User as 사용자
+    participant OrderController
+    participant OrderFacade
+    participant UserService
+    participant ProductService
+    participant ProductRepository
+    participant BalanceService
+    participant OrderService
+
+    participant OrderRepository
+    participant OrderSnapshotRepository
+    participant OrderHistoryRepository
+    participant PaymentAPI as 외부 결제 API
+
+    User->>OrderController: 주문 결제 요청 (user ID, product ID)
+    opt 유효성 검사
+        OrderController->>User: 400 Error
+    end
+    OrderController->>OrderFacade: 유효한 파라미터 전달
+    OrderFacade-->UserService: 사용자 정보 조회
+    alt 사용자 정보 존재
+        UserService->>OrderFacade: 사용자 정보 반환
+    else 사용자 정보 없음
+        UserService->>OrderFacade: 사용자 정보 조회 500 Error
+    end
+    OrderFacade->>ProductService: 상품 재고 정보 조회
+    alt 상품 재고 정보 존재
+        ProductService->>ProductService: 상품 ID 기반 Lock 획득
+        ProductService->>OrderFacade: 상품 재고 정보 반환
+    else 상품 재고 정보 미존재
+        ProductService->>OrderFacade: 상품 재고 정보 조회 500 Error
+    end
+    alt 상품 재고 차감 가능
+        ProductService->>ProductRepository: 재고 차감 요청
+    else 상품 재고 차감 불가
+        ProductService --> OrderFacade: 상품 재고 부족 500 Error
+    end
+    OrderFacade->>BalanceService: 잔액 정보 조회
+    alt 잔액 정보 존재
+        OrderFacade->>OrderFacade: 사용자 ID 기반의 잔액 정보 Lock 획득
+        BalanceService->>OrderFacade: 잔액 정보 반환
+    else 잔액 정보 미존재
+        BalanceService->>OrderFacade: 잔액 정보 조회 500 Error
+    end
+    OrderService->>OrderRepository: 주문 정보 저장
+    OrderService->>OrderSnapshotRepository: 주문 요청 스냅샷 저장
+    OrderService->>OrderHistoryRepository: 주문 히스토리 저장
+
+    OrderService->>PaymentAPI: 외부 결제 API 요청
+    PaymentAPI-->>OrderService: 결제 승인 or 실패 응답
+    alt 결제 성공
+        OrderService->>OrderRepository: 결제 정보 저장 (상태값 "결제 완료")
+        OrderService->>OrderRepository: 결제 이력 저장
+    else 결제 실패
+        OrderService->>OrderRepository: 주문 상태를 "주문 완료"
+    end
+    OrderService-->>User: 최종 주문 결제 결과 반환

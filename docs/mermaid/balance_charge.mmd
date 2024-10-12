@@ -1,0 +1,30 @@
+sequenceDiagram
+    actor User as 사용자
+    participant BalanceController
+    participant BalanceFacade
+    participant UserService
+    participant BalanceService
+    participant BalanceRepository
+
+    User->>BalanceController: 잔액 충전 요청 (user ID, amount)
+    opt 유효성 검사
+        User->>BalanceController: 400 Error
+    end
+    BalanceController->>BalanceFacade: 유효한 파라미터 전달
+    alt 유저 정보 존재
+        BalanceFacade->>UserService: 유저 존재 여부 검사
+    else 유저 정보 미존재
+        UserService->>BalanceFacade: 유저 미존재 500 Error
+    end
+    opt 충전 로직
+        BalanceFacade->>BalanceService: 충전 요청
+        BalanceService->>BalanceService: 사용자 ID 기반 Lock 획득
+        alt 충전 유효성 검사 실패
+            BalanceService-->BalanceFacade: 충전 유효성 500 Error
+        end
+    end
+    BalanceService->>BalanceRepository: 사용자 잔액 정보 갱신
+    BalanceRepository-->>BalanceService: 갱신 결과 반환
+    BalanceService-->>BalanceFacade: 충전 완료 결과 반환
+    BalanceFacade-->>BalanceController: 충전 완료 결과 반환
+    BalanceController-->>User: 잔액 충전 결과 반환
