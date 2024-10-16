@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class PaymentControllerTest {
+class PaymentEntityControllerTest {
     private lateinit var paymentController: PaymentController
 
     @BeforeEach
