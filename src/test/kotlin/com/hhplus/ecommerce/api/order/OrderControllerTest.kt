@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.api.order
 
 import com.hhplus.ecommerce.api.order.controller.OrderController
-import com.hhplus.ecommerce.api.order.dto.OrderRequest
+import com.hhplus.ecommerce.api.order.dto.OrderCreationRequest
 import com.hhplus.ecommerce.common.exception.product.OutOfStockException
 import com.hhplus.ecommerce.common.exception.product.ProductNotFoundException
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,7 +22,7 @@ class OrderControllerTest {
     @Test
     fun successOrderPrepared() {
         // Given
-        val request = OrderRequest.Preparation(0L, 0L, 1, 1000)
+        val request = OrderCreationRequest.Preparation(0L, 0L, 1, 1000)
 
         // When
         val response = orderController.prepareOrder(request).data!!
@@ -39,7 +39,7 @@ class OrderControllerTest {
     @Test
     fun testProductNotFoundException() {
         // Given
-        val request = OrderRequest.Preparation(0, 1, 1, 1000)
+        val request = OrderCreationRequest.Preparation(0, 1, 1, 1000)
 
         // When
         val exception = assertThrows<ProductNotFoundException> {
@@ -54,7 +54,7 @@ class OrderControllerTest {
     @Test
     fun testOutOfStockException() {
         // Given
-        val request = OrderRequest.Preparation(0, 2, 1, 1000)
+        val request = OrderCreationRequest.Preparation(0, 2, 1, 1000)
 
         // When
         val exception = assertThrows<OutOfStockException> {
