@@ -1,7 +1,10 @@
 package com.hhplus.ecommerce.api.product.dto
 
-class ProductRequest {
-    data class View(
-        var productId: Long,
-    )
+import io.swagger.v3.oas.annotations.Parameter
+
+class ProductViewRequest(
+    @Parameter(description = "상품 ID", required = true)
+    var productId: Long,
+) {
+
 }
