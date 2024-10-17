@@ -1,9 +1,6 @@
 package com.hhplus.ecommerce.domain.cart
 
-import com.hhplus.ecommerce.domain.cart.dto.CartCreation
-import com.hhplus.ecommerce.domain.cart.dto.CartDeletion
-import com.hhplus.ecommerce.domain.cart.dto.CartResult
-import com.hhplus.ecommerce.domain.cart.dto.ProductIdCartQuery
+import com.hhplus.ecommerce.domain.cart.dto.*
 import com.hhplus.ecommerce.infrastructure.cart.ICartRepository
 import com.hhplus.ecommerce.infrastructure.cart.jpa.entity.CartEntity
 import org.springframework.stereotype.Service
@@ -12,6 +9,11 @@ import org.springframework.stereotype.Service
 class CartService(
     private val cartRepository: ICartRepository
 ) {
+    fun getCartList(dto: CartListQuery): List<CartResult> {
+        val result = cartRepository.findAllByUserId(dto.userId)
+        return result.map { CartResult.from(it) }
+    }
+
     fun getCartByProduct(dto: ProductIdCartQuery): CartResult? {
         val cartEntity = cartRepository.findByProductId(dto.productId)
 
@@ -19,12 +21,12 @@ class CartService(
         else null
     }
 
-    fun add(dto: CartCreation): CartEntity {
+    fun add(dto: CartCreation): CartResult {
         val entity = dto.toEntity()
 
-        val result = cartRepository.insertOrUpdate(entity)
+        val cartEntity = cartRepository.insertOrUpdate(entity)
 
-        return result
+        return CartResult.from(cartEntity)
     }
 
     fun delete(dto: CartDeletion): Long {
