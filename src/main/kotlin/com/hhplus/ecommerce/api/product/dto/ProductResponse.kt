@@ -1,8 +1,12 @@
 package com.hhplus.ecommerce.api.product.dto
 
+import io.swagger.v3.oas.annotations.media.Schema
+
 class ProductResponse {
     data class Detail(
+        @Schema(description = "상품 ID", example = "1")
         var productId: Long,
+        @Schema(description = "상품 ID", example = "1")
         var name: String,
         var description: String,
         var price: Long,

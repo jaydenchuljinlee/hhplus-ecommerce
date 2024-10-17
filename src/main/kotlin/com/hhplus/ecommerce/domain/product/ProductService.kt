@@ -10,9 +10,21 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: IProductRepository
 ) {
+    fun getProduct(dto: ProductInfoQuery): ProductInfoResult {
+        val productDetailEntity = productRepository.findByProductIdWithLock(dto.productId)
+        val productEntity = productRepository.findById(dto.productId)
 
-    fun decreaseStock(item: DecreaseProductDetailStock): ProductDetailResult {
-        val productDetailEntity = productRepository.decreaseStock(item.id, item.amount)
+        val result = ProductInfoResult(
+            productId = productEntity.id,
+            productName = productEntity.name,
+            price = productEntity.price,
+            stock = productDetailEntity.quantity
+        )
+        return result
+    }
+
+    fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
+        val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
 
         return ProductDetailResult.from(productDetailEntity)
     }

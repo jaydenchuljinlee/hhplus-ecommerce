@@ -6,9 +6,10 @@ import com.hhplus.ecommerce.infrastructure.product.jpa.entity.ProductEntity
 
 interface IProductRepository {
     fun findByProductIdWithLock(productId: Long): ProductDetailEntity
+
     fun findById(productId: Long): ProductEntity
-    fun insertOrUpdate(entity: ProductEntity): ProductEntity
     fun findTopFiveLastThreeDays(): List<BestSellingProduct>
 
+    fun insertOrUpdate(entity: ProductEntity): ProductEntity
     fun decreaseStock(productDetailId: Long, amount: Int): ProductDetailEntity
 }
