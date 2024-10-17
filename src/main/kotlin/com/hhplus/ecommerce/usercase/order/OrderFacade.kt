@@ -55,6 +55,7 @@ class OrderFacade(
             productId = info.productId,
             quantity = info.quantity,
             price = info.price,
+            status = order.status
         )
 
         return result
