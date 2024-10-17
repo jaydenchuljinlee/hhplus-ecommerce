@@ -1,3 +1,14 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+  sql:
+    init:
+      schema-locations: classpath:sql/database-scheme.sql
+      data-locations: classpath:sql/database-data.sql
+      encoding: UTF-8
+      mode: always
+
+  jpa:
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: update
