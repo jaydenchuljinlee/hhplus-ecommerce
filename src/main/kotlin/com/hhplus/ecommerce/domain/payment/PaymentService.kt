@@ -41,8 +41,16 @@ class PaymentService(
             price = entity.price,
             userId = dto.userId,
         )
-        // externalApiService.call(externalRequest)
+        externalApiService.call(externalRequest)
 
-        return PaymentResult.from(entity)
+        val result = PaymentResult(
+            paymentId = entity.id,
+            userId = dto.userId,
+            orderId = entity.orderId,
+            status = entity.status,
+            price = entity.price,
+        )
+
+        return result
     }
 }

@@ -33,54 +33,46 @@
 
 ---
 
-## Step 5 자료
-- 마일스톤 -> [마일스톤 문서](docs/MILESTONE.md)  
-- 시퀀스 다이어그램 -> [시퀀스_다이어그램 문서](docs/SEQUANCE_DIAGRAM.md)
+## Step 7
 
-## Step 6 자료
-- ERD -> [ERD 문서](docs/ERD.md)  
-- API 스펙 -> [API_SPEC 문서](docs/API_SPEC.md)  
-- API 실행 자료 -> [POSTMAN 문서](docs/postman/postman.json)
+### API 명세
+
+> #### 잔액 조회
+![balance_get](/docs/api/get_balance.png)
 
 ---
 
-## 프로젝트 구조
-```java
-ecommerce  
-└─api  
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─domain
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─infrastructure
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─usecase
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-```
-
+> #### 잔액 충전
+![charge_balance](/docs/api/charge_balance.png)
 ---
 
-## 기술스택
-- SpringBoot 3.3.4
-- Gradle KotlinDSL 8.8
-- JDK 17
-- JPA 1.9.25
-
+> #### 상품 조회
+![get_product](/docs/api/get_product.png)
 ---
 
+> #### 3일간 가장 많이 팔린 Top 5 상품 조회
+![product_top_five](/docs/api/product_top_five.png)
+---
+
+> #### 장바구니 상품 목록 조회
+![cart_list](/docs/api/cart_list.png)
+---
+
+> #### 장바구니 추가
+![add_cart](/docs/api/add_cart.png)
+---
+
+> #### 장바구니 삭제
+![delete_cart](/docs/api/delete_cart.png)
+---
+
+> #### 주문
+![order](/docs/api/order.png)
+---
+
+> #### 결제
+![payment](/docs/api/payment.png)
+
+
+---
 

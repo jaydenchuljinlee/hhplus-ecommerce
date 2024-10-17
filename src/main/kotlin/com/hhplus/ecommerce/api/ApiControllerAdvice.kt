@@ -12,11 +12,9 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(Exception::class)
-    fun handleException(e: Exception): ResponseEntity<CustomApiResponse<Any>> {
+    fun handleException(e: Exception): ResponseEntity<CustomErrorResponse> {
 
-        val response = CustomApiResponse.fail(
-            message = e.message.toString(),
-        )
+        val response = CustomErrorResponse.fail(e.message.toString())
 
         return ResponseEntity.status(response.status).body(response)
     }

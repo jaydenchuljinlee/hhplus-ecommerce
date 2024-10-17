@@ -1,68 +1,49 @@
 package com.hhplus.ecommerce.api.balance.controller
 
 import com.hhplus.ecommerce.api.CustomApiResponse
+import com.hhplus.ecommerce.api.CustomErrorResponse
 import com.hhplus.ecommerce.api.balance.dto.*
-import com.hhplus.ecommerce.common.exception.balance.BalanceLimitExceededException
-import com.hhplus.ecommerce.common.exception.balance.BalanceNotFoundException
-import com.hhplus.ecommerce.common.exception.user.UserNotFoundException
+import com.hhplus.ecommerce.domain.balance.BalanceService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("balance")
 @RestController
-class BalanceController {
-    private val MAX_BALANCE = 100_000_000
+class BalanceController(
+    private val balanceService: BalanceService
+) {
 
-    @Operation(summary = "잔액 충전", description = "잔액 충전 API")
+    @Tag(name = "잔액 기능")
+    @Operation(summary = "잔액 충전 API", description = "잔액을 충전해주는 API입니다.")
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "잔액 충전 요청 성공",
-            content = [Content(mediaType = "application/json", schema = Schema(implementation = CustomApiResponse::class))]),
-        ApiResponse(responseCode = "500", description = "서버 오류",
-            content = [Content(mediaType = "application/json")])
+        ApiResponse(responseCode = "200", description = "잔액 충전 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PatchMapping("charge")
     fun charge(
         @RequestBody request: BalanceChargeRequest
     ): CustomApiResponse<BalanceTransactionResponse> {
+        val result = balanceService.charge(request.toBalanceTransaction())
 
-        if (request.userId == 1L) throw UserNotFoundException()
-
-        if (request.userId == 2L) throw BalanceNotFoundException()
-
-        if (request.amount > MAX_BALANCE) throw BalanceLimitExceededException()
-
-        val result = BalanceTransactionResponse.getInstance()
-        val newBalance = result.amount + request.amount
-        if (newBalance > MAX_BALANCE) throw BalanceLimitExceededException()
-
-        val response = BalanceTransactionResponse(
-            userId = request.userId,
-            amount = newBalance,
-            transactionType = "CHARGE"
-        )
-
-        return CustomApiResponse.success(response)
+        return CustomApiResponse.success(BalanceTransactionResponse.from(result))
     }
 
-    @Operation(summary = "잔액 조회", description = "잔액 조회 API")
+    @Tag(name = "잔액 기능")
+    @Operation(summary = "잔액 조회 API", description = "잔액을 조회해주는 API입니다.")
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "잔액 조회 성공",
-            content = [Content(mediaType = "application/json", schema = Schema(implementation = CustomApiResponse::class))]),
-        ApiResponse(responseCode = "500", description = "서버 오류",
-            content = [Content(mediaType = "application/json")])
+        ApiResponse(responseCode = "200", description = "잔액 조회 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @GetMapping()
     fun getBalance(
         @RequestBody request: BalanceViewRequest
     ): CustomApiResponse<BalanceViewResponse> {
-        if (request.userId == 1L) throw UserNotFoundException()
-
-        if (request.userId == 2L) throw BalanceNotFoundException()
-
-        return CustomApiResponse.success(BalanceViewResponse.getInstance())
+        val result = balanceService.getBalance(request.toQuery())
+        return CustomApiResponse.success(BalanceViewResponse.from(result))
     }
 }

@@ -29,7 +29,7 @@ class ProductDetailEntity(
     fun decrease(amount: Int) {
         val newQuantity = quantity - amount
 
-        require(newQuantity >= 0) { OutOfStockException() }
+        require(newQuantity >= 0) { throw OutOfStockException() }
 
         quantity = newQuantity
     }
