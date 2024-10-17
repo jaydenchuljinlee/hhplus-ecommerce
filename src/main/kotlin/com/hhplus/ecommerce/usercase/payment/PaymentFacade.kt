@@ -16,12 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class PaymentFacade(
-    private val cartService: CartService,
     private val balanceService: BalanceService,
     private val paymentService: PaymentService,
-    private val orderService: OrderService,
-
-    ) {
+    private val orderService: OrderService)
+{
 
     @Transactional
     fun pay(dto: PaymentCreation): PaymentInfo {
