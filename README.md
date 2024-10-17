@@ -33,46 +33,13 @@
 
 ---
 
-## Step 7
+## Step 8
 
-### API 명세
-
-> #### 잔액 조회
-![balance_get](/docs/api/get_balance.png)
-
----
-
-> #### 잔액 충전
-![charge_balance](/docs/api/charge_balance.png)
----
-
-> #### 상품 조회
-![get_product](/docs/api/get_product.png)
----
-
-> #### 3일간 가장 많이 팔린 Top 5 상품 조회
-![product_top_five](/docs/api/product_top_five.png)
----
-
-> #### 장바구니 상품 목록 조회
-![cart_list](/docs/api/cart_list.png)
----
-
-> #### 장바구니 추가
-![add_cart](/docs/api/add_cart.png)
----
-
-> #### 장바구니 삭제
-![delete_cart](/docs/api/delete_cart.png)
----
-
-> #### 주문
-![order](/docs/api/order.png)
----
-
-> #### 결제
-![payment](/docs/api/payment.png)
+- 주문 동시성 제어 -> [주문 동시성 제어 링크](/docs/concurrency/order.md)
+  - 주문 동시성 제어의 경우, 여러 사용자가 동시에 한 상품에 접근하는 상황으로 테스트를 진행했습니다.
+- 결제 동시성 제어 -> [결제 동시성 제어 링크](/docs/concurrency/order.md)
+  - 결제 동시성 제어의 경우, 한 사용자가 동시에 여러 결제를 하는 상황으로 테스트를 진행했습니다.
 
 
----
+
 
