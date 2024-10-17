@@ -101,37 +101,4 @@ class CartControllerTest {
         assertEquals(results[0].productId, 0L)
         assertEquals(results[0].quantity, 100)
     }
-
-//    @DisplayName("중복 된 장바구니가 존재하면, DuplicatedProductException이 발생한다.")
-//    @Test
-//    fun duplicatedProductExceptionTest() {
-//        // Given
-//        val request = CartCreationRequest(
-//            0L, 0L,  100
-//        )
-//
-//        // When
-//        val exception = assertThrows<DuplicatedProductException> {
-//            cartController.addCart(request)
-//        }
-//
-//        // Then
-//        assertEquals(exception.message, "같은 상품이 장바구니에 존재합니다.")
-//    }
-//
-//    @DisplayName("삭제 API에서 장바구니 정보가 존재하지 않으면, CartNotFoundException이 발생한다.")
-//    @Test
-//    fun cartNotFoundExceptionTest() {
-//        // Given
-//        val request = CartDeletionRequest(0)
-//
-//        // When
-//        val exception = assertThrows<CartNotFoundException> {
-//            cartController.deleteCart(request)
-//        }
-//
-//        // Then
-//        assertEquals(exception.message, "존재하지 않는 장바구니입니다.")
-//    }
-
 }

@@ -13,10 +13,6 @@ class BalanceViewResponse(
     var balance: Long
 ) {
     companion object {
-        fun getInstance() = BalanceViewResponse(
-            userId = 0L,
-            balance = 1000L
-        )
 
         fun from(result: BalanceResult): BalanceViewResponse {
             return BalanceViewResponse(

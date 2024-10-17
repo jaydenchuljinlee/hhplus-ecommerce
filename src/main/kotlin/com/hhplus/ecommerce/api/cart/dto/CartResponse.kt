@@ -18,12 +18,6 @@ class CartResponse(
     var quantity: Int,
 ) {
     companion object {
-        fun getInstance() = CartResponse(
-            cartId = 0L,
-            userId = 0L,
-            productId = 0L,
-            quantity = 10,
-        )
 
         fun toCartResponse(result: CartResult): CartResponse {
             return CartResponse(

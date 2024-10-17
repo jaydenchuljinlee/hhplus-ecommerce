@@ -12,12 +12,6 @@ class PaymentCreationRequest(
     @Parameter(description = "사용자 ID", required = true)
     var userId: Long,
 ) {
-    companion object {
-        fun getInstance() = PaymentCreationRequest(
-            orderId = 0L,
-            userId = 0L
-        )
-    }
 
     fun toPaymentCreation(): PaymentCreation {
         return PaymentCreation(

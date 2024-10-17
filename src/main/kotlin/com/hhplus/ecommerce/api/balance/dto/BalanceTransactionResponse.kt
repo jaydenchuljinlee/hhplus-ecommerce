@@ -13,11 +13,6 @@ data class BalanceTransactionResponse(
     var amount: Long
 ) {
     companion object {
-        fun getInstance() = BalanceTransactionResponse(
-            userId = 0L,
-            amount = 1000L,
-        )
-
         fun from(result: BalanceResult): BalanceTransactionResponse {
             return BalanceTransactionResponse(
                 userId = result.userId,

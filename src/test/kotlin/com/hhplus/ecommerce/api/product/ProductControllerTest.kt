@@ -83,17 +83,4 @@ class ProductControllerTest {
         assertEquals(response[0].orderCount, list[0].orderCount)
         assertEquals(response[0].payCount, list[0].payCount)
     }
-
-//    @DisplayName("상품 정보가 없으면, ProductNotfoundException이 발생한다.")
-//    @Test
-//    fun testProductNotFoundException() {
-//        val request = ProductInfoQueryRequest(0)
-//
-//        val exception = assertThrows<ProductNotFoundException> {
-//            productController.getProduct(request)
-//        }
-//
-//        assertEquals(exception.message, "상품 정보가 존재하지 않습니다.")
-//    }
-
 }

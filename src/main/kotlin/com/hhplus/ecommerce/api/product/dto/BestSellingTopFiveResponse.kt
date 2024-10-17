@@ -20,16 +20,6 @@ data class BestSellingTopFiveResponse(
     var payCount: Long = 0,
 ) {
     companion object {
-        fun getInstance() = BestSellingTopFiveResponse(
-            productId = 0,
-            productName = "",
-            stock = 0,
-            totalOrderCount = 0,
-            totalPayPrice = 0,
-            orderCount = 0,
-            payCount = 0
-        )
-
         fun from(dto: BestSellingProduct): BestSellingTopFiveResponse {
             return BestSellingTopFiveResponse(
                 productId = dto.productId,

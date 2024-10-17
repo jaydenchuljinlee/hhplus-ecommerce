@@ -65,44 +65,4 @@ class OrderControllerTest {
         assertEquals(response.quantity, 2)
         assertEquals(response.status, "ORDER_COMPLETED")
     }
-
-//    @DisplayName("상품 정보가 없으면, ProductNotFoundException이 발생한다")
-//    @Test
-//    fun testProductNotFoundException() {
-//        // Given
-//        val request = OrderCreationRequest(
-//            userId = 0,
-//            productId = 0,
-//            price = 1000,
-//            quantity = 2
-//        )
-//
-//        // When
-//        val exception = assertThrows<ProductNotFoundException> {
-//            orderController.prepareOrder(request)
-//        }
-//
-//        // Then
-//        assertEquals(exception.message, "상품 정보가 존재하지 않습니다.")
-//    }
-//
-//    @DisplayName("상품 재고가 없으면, OutOfStockException이 발생한다")
-//    @Test
-//    fun testOutOfStockException() {
-//        // Given
-//        val request = OrderCreationRequest(
-//            userId = 0,
-//            productId = 0,
-//            price = 1000,
-//            quantity = 10
-//        )
-//
-//        // When
-//        val exception = assertThrows<OutOfStockException> {
-//            orderController.prepareOrder(request)
-//        }
-//
-//        // Then
-//        assertEquals(exception.message, "상품 재고가 부족합니다.")
-//    }
 }

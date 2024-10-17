@@ -16,15 +16,6 @@ class OrderResponse(
     var status: String,
 ) {
     companion object {
-
-        fun getInstance() = OrderResponse(
-            orderId = 0L,
-            productId = 0L,
-            price = 1000,
-            quantity = 2,
-            status = "ORDER_COMPLETED"
-        )
-
         fun from(info: OrderInfo): OrderResponse {
             return OrderResponse(
                 orderId = info.orderId,

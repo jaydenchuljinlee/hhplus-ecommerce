@@ -50,16 +50,4 @@ class PaymentEntityControllerTest {
         assertEquals(response.price, 2000)
         assertEquals(response.status, "PAYMENT_COMPLETED")
     }
-//
-//    @DisplayName("외부 PG 결제 연동에서 오류가 발생하면, ExternalPaymentException이 발생한다.")
-//    @Test
-//    fun externalPaymentExceptionTest() {
-//        val request = PaymentCreationRequest(0, 0)
-//
-//        val exception = assertThrows<ExternalPaymentException> {
-//            paymentController.payment(request)
-//        }
-//
-//        assertEquals(exception.message, "외부 PG사 결제에서 오류가 발생했습니다.")
-//    }
 }

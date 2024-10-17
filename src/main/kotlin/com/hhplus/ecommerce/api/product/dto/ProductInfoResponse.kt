@@ -15,13 +15,6 @@ data class ProductInfoResponse(
     var quantity: Int,
 ) {
     companion object {
-        fun getInstance(): ProductInfoResponse = ProductInfoResponse(
-            productId = 0L,
-            productName = "한우 세트",
-            price = 150_000L,
-            quantity = 10
-        )
-
         fun from(info: ProductInfoResult): ProductInfoResponse {
             return ProductInfoResponse(
                 productId = info.productId,

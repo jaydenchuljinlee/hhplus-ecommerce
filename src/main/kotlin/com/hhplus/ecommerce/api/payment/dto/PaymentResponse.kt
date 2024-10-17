@@ -22,14 +22,6 @@ class PaymentResponse(
     var status: String,
 ) {
     companion object {
-        fun getInstance() = PaymentResponse(
-            id = 0L,
-            userId = 0L,
-            orderId = 0L,
-            price = 0,
-            status = "PAYMENT_COMPLETED"
-        )
-
         fun from(info: PaymentInfo): PaymentResponse {
             return PaymentResponse(
                 id = info.orderId,
