@@ -33,54 +33,13 @@
 
 ---
 
-## Step 5 자료
-- 마일스톤 -> [마일스톤 문서](docs/MILESTONE.md)  
-- 시퀀스 다이어그램 -> [시퀀스_다이어그램 문서](docs/SEQUANCE_DIAGRAM.md)
+## Step 8
 
-## Step 6 자료
-- ERD -> [ERD 문서](docs/ERD.md)  
-- API 스펙 -> [API_SPEC 문서](docs/API_SPEC.md)  
-- API 실행 자료 -> [POSTMAN 문서](docs/postman/postman.json)
+- 주문 동시성 제어 -> [주문 동시성 제어 링크](/docs/concurrency/order.md)
+  - 주문 동시성 제어의 경우, 여러 사용자가 동시에 한 상품에 접근하는 상황으로 테스트를 진행했습니다.
+- 결제 동시성 제어 -> [결제 동시성 제어 링크](/docs/concurrency/payment.md)
+  - 결제 동시성 제어의 경우, 한 사용자가 동시에 여러 결제를 하는 상황으로 테스트를 진행했습니다.
 
----
 
-## 프로젝트 구조
-```java
-ecommerce  
-└─api  
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─domain
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─infrastructure
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-└─usecase
-    └─balance
-    └─product
-    └─cart
-    └─order
-    └─payment
-```
-
----
-
-## 기술스택
-- SpringBoot 3.3.4
-- Gradle KotlinDSL 8.8
-- JDK 17
-- JPA 1.9.25
-
----
 
 
