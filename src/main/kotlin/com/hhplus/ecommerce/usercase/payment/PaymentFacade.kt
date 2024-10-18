@@ -49,7 +49,7 @@ class PaymentFacade(
 
         val result = paymentService.pay(paymentCreation)
 
-        val orderCompleteCommand = OrderCompleteCommand(dto.userId)
+        val orderCompleteCommand = OrderCompleteCommand(dto.orderId)
 
         orderService.orderComplete(orderCompleteCommand)
 
