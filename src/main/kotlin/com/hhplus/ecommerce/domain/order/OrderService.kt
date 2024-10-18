@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.domain.order
 
 import com.hhplus.ecommerce.domain.balance.BalanceService
+import com.hhplus.ecommerce.domain.order.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderCreationCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderQuery
 import com.hhplus.ecommerce.domain.order.dto.OrderResult
@@ -21,5 +22,14 @@ class OrderService(
     fun order(item: OrderCreationCommand): OrderResult {
         val entity = orderRepository.insertOrUpdate(item.toEntity())
         return OrderResult.from(entity)
+    }
+
+    fun orderComplete(item: OrderCompleteCommand): OrderResult {
+        val entity = orderRepository.findByIdAndStatus(item.orderId, "ORDER_REQUEST")
+        entity.status = "ORDER_COMPLETE"
+
+        val updated = orderRepository.insertOrUpdate(entity)
+
+        return OrderResult.from(updated)
     }
 }

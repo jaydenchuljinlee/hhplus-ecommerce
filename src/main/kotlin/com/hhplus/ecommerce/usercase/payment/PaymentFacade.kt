@@ -5,6 +5,7 @@ import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.cart.CartService
 import com.hhplus.ecommerce.domain.order.OrderService
+import com.hhplus.ecommerce.domain.order.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderQuery
 import com.hhplus.ecommerce.domain.payment.PaymentService
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
@@ -47,6 +48,10 @@ class PaymentFacade(
         )
 
         val result = paymentService.pay(paymentCreation)
+
+        val orderCompleteCommand = OrderCompleteCommand(dto.userId)
+
+        orderService.orderComplete(orderCompleteCommand)
 
         return PaymentInfo.from(result)
     }
