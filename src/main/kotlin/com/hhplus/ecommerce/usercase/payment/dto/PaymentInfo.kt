@@ -12,7 +12,7 @@ data class PaymentInfo(
     companion object {
         fun from(result: PaymentResult): PaymentInfo {
             return PaymentInfo(
-                paymentId = result.orderId,
+                paymentId = result.paymentId,
                 userId = result.userId,
                 orderId = result.orderId,
                 status = result.status,
