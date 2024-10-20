@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.infrastructure.order
+package com.hhplus.ecommerce.domain.order.repository
 
 import com.hhplus.ecommerce.infrastructure.order.jpa.entity.OrderEntity
 

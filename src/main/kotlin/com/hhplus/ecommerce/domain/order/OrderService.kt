@@ -1,13 +1,10 @@
 package com.hhplus.ecommerce.domain.order
 
-import com.hhplus.ecommerce.domain.balance.BalanceService
 import com.hhplus.ecommerce.domain.order.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderCreationCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderQuery
 import com.hhplus.ecommerce.domain.order.dto.OrderResult
-import com.hhplus.ecommerce.domain.product.ProductService
-import com.hhplus.ecommerce.infrastructure.order.IOrderRepository
-import com.hhplus.ecommerce.infrastructure.product.ProductRepository
+import com.hhplus.ecommerce.domain.order.repository.IOrderRepository
 import org.springframework.stereotype.Service
 
 @Service

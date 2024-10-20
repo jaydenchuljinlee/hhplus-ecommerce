@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.infrastructure.payment
+package com.hhplus.ecommerce.domain.payment.repository
 
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 

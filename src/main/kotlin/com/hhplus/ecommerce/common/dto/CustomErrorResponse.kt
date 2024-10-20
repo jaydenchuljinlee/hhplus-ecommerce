@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.api
+package com.hhplus.ecommerce.common.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.HttpStatus

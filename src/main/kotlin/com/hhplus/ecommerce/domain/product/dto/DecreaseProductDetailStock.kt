@@ -1,6 +1,6 @@
 package com.hhplus.ecommerce.domain.product.dto
 
-import com.hhplus.ecommerce.common.exception.product.OutOfStockException
+import com.hhplus.ecommerce.infrastructure.product.exception.OutOfStockException
 
 data class DecreaseProductDetailStock(
     var id: Long,

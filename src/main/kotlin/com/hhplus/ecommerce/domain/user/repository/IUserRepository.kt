@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.infrastructure.user
+package com.hhplus.ecommerce.domain.user.repository
 
 import com.hhplus.ecommerce.infrastructure.user.jpa.entity.UserEntity
 
