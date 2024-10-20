@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.api
 
+import com.hhplus.ecommerce.common.dto.CustomErrorResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
