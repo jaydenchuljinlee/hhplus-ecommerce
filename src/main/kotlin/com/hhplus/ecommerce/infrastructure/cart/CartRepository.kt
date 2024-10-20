@@ -1,9 +1,9 @@
 package com.hhplus.ecommerce.infrastructure.cart
 
+import com.hhplus.ecommerce.domain.cart.repository.ICartRepository
 import com.hhplus.ecommerce.infrastructure.cart.jpa.CartJpaRepository
 import com.hhplus.ecommerce.infrastructure.cart.jpa.entity.CartEntity
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 @Repository
 class CartRepository(

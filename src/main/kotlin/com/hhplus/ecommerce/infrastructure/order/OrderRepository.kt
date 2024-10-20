@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.order
 
 import com.hhplus.ecommerce.common.exception.order.OrderNotFoundException
+import com.hhplus.ecommerce.domain.order.repository.IOrderRepository
 import com.hhplus.ecommerce.infrastructure.order.jpa.OrderJpaRepository
 import com.hhplus.ecommerce.infrastructure.order.jpa.entity.OrderEntity
 import org.springframework.stereotype.Repository

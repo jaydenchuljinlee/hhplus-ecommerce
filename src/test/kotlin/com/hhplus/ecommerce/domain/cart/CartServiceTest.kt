@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.domain.cart
 
 import com.hhplus.ecommerce.domain.cart.dto.ProductIdCartQuery
-import com.hhplus.ecommerce.infrastructure.cart.ICartRepository
+import com.hhplus.ecommerce.domain.cart.repository.ICartRepository
 import com.hhplus.ecommerce.infrastructure.cart.jpa.entity.CartEntity
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

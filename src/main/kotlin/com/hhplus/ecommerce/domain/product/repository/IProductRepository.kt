@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.infrastructure.product
+package com.hhplus.ecommerce.domain.product.repository
 
 import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
 import com.hhplus.ecommerce.infrastructure.product.jpa.entity.ProductDetailEntity

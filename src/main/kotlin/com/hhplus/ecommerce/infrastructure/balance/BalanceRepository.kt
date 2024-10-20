@@ -1,10 +1,9 @@
 package com.hhplus.ecommerce.infrastructure.balance
 
 import com.hhplus.ecommerce.common.exception.balance.BalanceNotFoundException
+import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceJpaRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceEntity
-import jakarta.persistence.LockModeType
-import org.springframework.data.jpa.repository.Lock
 import org.springframework.stereotype.Repository
 
 @Repository

@@ -25,6 +25,7 @@ class OrderFacade(
     @Transactional
     fun order(info: OrderCreation): OrderInfo {
         // lock 획득
+        // 상품 정보 조회
         val productDetail = productService.getProductDetailByIdWithLock(info.toProductDetailQuery())
 
         val user = userService.getUserById(info.toUserQuery())

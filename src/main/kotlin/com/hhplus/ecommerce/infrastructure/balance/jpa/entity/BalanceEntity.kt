@@ -24,6 +24,7 @@ class BalanceEntity(
     @Enumerated(EnumType.STRING)
     var delYn: StateYn = StateYn.N
 ) {
+
     fun charge(amount: Long) {
         val newBalance = amount + balance
 

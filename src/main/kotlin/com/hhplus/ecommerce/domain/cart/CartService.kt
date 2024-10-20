@@ -1,8 +1,7 @@
 package com.hhplus.ecommerce.domain.cart
 
 import com.hhplus.ecommerce.domain.cart.dto.*
-import com.hhplus.ecommerce.infrastructure.cart.ICartRepository
-import com.hhplus.ecommerce.infrastructure.cart.jpa.entity.CartEntity
+import com.hhplus.ecommerce.domain.cart.repository.ICartRepository
 import org.springframework.stereotype.Service
 
 @Service

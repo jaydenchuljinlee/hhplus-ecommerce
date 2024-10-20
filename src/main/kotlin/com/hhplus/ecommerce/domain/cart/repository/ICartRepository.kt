@@ -1,7 +1,6 @@
-package com.hhplus.ecommerce.infrastructure.cart
+package com.hhplus.ecommerce.domain.cart.repository
 
 import com.hhplus.ecommerce.infrastructure.cart.jpa.entity.CartEntity
-import java.util.*
 
 interface ICartRepository {
     fun existsByProductId(productId: Long): Boolean
