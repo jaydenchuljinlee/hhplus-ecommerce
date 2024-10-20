@@ -1,8 +1,8 @@
 package com.hhplus.ecommerce.infrastructure.balance.jpa.entity
 
 import com.hhplus.ecommerce.common.enums.StateYn
-import com.hhplus.ecommerce.common.exception.balance.BalanceLimitExceededException
-import com.hhplus.ecommerce.common.exception.balance.InsufficientBalanceException
+import com.hhplus.ecommerce.infrastructure.balance.exception.BalanceLimitExceededException
+import com.hhplus.ecommerce.infrastructure.balance.exception.InsufficientBalanceException
 import com.hhplus.ecommerce.infrastructure.balance.constants.BalancePolicy
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate

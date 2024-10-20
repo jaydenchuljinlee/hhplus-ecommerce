@@ -1,6 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.user
 
-import com.hhplus.ecommerce.common.exception.user.UserNotFoundException
+import com.hhplus.ecommerce.infrastructure.user.exception.UserNotFoundException
 import com.hhplus.ecommerce.domain.user.repository.IUserRepository
 import com.hhplus.ecommerce.infrastructure.user.jpa.UserJpaRepository
 import com.hhplus.ecommerce.infrastructure.user.jpa.entity.UserEntity
