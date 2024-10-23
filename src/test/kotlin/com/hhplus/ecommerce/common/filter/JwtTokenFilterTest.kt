@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.common.filter
 
 import com.hhplus.ecommerce.common.util.JwtTokenProvider
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,8 +34,9 @@ class JwtTokenFilterTest {
         invalidToken = "invalid.jwt.token"
     }
 
+    @DisplayName("유효하지 않은 JWT 토큰을 사용한 요청은 401 Unauthorized를 반환해야 한다")
     @Test
-    fun `유효하지 않은 JWT 토큰을 사용한 요청은 401 Unauthorized를 반환해야 한다`() {
+    fun testInvalidToken() {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/some-secured-endpoint")
             .header(HttpHeaders.AUTHORIZATION, "Bearer $invalidToken")
             .contentType(MediaType.APPLICATION_JSON))
@@ -42,8 +44,9 @@ class JwtTokenFilterTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Invalid JWT token"))
     }
 
+    @DisplayName("토큰 없이 요청하면 401 Unauthorized를 반환해야 한다")
     @Test
-    fun `토큰 없이 요청하면 401 Unauthorized를 반환해야 한다`() {
+    fun testNoToken() {
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/some-secured-endpoint")
             .contentType(MediaType.APPLICATION_JSON))
