@@ -6,11 +6,14 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 class JwtTokenFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {
