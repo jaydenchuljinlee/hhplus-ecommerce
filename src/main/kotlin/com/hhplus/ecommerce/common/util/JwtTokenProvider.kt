@@ -1,11 +1,12 @@
 package com.hhplus.ecommerce.common.util
 
+import com.hhplus.ecommerce.common.dto.JwtData
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.security.Key
 import java.util.*
 import javax.crypto.SecretKey
 
@@ -21,9 +22,10 @@ class JwtTokenProvider(
     }
 
     // JWT 토큰 생성
-    fun createToken(username: String, roles: List<String>): String {
-        val claims = Jwts.claims().setSubject(username)
-        claims["roles"] = roles
+    fun createToken(userId: Long, email: String): String {
+        val claims = Jwts.claims()
+        claims["userId"] = userId
+        claims["email"] = email
 
         val now = Date()
         val validity = Date(now.time + 3600000) // 1시간 후 만료
@@ -42,14 +44,19 @@ class JwtTokenProvider(
     }
 
     // JWT 토큰에서 사용자 정보 추출
-    fun getUsername(token: String): String {
+    fun parseToken(token: String): JwtData {
         val key: SecretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey))
-        return Jwts.parserBuilder()
+
+        val claims = Jwts.parserBuilder()
             .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
-            .subject
+
+        val userId = claims["userId"] as Int
+        val email = claims["email"] as String
+
+        return JwtData.of(userId.toLong(), email)
     }
 
     // JWT 토큰 유효성 확인
@@ -65,5 +72,12 @@ class JwtTokenProvider(
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun resolveToken(req: HttpServletRequest): String? {
+        val bearerToken = req.getHeader("Authorization")
+        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            bearerToken.substring(7)
+        } else null
     }
 }

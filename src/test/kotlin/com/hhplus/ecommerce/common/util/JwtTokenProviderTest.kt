@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class JwtTokenProviderTest {
+    val USER_ID = 1L
+    val EMAIL = "ironjin@gmail.com"
 
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
@@ -17,10 +19,7 @@ class JwtTokenProviderTest {
     @DisplayName("JWT 토큰을 생성한다.")
     @Test
     fun generateToken() {
-        val userName = "ironjin"
-        val roles = listOf("USER")
-
-        val token = jwtTokenProvider.createToken(userName, roles)
+        val token = jwtTokenProvider.createToken(USER_ID, EMAIL)
 
         println(token)
     }
@@ -28,13 +27,12 @@ class JwtTokenProviderTest {
     @DisplayName("JWT 토큰에서 사용자 정보를 조회한다.")
     @Test
     fun getUserInfoFromJWT() {
-        val userName = "ironjin"
-        val roles = listOf("USER")
 
-        val token = jwtTokenProvider.createToken(userName, roles)
+        val token = jwtTokenProvider.createToken(USER_ID, EMAIL)
 
-        val userInfo = jwtTokenProvider.getUsername(token)
+        val userInfo = jwtTokenProvider.parseToken(token)
 
-        assertEquals(userName, userInfo)
+        assertEquals(USER_ID, userInfo.userId)
+        assertEquals(EMAIL, userInfo.email)
     }
 }
