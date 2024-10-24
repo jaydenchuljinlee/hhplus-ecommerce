@@ -3,8 +3,8 @@ package com.hhplus.ecommerce.domain.payment
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.domain.payment.dto.ExternalCallRequest
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
-import com.hhplus.ecommerce.infrastructure.payment.IPaymentHistoryRepository
-import com.hhplus.ecommerce.infrastructure.payment.IPaymentRepository
+import com.hhplus.ecommerce.domain.payment.repository.IPaymentHistoryRepository
+import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentHistoryEntity
 import org.springframework.stereotype.Service
