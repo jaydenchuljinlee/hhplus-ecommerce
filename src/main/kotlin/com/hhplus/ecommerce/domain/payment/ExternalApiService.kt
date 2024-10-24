@@ -1,6 +1,6 @@
 package com.hhplus.ecommerce.domain.payment
 
-import com.hhplus.ecommerce.common.exception.payment.ExternalPaymentException
+import com.hhplus.ecommerce.domain.payment.exception.ExternalPaymentException
 import com.hhplus.ecommerce.domain.payment.dto.ExternalCallRequest
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

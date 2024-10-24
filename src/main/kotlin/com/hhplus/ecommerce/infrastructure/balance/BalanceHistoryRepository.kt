@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.balance
 
+import com.hhplus.ecommerce.domain.balance.respository.IBalanceHistoryRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceHistoryJpaRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceHistoryEntity
 import org.springframework.stereotype.Repository
