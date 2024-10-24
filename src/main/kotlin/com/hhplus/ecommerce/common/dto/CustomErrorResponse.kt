@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.common.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 
 data class CustomErrorResponse(
@@ -19,5 +20,14 @@ data class CustomErrorResponse(
                 message = message,
             )
         }
+
+        fun unAuthorized(message: String): CustomErrorResponse {
+            return CustomErrorResponse(
+                code = HttpStatus.UNAUTHORIZED.value(),
+                status = HttpStatus.UNAUTHORIZED,
+                message = message,
+            )
+        }
+
     }
 }
