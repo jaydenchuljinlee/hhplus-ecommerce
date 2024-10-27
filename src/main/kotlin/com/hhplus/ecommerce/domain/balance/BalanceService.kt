@@ -3,8 +3,8 @@ package com.hhplus.ecommerce.domain.balance
 import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
-import com.hhplus.ecommerce.infrastructure.balance.IBalanceHistoryRepository
-import com.hhplus.ecommerce.infrastructure.balance.IBalanceRepository
+import com.hhplus.ecommerce.domain.balance.respository.IBalanceHistoryRepository
+import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceHistoryEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

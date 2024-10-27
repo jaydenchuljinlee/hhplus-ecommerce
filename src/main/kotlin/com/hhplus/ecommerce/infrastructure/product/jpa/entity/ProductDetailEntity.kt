@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.product.jpa.entity
 
 import com.hhplus.ecommerce.common.enums.StateYn
-import com.hhplus.ecommerce.common.exception.product.OutOfStockException
+import com.hhplus.ecommerce.infrastructure.product.exception.OutOfStockException
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

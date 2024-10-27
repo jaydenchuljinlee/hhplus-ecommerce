@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.payment
 
+import com.hhplus.ecommerce.domain.payment.repository.IPaymentHistoryRepository
 import com.hhplus.ecommerce.infrastructure.payment.jpa.PaymentHistoryJpaRepository
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentHistoryEntity
 import org.springframework.stereotype.Repository

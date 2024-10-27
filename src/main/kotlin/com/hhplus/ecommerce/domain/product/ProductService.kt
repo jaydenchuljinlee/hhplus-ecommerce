@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.domain.product
 
 import com.hhplus.ecommerce.domain.product.dto.*
-import com.hhplus.ecommerce.infrastructure.product.IProductRepository
+import com.hhplus.ecommerce.domain.product.repository.IProductRepository
 import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

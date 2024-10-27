@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.product
 
-import com.hhplus.ecommerce.common.exception.product.ProductNotFoundException
+import com.hhplus.ecommerce.infrastructure.product.exception.ProductNotFoundException
+import com.hhplus.ecommerce.domain.product.repository.IProductRepository
 import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
 import com.hhplus.ecommerce.infrastructure.product.jpa.ProductDetailJpaRepository
 import com.hhplus.ecommerce.infrastructure.product.jpa.ProductJpaRepository
