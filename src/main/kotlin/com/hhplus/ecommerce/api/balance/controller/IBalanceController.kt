@@ -21,6 +21,7 @@ interface IBalanceController {
     @Operation(summary = "잔액 충전 API", description = "잔액을 충전해주는 API입니다.")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "잔액 충전 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "400", description = "충전 잔액 Bad Request 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PatchMapping("charge")
