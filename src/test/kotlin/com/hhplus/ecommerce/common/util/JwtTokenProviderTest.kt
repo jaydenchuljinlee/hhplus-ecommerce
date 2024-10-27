@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 class JwtTokenProviderTest {
     val USER_ID = 1L
     val EMAIL = "ironjin@gmail.com"
+    val ROLE_USER = "ROLE_USER"
 
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
@@ -19,7 +20,7 @@ class JwtTokenProviderTest {
     @DisplayName("JWT 토큰을 생성한다.")
     @Test
     fun generateToken() {
-        val token = jwtTokenProvider.createToken(USER_ID, EMAIL)
+        val token = jwtTokenProvider.createToken(USER_ID, EMAIL, ROLE_USER)
 
         println(token)
     }
@@ -28,11 +29,12 @@ class JwtTokenProviderTest {
     @Test
     fun getUserInfoFromJWT() {
 
-        val token = jwtTokenProvider.createToken(USER_ID, EMAIL)
+        val token = jwtTokenProvider.createToken(USER_ID, EMAIL, ROLE_USER)
 
         val userInfo = jwtTokenProvider.parseToken(token)
 
         assertEquals(USER_ID, userInfo.userId)
         assertEquals(EMAIL, userInfo.email)
+        assertEquals(ROLE_USER, userInfo.role)
     }
 }

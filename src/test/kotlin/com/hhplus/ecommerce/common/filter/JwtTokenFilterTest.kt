@@ -19,6 +19,7 @@ import kotlin.test.Test
 class JwtTokenFilterTest {
     val USER_ID = 1L
     val EMAIL = "ironjin@gmail.com"
+    val ROLE = "ROLE_USER"
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -32,7 +33,7 @@ class JwtTokenFilterTest {
     @BeforeEach
     fun setUp() {
         // 유효한 JWT 토큰 생성
-        validToken = jwtTokenProvider.createToken(USER_ID, EMAIL)
+        validToken = jwtTokenProvider.createToken(USER_ID, EMAIL, ROLE)
 
         // 유효하지 않은 토큰 생성
         invalidToken = "invalid.jwt.token"

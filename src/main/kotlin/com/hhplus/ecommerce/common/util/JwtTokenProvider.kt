@@ -22,10 +22,11 @@ class JwtTokenProvider(
     }
 
     // JWT 토큰 생성
-    fun createToken(userId: Long, email: String): String {
+    fun createToken(userId: Long, email: String, role: String): String {
         val claims = Jwts.claims()
         claims["userId"] = userId
         claims["email"] = email
+        claims["role"] = role
 
         val now = Date()
         val validity = Date(now.time + 3600000) // 1시간 후 만료
@@ -55,8 +56,9 @@ class JwtTokenProvider(
 
         val userId = claims["userId"] as Int
         val email = claims["email"] as String
+        val role = claims["role"] as String
 
-        return JwtData.of(userId.toLong(), email)
+        return JwtData.of(userId.toLong(), email, role)
     }
 
     // JWT 토큰 유효성 확인
