@@ -70,8 +70,8 @@ class OrderConcurrencyTest {
         val productDetail = productRepository.findById(1).get()
 
         assertEquals(productDetail.quantity, 0) // 수량이 남았는지 검사
-        assertEquals(successUserIds.size, 1) // 첫 번째 요청은 성공한다
-        assertEquals(errorUserIds.size, 4) // 두 번째 요청은 실패한다
+        assertEquals(successUserIds.size, 1) // 5건의 요청중 가장 먼저 처리된건이 성공한다.
+        assertEquals(errorUserIds.size, 4) // 나머지 요청은 실패한다.
     }
 
 
