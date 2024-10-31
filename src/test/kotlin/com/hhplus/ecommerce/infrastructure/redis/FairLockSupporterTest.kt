@@ -4,6 +4,7 @@ import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.infrastructure.balance.BalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceJpaRepository
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,9 +28,9 @@ class FairLockSupporterTest {
     @Autowired
     private lateinit var fairLockSupporter: FairLockSupporter
 
+    @DisplayName("공정락에서의 동시성 테스트")
     @Test
-    @Transactional
-    fun `test concurrent charge with spin lock`() {
+    fun testFairLock() {
         val threadCount = 1000  // 동시 충전 요청을 보낼 스레드 수
         val latch = CountDownLatch(threadCount)
         val executorService = Executors.newFixedThreadPool(threadCount)
