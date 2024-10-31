@@ -14,3 +14,8 @@ spring:
     init:
       platform: h2
       mode: always
+
+singleServerConfig:
+  address: "redis://localhost:6379" # Docker에서 Redis가 실행 중인 호스트
+  connectionMinimumIdleSize: 10
+  connectionPoolSize: 64
