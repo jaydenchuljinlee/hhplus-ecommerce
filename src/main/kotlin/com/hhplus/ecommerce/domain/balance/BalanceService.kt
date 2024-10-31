@@ -6,13 +6,16 @@ import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceHistoryRepository
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceHistoryEntity
+import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.concurrent.TimeUnit
 
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val balanceHistoryRepository: IBalanceHistoryRepository
+    private val balanceHistoryRepository: IBalanceHistoryRepository,
+    private val pubSubLockSupporter: PubSubLockSupporter
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
@@ -31,43 +34,69 @@ class BalanceService(
         return BalanceResult.from(balanceEntity)
     }
 
-    @Transactional
     fun charge(item: BalanceTransaction): BalanceResult {
-        val balanceEntity = balanceRepository.findByUserIdWithLock(item.userId)
+        val balanceKey = "balance:${item.userId}"
 
-        balanceEntity.charge(item.amount)
+        val lock = pubSubLockSupporter.getLock(balanceKey)
 
-        balanceRepository.insertOrUpdate(balanceEntity)
+        try {
+            val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
 
-        balanceHistoryRepository.insertOrUpdate(
-            BalanceHistoryEntity(
-            balanceId = balanceEntity.id,
-            amount = item.amount,
-            balance = balanceEntity.balance,
-            transactionType = "CHARGE"
+            if (!acquireLock) {
+                throw InterruptedException("Lock 획득 실패")
+            }
+
+            val balanceEntity = balanceRepository.findByUserId(item.userId)
+
+            balanceEntity.charge(item.amount)
+
+            balanceRepository.insertOrUpdate(balanceEntity)
+
+            balanceHistoryRepository.insertOrUpdate(
+                BalanceHistoryEntity(
+                    balanceId = balanceEntity.id,
+                    amount = item.amount,
+                    balance = balanceEntity.balance,
+                    transactionType = "CHARGE"
+                )
             )
-        )
 
-        return BalanceResult.from(balanceEntity)
+            return BalanceResult.from(balanceEntity)
+        } finally {
+            lock.unlock()
+        }
     }
 
-    @Transactional
     fun use(item: BalanceTransaction): BalanceResult {
-        val balanceEntity = balanceRepository.findByUserIdWithLock(item.userId)
+        val balanceKey = "balance:${item.userId}"
 
-        balanceEntity.use(item.amount)
+        val lock = pubSubLockSupporter.getLock(balanceKey)
 
-        val entity = balanceRepository.insertOrUpdate(balanceEntity)
+        try {
+            val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
 
-        balanceHistoryRepository.insertOrUpdate(
-            BalanceHistoryEntity(
-                balanceId = balanceEntity.id,
-                amount = item.amount,
-                balance = balanceEntity.balance,
-                transactionType = "USE"
+            if (!acquireLock) {
+                throw InterruptedException("Lock 획득 실패")
+            }
+
+            val balanceEntity = balanceRepository.findByUserId(item.userId)
+
+            balanceEntity.use(item.amount)
+
+            val entity = balanceRepository.insertOrUpdate(balanceEntity)
+
+            balanceHistoryRepository.insertOrUpdate(
+                BalanceHistoryEntity(
+                    balanceId = balanceEntity.id,
+                    amount = item.amount,
+                    balance = balanceEntity.balance,
+                    transactionType = "USE"
+                )
             )
-        )
 
-        return BalanceResult.from(balanceEntity)
+            return BalanceResult.from(balanceEntity)
+        } finally {
+            lock.unlock()
+        }
     }
 }
