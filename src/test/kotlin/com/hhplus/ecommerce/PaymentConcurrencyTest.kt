@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce
 
+import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.infrastructure.balance.BalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceHistoryJpaRepository
 import com.hhplus.ecommerce.usercase.order.OrderFacade
@@ -11,10 +12,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 @SpringBootTest
+@Import(RedisTestContainerConfig::class)
 class PaymentConcurrencyTest {
 
     @Autowired
