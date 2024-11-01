@@ -26,17 +26,13 @@ class ProductService(
         return result
     }
 
-
     fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
-        val productKey = "product:${dto.id}"
+        val productKey = "product:${dto.id}" // 상품의 재고 ID를 기반으로 Lock을 점유한다.
 
         val lock = pubSubLockSupporter.getLock(productKey)
 
         try {
-            val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
-            if (!acquireLock) {
-                throw InterruptedException("Lock 획득 실패")
-            }
+            lock.tryLock(10, 1, TimeUnit.SECONDS)
 
             val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
 
@@ -47,7 +43,6 @@ class ProductService(
         }
     }
 
-    @Transactional
     fun getProductDetail(item: ProductDetailQuery): ProductDetailResult {
         val entity = productRepository.findByProductId(item.productId)
         return ProductDetailResult.from(entity)

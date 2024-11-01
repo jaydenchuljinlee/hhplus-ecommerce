@@ -35,16 +35,12 @@ class BalanceService(
     }
 
     fun charge(item: BalanceTransaction): BalanceResult {
-        val balanceKey = "balance:${item.userId}"
+        val balanceKey = "balance:${item.userId}"// 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
 
         val lock = pubSubLockSupporter.getLock(balanceKey)
 
         try {
-            val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
-
-            if (!acquireLock) {
-                throw InterruptedException("Lock 획득 실패")
-            }
+            lock.tryLock(10, 1, TimeUnit.SECONDS)
 
             val balanceEntity = balanceRepository.findByUserId(item.userId)
 
@@ -73,17 +69,13 @@ class BalanceService(
         val lock = pubSubLockSupporter.getLock(balanceKey)
 
         try {
-            val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
-
-            if (!acquireLock) {
-                throw InterruptedException("Lock 획득 실패")
-            }
+            lock.tryLock(10, 1, TimeUnit.SECONDS)
 
             val balanceEntity = balanceRepository.findByUserId(item.userId)
 
             balanceEntity.use(item.amount)
 
-            val entity = balanceRepository.insertOrUpdate(balanceEntity)
+             balanceRepository.insertOrUpdate(balanceEntity)
 
             balanceHistoryRepository.insertOrUpdate(
                 BalanceHistoryEntity(
