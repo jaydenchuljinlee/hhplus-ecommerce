@@ -43,22 +43,12 @@ class PubSubLockSupporterTest {
                 try {
                     val key = "balance:$userId"
 
-                    val lock = pubSubLockSupporter.getLock(key)
-
-                    try {
-                        val acquireLock = lock.tryLock(10, 1, TimeUnit.SECONDS)
-
-                        if (!acquireLock) {
-                            throw InterruptedException("Lock 획득 실패")
-                        }
-
+                    val lock = pubSubLockSupporter.withLock(key) {
                         val balanceEntity = balanceRepository.findByUserIdWithLock(userId)
                             .orElseThrow { IllegalArgumentException("User not found") }
 
                         balanceEntity.charge(chargeAmount)
                         balanceRepository.save(balanceEntity)
-                    } finally {
-                        lock.unlock()
                     }
 
                 } finally {
