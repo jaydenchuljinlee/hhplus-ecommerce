@@ -1,8 +1,10 @@
 package com.hhplus.ecommerce.domain.product
 
+import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.domain.product.dto.*
 import com.hhplus.ecommerce.domain.product.repository.IProductRepository
 import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
+import com.hhplus.ecommerce.infrastructure.product.jpa.entity.ProductDetailEntity
 import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,21 +28,11 @@ class ProductService(
         return result
     }
 
+    @RedisLock(key = "'product:' + #dto.id") // 상품의 재고 ID를 기반으로 Lock을 점유한다.
     fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
-        val productKey = "product:${dto.id}" // 상품의 재고 ID를 기반으로 Lock을 점유한다.
+        val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
 
-        val lock = pubSubLockSupporter.getLock(productKey)
-
-        try {
-            lock.tryLock(10, 1, TimeUnit.SECONDS)
-
-            val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
-
-            return ProductDetailResult.from(productDetailEntity)
-
-        } finally {
-            lock.unlock()
-        }
+        return ProductDetailResult.from(productDetailEntity)
     }
 
     fun getProductDetail(item: ProductDetailQuery): ProductDetailResult {

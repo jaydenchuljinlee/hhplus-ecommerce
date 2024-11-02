@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.domain.balance
 
+import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
@@ -34,61 +35,44 @@ class BalanceService(
         return BalanceResult.from(balanceEntity)
     }
 
+    @RedisLock(key = "'balance:' + #item.userId") // 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
     fun charge(item: BalanceTransaction): BalanceResult {
-        val balanceKey = "balance:${item.userId}"// 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
+        val balanceEntity = balanceRepository.findByUserId(item.userId)
 
-        val lock = pubSubLockSupporter.getLock(balanceKey)
+        balanceEntity.charge(item.amount)
 
-        try {
-            lock.tryLock(10, 1, TimeUnit.SECONDS)
+        balanceRepository.insertOrUpdate(balanceEntity)
 
-            val balanceEntity = balanceRepository.findByUserId(item.userId)
-
-            balanceEntity.charge(item.amount)
-
-            balanceRepository.insertOrUpdate(balanceEntity)
-
-            balanceHistoryRepository.insertOrUpdate(
-                BalanceHistoryEntity(
-                    balanceId = balanceEntity.id,
-                    amount = item.amount,
-                    balance = balanceEntity.balance,
-                    transactionType = "CHARGE"
-                )
+        balanceHistoryRepository.insertOrUpdate(
+            BalanceHistoryEntity(
+                balanceId = balanceEntity.id,
+                amount = item.amount,
+                balance = balanceEntity.balance,
+                transactionType = "CHARGE"
             )
+        )
 
-            return BalanceResult.from(balanceEntity)
-        } finally {
-            lock.unlock()
-        }
+        return BalanceResult.from(balanceEntity)
+
     }
 
+    @RedisLock(key = "'balance:' + #item.userId") // 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
     fun use(item: BalanceTransaction): BalanceResult {
-        val balanceKey = "balance:${item.userId}"
+        val balanceEntity = balanceRepository.findByUserId(item.userId)
 
-        val lock = pubSubLockSupporter.getLock(balanceKey)
+        balanceEntity.use(item.amount)
 
-        try {
-            lock.tryLock(10, 1, TimeUnit.SECONDS)
+        balanceRepository.insertOrUpdate(balanceEntity)
 
-            val balanceEntity = balanceRepository.findByUserId(item.userId)
-
-            balanceEntity.use(item.amount)
-
-             balanceRepository.insertOrUpdate(balanceEntity)
-
-            balanceHistoryRepository.insertOrUpdate(
-                BalanceHistoryEntity(
-                    balanceId = balanceEntity.id,
-                    amount = item.amount,
-                    balance = balanceEntity.balance,
-                    transactionType = "USE"
-                )
+        balanceHistoryRepository.insertOrUpdate(
+            BalanceHistoryEntity(
+                balanceId = balanceEntity.id,
+                amount = item.amount,
+                balance = balanceEntity.balance,
+                transactionType = "USE"
             )
+        )
 
-            return BalanceResult.from(balanceEntity)
-        } finally {
-            lock.unlock()
-        }
+        return BalanceResult.from(balanceEntity)
     }
 }
