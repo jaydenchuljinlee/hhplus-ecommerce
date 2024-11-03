@@ -62,7 +62,7 @@ class OrderFacadeTest {
             productDetailId = 3,
             quantity = 10,
         )
-        BDDMockito.given(productService.getProductDetailByIdWithLock(productQuery)).willReturn(productResult)
+        BDDMockito.given(productService.getProductDetail(productQuery)).willReturn(productResult)
 
 
         val orderCommand = OrderCreationCommand(

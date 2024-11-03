@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.redis
 
+import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.infrastructure.balance.BalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceJpaRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,11 +9,14 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @SpringBootTest
+@Import(RedisTestContainerConfig::class)
 class PubSubLockSupporterTest {
     private val userId = 1L
     private val initialBalance = 1000L
@@ -37,14 +41,16 @@ class PubSubLockSupporterTest {
         for (i in 1..threadCount) {
             executorService.submit {
                 try {
-                    pubSubLockSupporter.withLock("balance:$userId", 0, 5) {
+                    val key = "balance:$userId"
+
+                    val lock = pubSubLockSupporter.withLock(key) {
                         val balanceEntity = balanceRepository.findByUserIdWithLock(userId)
                             .orElseThrow { IllegalArgumentException("User not found") }
 
                         balanceEntity.charge(chargeAmount)
                         balanceRepository.save(balanceEntity)
-                        // println("${balanceEntity.balance}")
                     }
+
                 } finally {
                     latch.countDown()
                 }

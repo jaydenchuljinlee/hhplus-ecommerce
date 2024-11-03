@@ -19,7 +19,7 @@ class ProductRepository(
 ): IProductRepository {
 
     @Transactional
-    override fun findByProductIdWithLock(productId: Long): ProductDetailEntity {
+    override fun findByProductId(productId: Long): ProductDetailEntity {
         return productDetailJpaRepository.findByProductId(productId).orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
     }
 
@@ -35,11 +35,12 @@ class ProductRepository(
         return productQueryDsl.findTop5BestSellingProductsLast3Days()
     }
 
+    @Transactional
     override fun decreaseStock(productDetailId: Long, amount: Int): ProductDetailEntity {
         val productDetailEntity = productDetailJpaRepository.findById(productDetailId).orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
 
         productDetailEntity.decrease(amount)
-
+        println(productDetailEntity.quantity)
         productDetailJpaRepository.save(productDetailEntity)
 
         return productDetailEntity
