@@ -1,11 +1,14 @@
 package com.hhplus.ecommerce.domain.product
 
+import com.hhplus.ecommerce.common.anotation.RedisCacheable
 import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.domain.product.dto.*
 import com.hhplus.ecommerce.domain.product.repository.IProductRepository
 import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
 import com.hhplus.ecommerce.infrastructure.product.jpa.entity.ProductDetailEntity
 import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
+import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
@@ -14,6 +17,7 @@ import java.util.concurrent.TimeUnit
 class ProductService(
     private val productRepository: IProductRepository
 ) {
+    @RedisCacheable(key = "'product:cache:' + #dto.productId")
     fun getProduct(dto: ProductInfoQuery): ProductInfoResult {
         val productDetailEntity = productRepository.findByProductId(dto.productId)
         val productEntity = productRepository.findById(dto.productId)
