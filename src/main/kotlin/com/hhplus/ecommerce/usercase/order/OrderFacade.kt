@@ -47,6 +47,9 @@ class OrderFacade(
             cartService.delete(cartDeletion)
         }
 
+        // 최근 3일 간의 Top5 캐시 갱신
+        productService.refreshTopFiveLastThreeDays()
+
         val result = OrderInfo(
             orderId = order.orderId,
             userId = user.userId,
