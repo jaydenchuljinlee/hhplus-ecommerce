@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
-@Component
-@Order(Ordered.LOWEST_PRECEDENCE)
+//@Component
+//@Order(Ordered.LOWEST_PRECEDENCE)
 class JwtTokenFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {
