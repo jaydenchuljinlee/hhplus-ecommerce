@@ -20,14 +20,23 @@ import org.springframework.web.bind.annotation.RestController
 class ProductController(
     private val productService: ProductService
 ): IProductController {
-    override fun getProduct(request: ProductInfoQueryRequest): CustomApiResponse<ProductInfoResponse> {
-        val result = productService.getProduct(request.toProductInfoQuery())
-
+    override fun getProductFromCache(request: ProductInfoQueryRequest): CustomApiResponse<ProductInfoResponse> {
+        val result = productService.getProductCache(request.toProductInfoQuery())
         return CustomApiResponse.success(ProductInfoResponse.from(result))
     }
 
-    override fun getProductTopFive(): CustomApiResponse<List<BestSellingTopFiveResponse>> {
-        val result = productService.getTopFiveLastThreeDays()
+    override fun getProductFromDB(request: ProductInfoQueryRequest): CustomApiResponse<ProductInfoResponse> {
+        val result = productService.getProductDB(request.toProductInfoQuery())
+        return CustomApiResponse.success(ProductInfoResponse.from(result))
+    }
+
+    override fun getTopFiveLastThreeDaysFromCache(): CustomApiResponse<List<BestSellingTopFiveResponse>> {
+        val result = productService.getTopFiveLastThreeDaysFromCache()
+        val response = result.map { BestSellingTopFiveResponse.from(it) }
+        return CustomApiResponse.success(response)
+    }
+    override fun getTopFiveLastThreeDaysFromDB(): CustomApiResponse<List<BestSellingTopFiveResponse>> {
+        val result = productService.getTopFiveLastThreeDaysFromDB()
         val response = result.map { BestSellingTopFiveResponse.from(it) }
         return CustomApiResponse.success(response)
     }

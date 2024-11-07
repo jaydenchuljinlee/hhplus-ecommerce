@@ -19,7 +19,6 @@ class ProductService(
     private val productRepository: IProductRepository,
     private val redissonClient: RedissonClient
 ) {
-    @RedisCacheable(key = "'product:cache:' + #dto.productId")
     fun getProduct(dto: ProductInfoQuery): ProductInfoResult {
         val productDetailEntity = productRepository.findByProductId(dto.productId)
         val productEntity = productRepository.findById(dto.productId)
@@ -33,6 +32,15 @@ class ProductService(
         return result
     }
 
+    @RedisCacheable(key = "'product:cache:' + #dto.productId")
+    fun getProductCache(dto: ProductInfoQuery): ProductInfoResult {
+        return getProduct(dto)
+    }
+
+    fun getProductDB(dto: ProductInfoQuery): ProductInfoResult {
+        return getProduct(dto)
+    }
+
     @RedisLock(key = "'product:' + #dto.id") // 상품의 재고 ID를 기반으로 Lock을 점유한다.
     fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
         val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
@@ -43,6 +51,10 @@ class ProductService(
     fun getProductDetail(item: ProductDetailQuery): ProductDetailResult {
         val entity = productRepository.findByProductId(item.productId)
         return ProductDetailResult.from(entity)
+    }
+
+    fun getTopFiveLastThreeDaysFromDB(): List<BestSellingProduct> {
+        return productRepository.findTopFiveLastThreeDays()
     }
 
     @RedisCacheable(key = "bestSellingProducts:last3days")
