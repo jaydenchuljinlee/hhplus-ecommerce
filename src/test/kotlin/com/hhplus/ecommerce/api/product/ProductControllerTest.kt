@@ -42,7 +42,7 @@ class ProductControllerTest {
         BDDMockito.given(productService.getProduct(param)).willReturn(result)
 
         val request = ProductInfoQueryRequest(0)
-        val response = productController.getProduct(request).data!!
+        val response = productController.getProductFromCache(request).data!!
 
         assertEquals(response.productId, result.productId)
         assertEquals(response.productName, result.productName)
@@ -70,9 +70,9 @@ class ProductControllerTest {
         }
 
 
-        BDDMockito.given(productService.getTopFiveLastThreeDays()).willReturn(list)
+        BDDMockito.given(productService.getTopFiveLastThreeDaysFromCache()).willReturn(list)
 
-        val response = productController.getProductTopFive().data!!
+        val response = productController.getTopFiveLastThreeDaysFromCache().data!!
 
         assertEquals(response.size, 5)
         assertEquals(response[0].productId, list[0].productId)

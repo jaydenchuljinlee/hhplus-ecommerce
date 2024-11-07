@@ -47,7 +47,7 @@ class ProductServiceTest {
     @DisplayName("베스트 주문 Top 5 조회")
     @Test
     fun getBestSellingTop5() {
-        val list = productService.getTopFiveLastThreeDays()
+        val list = productService.getTopFiveLastThreeDaysFromCache()
 
         assertEquals(list.size, 5)
     }
