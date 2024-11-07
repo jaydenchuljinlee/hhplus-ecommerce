@@ -2,12 +2,30 @@ version: '3'
 services:
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: hhplus-redis
     ports:
       - "6379:6379"
     networks:
-      - redis-net
+      - app-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: hhplus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: hhplus
+      MYSQL_USER: ironjin
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    networks:
+      - app-net
+    volumes:
+      - mysql-data:/var/lib/mysql
 
 networks:
-  redis-net:
+  app-net:
     driver: bridge
+
+volumes:
+  mysql-data:

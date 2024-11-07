@@ -1,18 +1,11 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:ecommerce
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: true
+    url: jdbc:mysql://localhost:3306/hhplus?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ironjin
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
-      platform: h2
       mode: always
   cache:
     cache-names: productCache
