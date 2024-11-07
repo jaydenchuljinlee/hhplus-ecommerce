@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.domain.product
 
+import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.domain.order.OrderService
 import com.hhplus.ecommerce.domain.order.dto.OrderCreationCommand
 import com.hhplus.ecommerce.domain.payment.PaymentService
@@ -9,9 +10,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
 import kotlin.test.assertEquals
 
+@ActiveProfiles("test")
 @SpringBootTest
+@Import(RedisTestContainerConfig::class)
 class ProductServiceTest {
     @Autowired
     private lateinit var productService: ProductService
