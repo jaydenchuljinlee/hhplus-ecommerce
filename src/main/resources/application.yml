@@ -16,3 +16,9 @@ spring:
 
 jwt:
   secretKey: Ez8RZUiy088e15OapWMfWWMe_kNQglk6GQx3cxAHjhE
+
+logging:
+  level:
+    root: INFO                    # 기본 로그 레벨 (INFO)
+    org.springframework.web: DEBUG # 특정 패키지에 대한 로그 레벨 (예: Spring MVC 관련)
+    com.hhplus.ecommerce: DEBUG
