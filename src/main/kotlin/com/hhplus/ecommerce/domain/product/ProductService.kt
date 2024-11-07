@@ -58,9 +58,15 @@ class ProductService(
         return productRepository.findTopFiveLastThreeDays()
     }
 
-    @RedisCacheable(key = "bestSellingProducts:last3days")
+    @Cacheable("bestSellingProducts:last3days")
     fun getTopFiveLastThreeDaysFromCache(): List<BestSellingProduct> {
         return productRepository.findTopFiveLastThreeDays()
+    }
+
+    fun deleteCache(productId: Long) {
+        val productCache = redissonClient.getBucket<ProductInfoResult>("product:cache:$productId")
+
+        productCache.delete()
     }
 
     fun refreshTopFiveLastThreeDays() {
