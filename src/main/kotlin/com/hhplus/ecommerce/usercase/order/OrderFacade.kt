@@ -35,7 +35,7 @@ class OrderFacade(
         )
 
         productService.decreaseStock(productDetailItem)
-
+        productService.deleteCache(productDetail.productId)
         val order = orderService.order(info.toOrderCreationCommand())
 
         val cartQuery = ProductIdCartQuery(info.productId)
