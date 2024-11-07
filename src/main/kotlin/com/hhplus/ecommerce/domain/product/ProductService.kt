@@ -32,6 +32,7 @@ class ProductService(
         return result
     }
 
+    // @Cacheable(cacheNames = ["productCache"], key = "'product:cache:' + #dto.productId")
     @RedisCacheable(key = "'product:cache:' + #dto.productId")
     fun getProductCache(dto: ProductInfoQuery): ProductInfoResult {
         return getProduct(dto)

@@ -24,7 +24,7 @@ interface IProductController {
         ApiResponse(responseCode = "200", description = "상품 조회 성공", useReturnTypeSchema = true),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
-    @GetMapping("/db")
+    @GetMapping("/cache")
     fun getProductFromCache(
         @Parameter(description = "상품 조회 요청 정보", required = true)
         request: ProductInfoQueryRequest
@@ -36,7 +36,7 @@ interface IProductController {
         ApiResponse(responseCode = "200", description = "상품 조회 성공", useReturnTypeSchema = true),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
-    @GetMapping("/cache")
+    @GetMapping("/db")
     fun getProductFromDB(
         @Parameter(description = "상품 조회 요청 정보", required = true)
         request: ProductInfoQueryRequest
