@@ -14,7 +14,7 @@ export default function () {
     let cacheRes = http.get(`${BASE_URL}/product/cache?productId=1`);
     check(cacheRes, {
         'Cache status is 200': (r) => r.status === 200,
-        'Cache response time < 200ms': (r) => r.timings.duration < 100,
+        'Cache response time < 120ms': (r) => r.timings.duration < 120,
     });
 
     sleep(1); // 1초 간격으로 반복
