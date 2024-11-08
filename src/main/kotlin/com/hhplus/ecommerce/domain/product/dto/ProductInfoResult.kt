@@ -1,10 +1,12 @@
 package com.hhplus.ecommerce.domain.product.dto
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 
-data class ProductInfoResult(
-    var productId: Long,
-    var productName: String,
-    var price: Long,
-    var stock: Int
+data class ProductInfoResult  @JsonCreator constructor(
+    @JsonProperty("productId") var productId: Long,
+    @JsonProperty("productName") var productName: String,
+    @JsonProperty("price") var price: Long,
+    @JsonProperty("stock") var stock: Int
 ): Serializable
