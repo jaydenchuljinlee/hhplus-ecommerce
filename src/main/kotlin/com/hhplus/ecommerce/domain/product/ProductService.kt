@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class ProductService(
-    private val productRepository: IProductRepository,
-    private val pubSubLockSupporter: PubSubLockSupporter
+    private val productRepository: IProductRepository
 ) {
     fun getProduct(dto: ProductInfoQuery): ProductInfoResult {
         val productDetailEntity = productRepository.findByProductId(dto.productId)

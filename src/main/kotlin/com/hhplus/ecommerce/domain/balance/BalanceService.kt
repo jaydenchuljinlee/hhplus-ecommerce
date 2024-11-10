@@ -15,8 +15,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val balanceHistoryRepository: IBalanceHistoryRepository,
-    private val pubSubLockSupporter: PubSubLockSupporter
+    private val balanceHistoryRepository: IBalanceHistoryRepository
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
