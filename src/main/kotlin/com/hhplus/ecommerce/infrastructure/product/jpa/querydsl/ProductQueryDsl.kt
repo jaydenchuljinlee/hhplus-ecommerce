@@ -28,7 +28,7 @@ class ProductQueryDsl(
             .select(Projections.fields(BestSellingProduct::class.java,
                 product.id.`as`("productId"),
                 product.name.`as`("productName"),
-                productDetail.quantity.`as`("stock"),
+                productDetail.quantity.max().`as`("stock"),
                 order.quantity.sum().`as`("totalOrderCount"),
                 payment.price.sum().`as`("totalPayPrice"),  // payment.price의 합계
                 order.id.count().`as`("orderCount"),  // order의 합계
