@@ -111,6 +111,9 @@
     - 단 건일 경우 => 대략 0.004 초 이내
     - ![large_data](/docs/index/order_query_after_index_one.png)
   - 반대로, 인덱스가 걸리지 않은 product_id의 경우 풀스캔이 발생하여 매 번 2초 정도의 조회 시간이 발생
-    - ![large_data](/docs/index/order_query_before_index.png)
+    - 조회되는 데이터가 몇 만 건일 경우 => 풀스캔으로 인한 2초
+      - ![large_data](/docs/index/order_query_before_index.png)
+    - 단 건일 경우 => 1~2초. 처음 500만 건의 데이터가 쌓였을 당시에는 2초가 걸렸지만... 지속적으로 테스트를 진행하니 대략 1초 남짓 걸리게 되었네요..
+      - ![large_data](/docs/index/order_query_before_index_one.png)
   
 
