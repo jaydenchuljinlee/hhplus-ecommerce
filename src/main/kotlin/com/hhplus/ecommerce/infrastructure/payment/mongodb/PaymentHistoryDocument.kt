@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 @Document(collection = "payment_history")
-class PaymentHistoryDocument(
+data class PaymentHistoryDocument(
     @Id
     var id: String? = null,
     var paymentId: Long,
