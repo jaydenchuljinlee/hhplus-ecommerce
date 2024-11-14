@@ -29,6 +29,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ironjin
       MONGO_INITDB_ROOT_PASSWORD: 1234
+      MONGO_INITDB_DATABASE: hhplus
     ports:
       - "27017:27017"
     networks:
