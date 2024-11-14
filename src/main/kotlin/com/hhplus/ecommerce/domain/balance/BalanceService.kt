@@ -6,7 +6,9 @@ import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceHistoryRepository
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
+import com.hhplus.ecommerce.infrastructure.balance.event.BalanceEventPublisher
 import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceHistoryEntity
+import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
 import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +17,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
+    private val balanceEventPublisher: BalanceEventPublisher,
     private val balanceHistoryRepository: IBalanceHistoryRepository
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
@@ -42,14 +45,14 @@ class BalanceService(
 
         balanceRepository.insertOrUpdate(balanceEntity)
 
-        balanceHistoryRepository.insertOrUpdate(
-            BalanceHistoryEntity(
-                balanceId = balanceEntity.id,
-                amount = item.amount,
-                balance = balanceEntity.balance,
-                transactionType = "CHARGE"
-            )
+        val balanceHistoryDocument = BalanceHistoryDocument(
+            balanceId = balanceEntity.id,
+            amount = item.amount,
+            balance = balanceEntity.balance,
+            transactionType = "CHARGE"
         )
+
+        balanceEventPublisher.publish(balanceHistoryDocument)
 
         return BalanceResult.from(balanceEntity)
 
@@ -63,14 +66,14 @@ class BalanceService(
 
         balanceRepository.insertOrUpdate(balanceEntity)
 
-        balanceHistoryRepository.insertOrUpdate(
-            BalanceHistoryEntity(
-                balanceId = balanceEntity.id,
-                amount = item.amount,
-                balance = balanceEntity.balance,
-                transactionType = "USE"
-            )
+        val balanceHistoryDocument = BalanceHistoryDocument(
+            balanceId = balanceEntity.id,
+            amount = item.amount,
+            balance = balanceEntity.balance,
+            transactionType = "USE"
         )
+
+        balanceEventPublisher.publish(balanceHistoryDocument)
 
         return BalanceResult.from(balanceEntity)
     }
