@@ -4,21 +4,16 @@ import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
-import com.hhplus.ecommerce.domain.balance.respository.IBalanceHistoryRepository
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.event.BalanceEventPublisher
-import com.hhplus.ecommerce.infrastructure.balance.jpa.entity.BalanceHistoryEntity
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
-import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.concurrent.TimeUnit
 
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val balanceEventPublisher: BalanceEventPublisher,
-    private val balanceHistoryRepository: IBalanceHistoryRepository
+    private val balanceSpringEventPublisher: BalanceEventPublisher
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
@@ -52,7 +47,7 @@ class BalanceService(
             transactionType = "CHARGE"
         )
 
-        balanceEventPublisher.publish(balanceHistoryDocument)
+        balanceSpringEventPublisher.publish(balanceHistoryDocument)
 
         return BalanceResult.from(balanceEntity)
 
@@ -73,7 +68,7 @@ class BalanceService(
             transactionType = "USE"
         )
 
-        balanceEventPublisher.publish(balanceHistoryDocument)
+        balanceSpringEventPublisher.publish(balanceHistoryDocument)
 
         return BalanceResult.from(balanceEntity)
     }
