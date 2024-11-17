@@ -70,6 +70,8 @@ dependencies {
 	implementation("jakarta.persistence:jakarta.persistence-api")
 	implementation("jakarta.annotation:jakarta.annotation-api")
 
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka")
 
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")

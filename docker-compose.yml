@@ -37,6 +37,45 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: hhplus-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - app-net
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: hhplus-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: hhplus-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - app-net
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    environment:
+      KAFKA_CLUSTERS_0_NAME: hhplus-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: hhplus-kafka:9092
+    ports:
+      - "8081:8080"
+    depends_on:
+      - kafka
+    networks:
+      - app-net
+
 networks:
   app-net:
     driver: bridge
