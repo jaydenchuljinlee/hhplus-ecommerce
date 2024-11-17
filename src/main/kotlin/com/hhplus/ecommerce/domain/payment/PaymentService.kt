@@ -5,16 +5,18 @@ import com.hhplus.ecommerce.domain.payment.dto.ExternalCallRequest
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentHistoryRepository
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
+import com.hhplus.ecommerce.infrastructure.payment.event.PaymentEventPublisher
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentHistoryEntity
+import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
+import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryMongoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val paymentHistoryRepository: IPaymentHistoryRepository,
-    private val externalApiService: ExternalApiService
+    private val paymentEventPublisher: PaymentEventPublisher,
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -26,22 +28,15 @@ class PaymentService(
 
         val entity = paymentRepository.insertOrUpdate(paymentEntity)
 
-        val paymentHistoryEntity = PaymentHistoryEntity(
+        val paymentHistoryDocument = PaymentHistoryDocument(
             paymentId = entity.id,
             userId = dto.userId,
             price = entity.price,
             status = entity.status
         )
 
-        paymentHistoryRepository.insertOrUpdate(paymentHistoryEntity)
-
-        // 외부 연동
-        val externalRequest = ExternalCallRequest(
-            payId = entity.id,
-            price = entity.price,
-            userId = dto.userId,
-        )
-        externalApiService.call(externalRequest)
+        // 이력 저장을 외부 연동으로 이관
+        paymentEventPublisher.publish(paymentHistoryDocument)
 
         val result = PaymentResult(
             paymentId = entity.id,

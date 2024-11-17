@@ -58,6 +58,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("mysql:mysql-connector-java:8.0.33") // MySQL 드라이버 (버전은 최신으로 선택)
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	// runtimeOnly("com.h2database:h2")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")

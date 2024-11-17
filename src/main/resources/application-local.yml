@@ -7,6 +7,10 @@ spring:
   sql:
     init:
       mode: always
+  data:
+    mongodb:
+      uri: mongodb://ironjin:1234@localhost:27017/hhplus?authSource=admin
+      database: hhplus
   cache:
     cache-names: productCache
     redis:

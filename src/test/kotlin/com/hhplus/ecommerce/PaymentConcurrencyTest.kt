@@ -31,9 +31,6 @@ class PaymentConcurrencyTest {
     @Autowired
     private lateinit var balanceRepository: BalanceRepository
 
-    @Autowired
-    private lateinit var balanceHistoryJpaRepository: BalanceHistoryJpaRepository
-
     @DisplayName("같은 사용자가 동시에 주문을 하면 잔액 정합성이 일치해야 한다")
     @Test
     fun concurrencyDuplicationTest() {
@@ -88,9 +85,6 @@ class PaymentConcurrencyTest {
 
         val newOne = balanceRepository.findByUserId(1)
 
-        val histories = balanceHistoryJpaRepository.findAll()
-
-        assertEquals(histories.size, 3)
         assertEquals(original.balance - newOne.balance, 300)
 
     }

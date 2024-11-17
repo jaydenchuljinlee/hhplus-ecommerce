@@ -23,9 +23,24 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  mongodb:
+    image: mongo:latest
+    container_name: hhplus-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ironjin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+      MONGO_INITDB_DATABASE: hhplus
+    ports:
+      - "27017:27017"
+    networks:
+      - app-net
+    volumes:
+      - mongo-data:/data/db
+
 networks:
   app-net:
     driver: bridge
 
 volumes:
   mysql-data:
+  mongo-data:
