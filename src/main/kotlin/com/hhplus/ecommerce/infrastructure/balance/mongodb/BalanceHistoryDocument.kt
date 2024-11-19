@@ -1,11 +1,13 @@
 package com.hhplus.ecommerce.infrastructure.balance.mongodb
 
 import com.hhplus.ecommerce.common.enums.StateYn
+import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
+import java.util.*
 
 @Document(collection = "balance_history")
 data class BalanceHistoryDocument(

@@ -15,7 +15,6 @@ class BalanceKafkaConsumer(
     private val logger = LoggerFactory.getLogger(BalanceKafkaConsumer::class.java)
 
     @KafkaListener(topics = ["BALANCE_HISTORY"])
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     override fun listener(event: BalanceHistoryDocument) {
         try {
             logger.info("BALANCE:KAFKA:CONSUMER: $event")
