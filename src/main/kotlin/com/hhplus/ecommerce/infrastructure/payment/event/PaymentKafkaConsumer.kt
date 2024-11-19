@@ -15,7 +15,6 @@ class PaymentKafkaConsumer(
     private val logger = LoggerFactory.getLogger(PaymentKafkaConsumer::class.java)
 
     @KafkaListener(topics = ["PAY_HISTORY"])
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     override fun listen(event: PaymentHistoryDocument) {
         try {
             logger.info("PAY:KAFKA:CONSUMER: $event" )

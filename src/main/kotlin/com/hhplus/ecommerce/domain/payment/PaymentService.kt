@@ -1,18 +1,22 @@
 package com.hhplus.ecommerce.domain.payment
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.OutboxEventProducer
+import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import com.hhplus.ecommerce.infrastructure.payment.event.PaymentEventPublisher
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val paymentSpringEventPublisher: PaymentEventPublisher,
+    private val outboxEventProducer: OutboxEventProducer
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -31,8 +35,14 @@ class PaymentService(
             status = entity.status
         )
 
-        // 이력 저장을 외부 연동으로 이관
-        paymentSpringEventPublisher.publish(paymentHistoryDocument)
+        val outboxEventEntity = OutboxEventEntity(
+            id = UUID.randomUUID(),
+            groupId = "PAYMENT_HISTORY_GROUP",
+            topic = "PAYMENT_HISTORY",
+            payload = ObjectMapper().writeValueAsString(paymentHistoryDocument)
+        )
+
+        outboxEventProducer.afterCommit(outboxEventEntity)
 
         val result = PaymentResult(
             paymentId = entity.id,
