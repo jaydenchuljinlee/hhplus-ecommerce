@@ -6,7 +6,6 @@ import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
 import com.hhplus.ecommerce.infrastructure.outboxevent.event.OutboxEventProducer
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
-import com.hhplus.ecommerce.infrastructure.payment.event.PaymentEventPublisher
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
 import org.springframework.stereotype.Service

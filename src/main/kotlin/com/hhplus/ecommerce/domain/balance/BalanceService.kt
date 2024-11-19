@@ -6,7 +6,6 @@ import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
-import com.hhplus.ecommerce.infrastructure.balance.event.BalanceEventPublisher
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
 import com.hhplus.ecommerce.infrastructure.outboxevent.event.OutboxEventProducer
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
