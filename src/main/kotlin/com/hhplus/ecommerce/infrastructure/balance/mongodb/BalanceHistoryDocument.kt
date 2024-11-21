@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.balance.mongodb
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.hhplus.ecommerce.common.enums.StateYn
-import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

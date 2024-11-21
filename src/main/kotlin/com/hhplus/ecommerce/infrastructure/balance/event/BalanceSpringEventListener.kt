@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component
 @Component
 class BalanceSpringEventListener(
     private val balanceHistoryMongoRepository: BalanceHistoryMongoRepository
-): BalanceEventListener {
+) {
     private val logger = LoggerFactory.getLogger(BalanceSpringEventListener::class.java)
 
     @Async
     @EventListener
-    override fun listener(event: BalanceHistoryDocument) {
+    fun listener(event: BalanceHistoryDocument) {
         try {
             logger.info("BALANCE:EVENT:LISTENER: $event")
 

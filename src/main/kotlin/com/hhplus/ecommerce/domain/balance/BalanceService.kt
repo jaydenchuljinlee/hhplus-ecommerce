@@ -16,7 +16,8 @@ import java.util.*
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val outboxEventProducer: OutboxEventProducer
+    private val outboxEventProducer: OutboxEventProducer,
+    private val objectMapper: ObjectMapper
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
@@ -82,7 +83,7 @@ class BalanceService(
             id = UUID.randomUUID(),
             groupId = "BALANCE_HISTORY_GROUP",
             topic = "BALANCE_HISTORY",
-            payload = ObjectMapper().writeValueAsString(balanceHistoryDocument)
+            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
         )
 
         outboxEventProducer.afterCommit(outboxEventEntity)
