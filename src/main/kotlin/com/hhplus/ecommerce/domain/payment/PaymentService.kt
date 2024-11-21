@@ -15,7 +15,8 @@ import java.util.*
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val outboxEventProducer: OutboxEventProducer
+    private val outboxEventProducer: OutboxEventProducer,
+    private val objectMapper: ObjectMapper
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -38,7 +39,7 @@ class PaymentService(
             id = UUID.randomUUID(),
             groupId = "PAYMENT_HISTORY_GROUP",
             topic = "PAYMENT_HISTORY",
-            payload = ObjectMapper().writeValueAsString(paymentHistoryDocument)
+            payload = objectMapper.writeValueAsString(paymentHistoryDocument)
         )
 
         outboxEventProducer.afterCommit(outboxEventEntity)

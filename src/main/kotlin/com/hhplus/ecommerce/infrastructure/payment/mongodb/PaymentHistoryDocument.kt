@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.payment.mongodb
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.hhplus.ecommerce.common.enums.StateYn
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
