@@ -12,7 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener
 @Component
 class OutboxEventKafkaProducer(
     private val outboxEventRepository: OutboxEventRepository,
-    private val kafkaTemplate: KafkaTemplate<String, String>
+    private val kafkaTemplate: KafkaTemplate<String, OutboxEventEntity>
 ): OutboxEventProducer {
     private val logger = LoggerFactory.getLogger(OutboxEventKafkaProducer::class.java)
 
@@ -34,7 +34,7 @@ class OutboxEventKafkaProducer(
 
         try {
             logger.info("OUTBOX_EVENT:PUBLISHER:AFTER_COMMIT $event")
-            kafkaTemplate.send(event.topic, event.payload)
+            kafkaTemplate.send(event.topic, event)
             event.updateStatus(OutboxEventStatus.PUBLISH)
         } catch (e: Exception) {
             logger.error("OUTBOX_EVENT:PUBLISHER:AFTER_COMMIT:FAILED => event_id ${event.id}", e)

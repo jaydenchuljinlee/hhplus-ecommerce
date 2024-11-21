@@ -3,6 +3,9 @@ package com.hhplus.ecommerce.infrastructure.balance.event
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryMongoRepository
+import com.hhplus.ecommerce.infrastructure.outboxevent.OutboxEventRepository
+import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
+import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.enums.OutboxEventStatus
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -10,26 +13,36 @@ import org.springframework.stereotype.Component
 @Component
 class BalanceKafkaConsumer(
     private val balanceHistoryMongoRepository: BalanceHistoryMongoRepository,
+    private val outboxEventRepository: OutboxEventRepository,
     private val objectMapper: ObjectMapper
 ): BalanceEventListener {
     private val logger = LoggerFactory.getLogger(BalanceKafkaConsumer::class.java)
 
-    @KafkaListener(topics = ["BALANCE_HISTORY"])
-    override fun listener(message: String) {
+    @KafkaListener(groupId = "OUTBOX", topics = ["BALANCE_HISTORY"])
+    override fun listener(event: OutboxEventEntity) {
         try {
-            val event = objectMapper.readValue(message, BalanceHistoryDocument::class.java)
+            val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)
 
-            logger.info("BALANCE:KAFKA:CONSUMER: $event")
+            logger.info("BALANCE:KAFKA:CONSUMER: $payload")
 
             // 에러가 발생해도 잘 동작하는지 테스트하기 위함
-            if (event.id == "ERROR") {
+            if (payload.id == "ERROR") {
                 throw IllegalArgumentException("ID가 올바르지 않습니다.")
             }
 
             // 외부 MongoDB에 이력 데이터를 저장
-            balanceHistoryMongoRepository.save(event)
+            balanceHistoryMongoRepository.save(payload)
+
+            val outboxEvent = outboxEventRepository.findById(event.id)
+            outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
+            outboxEventRepository.insertOrUpdate(outboxEvent)
         } catch(e: Exception) {
             logger.error("BALANCE:KAFKA:CONSUMER:ERROR", e)
+            val outboxEvent = outboxEventRepository.findById(event.id)
+            outboxEvent.updateStatus(OutboxEventStatus.FAILED)
+            outboxEventRepository.insertOrUpdate(outboxEvent)
         }
     }
+
+
 }
