@@ -30,17 +30,18 @@ class OutboxEventKafkaProducer(
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     override fun afterCommit(event: OutboxEventEntity) {
-        val entity = outboxEventRepository.findById(event.id)
+        // val entity = outboxEventRepository.findById(event.id)
 
         try {
             logger.info("OUTBOX_EVENT:PUBLISHER:AFTER_COMMIT $event")
             kafkaTemplate.send(event.topic, event.payload)
-            entity.updateStatus(OutboxEventStatus.PUBLISH)
+            event.updateStatus(OutboxEventStatus.PUBLISH)
         } catch (e: Exception) {
             logger.error("OUTBOX_EVENT:PUBLISHER:AFTER_COMMIT:FAILED => event_id ${event.id}", e)
-            entity.updateStatus(OutboxEventStatus.FAILED)
+            event.updateStatus(OutboxEventStatus.FAILED)
         } finally {
-            outboxEventRepository.insertOrUpdate(entity)
+            outboxEventRepository.insertOrUpdate(event)
         }
     }
+
 }

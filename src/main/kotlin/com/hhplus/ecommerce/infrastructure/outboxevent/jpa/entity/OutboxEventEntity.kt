@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.enums.OutboxEventStatus
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -18,6 +19,7 @@ class OutboxEventEntity(
     var payload: String,
     @Column(name = "status") @Enumerated(EnumType.STRING)
     var status: OutboxEventStatus = OutboxEventStatus.INIT,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_at") @CreatedDate
     var createdAt: LocalDateTime = LocalDateTime.now(),
 ) {

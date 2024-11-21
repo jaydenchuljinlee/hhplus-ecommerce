@@ -14,6 +14,6 @@ class OutboxEventRepository(
     }
 
     fun insertOrUpdate(event: OutboxEventEntity): OutboxEventEntity {
-        return outboxEventJpaRepository.save(event)
+        return outboxEventJpaRepository.saveAndFlush(event)
     }
 }
