@@ -16,7 +16,7 @@ spring:
     redis:
       time-to-live: 86400000 # 1 day in milliseconds
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9093
     consumer:
       group-id: hhplus-group
       auto-offset-reset: earliest
