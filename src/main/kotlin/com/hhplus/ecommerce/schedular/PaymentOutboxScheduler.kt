@@ -13,9 +13,10 @@ class PaymentOutboxScheduler(
 ) {
     @Scheduled(cron = "0 */1 * * * *")
     fun retryPaymentHistory() {
-        val list = outboxEventRepository.findAllByTopicAndStatus("BALANCE_HISTORY", OutboxEventStatus.FAILED)
+        val list = outboxEventRepository.findAllByTopicStatusAndMaxRetryCnt("BALANCE_HISTORY", OutboxEventStatus.FAILED)
 
         list.forEach {
+            it.increaseRetryCnt()
             outboxEventKafkaProducer.afterCommit(it)
         }
     }

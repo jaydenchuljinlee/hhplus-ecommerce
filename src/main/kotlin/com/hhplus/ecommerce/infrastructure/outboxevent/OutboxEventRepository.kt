@@ -10,12 +10,18 @@ import java.util.UUID
 class OutboxEventRepository(
     private val outboxEventJpaRepository: OutboxEventJpaRepository
 ) {
+    private val MAX_CNT = 3
+
     fun findById(id: UUID): OutboxEventEntity {
         return outboxEventJpaRepository.findById(id).orElseThrow { IllegalArgumentException("존재하지 않는 이벤트입니다 => $id") }
     }
 
     fun findAllByTopicAndStatus(topic: String, status: OutboxEventStatus): List<OutboxEventEntity> {
         return outboxEventJpaRepository.findAllByTopicAndStatus(topic, status)
+    }
+
+    fun findAllByTopicStatusAndMaxRetryCnt(topic: String, status: OutboxEventStatus): List<OutboxEventEntity> {
+        return outboxEventJpaRepository.findAllByTopicStatusAndMaxRetryCnt(topic, status, MAX_CNT)
     }
 
     fun insertOrUpdate(event: OutboxEventEntity): OutboxEventEntity {

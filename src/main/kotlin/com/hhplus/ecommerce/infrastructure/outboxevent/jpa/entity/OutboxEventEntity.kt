@@ -19,10 +19,16 @@ class OutboxEventEntity(
     var payload: String,
     @Column(name = "status") @Enumerated(EnumType.STRING)
     var status: OutboxEventStatus = OutboxEventStatus.INIT,
+    @Column(name = "retry_cnt")
+    var retryCnt: Int = 0,
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_at") @CreatedDate
     var createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
+    fun increaseRetryCnt() {
+        retryCnt++
+    }
+
     fun updateStatus(status: OutboxEventStatus) {
         this.status = status
     }
