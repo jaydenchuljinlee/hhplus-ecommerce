@@ -140,7 +140,7 @@ CREATE TABLE payment_history (
 ----------------------------------------------------------------
 
 CREATE TABLE outbox_event (
-      id BIGINT AUTO_INCREMENT PRIMARY KEY,                        -- 이벤트 고유 ID
+      id UUID PRIMARY KEY,                        -- 이벤트 고유 ID
       type VARCHAR(255) NOT NULL,                 -- 이벤트 유형
       payload JSONB NOT NULL,                     -- 발행할 이벤트 데이터
       status VARCHAR(50) DEFAULT 'PENDING',       -- 이벤트 상태 ('PENDING', 'SENT', 'FAILED')
