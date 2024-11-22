@@ -52,7 +52,6 @@ class BalanceService(
         )
 
         val outboxEventEntity = OutboxEventEntity(
-            id = UUID.randomUUID(),
             groupId = "BALANCE_HISTORY_GROUP",
             topic = "BALANCE_HISTORY",
             payload = ObjectMapper().writeValueAsString(balanceHistoryDocument)
@@ -80,7 +79,6 @@ class BalanceService(
         )
 
         val outboxEventEntity = OutboxEventEntity(
-            id = UUID.randomUUID(),
             groupId = "BALANCE_HISTORY_GROUP",
             topic = "BALANCE_HISTORY",
             payload = objectMapper.writeValueAsString(balanceHistoryDocument)

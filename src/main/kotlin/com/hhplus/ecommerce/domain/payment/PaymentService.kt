@@ -36,7 +36,6 @@ class PaymentService(
         )
 
         val outboxEventEntity = OutboxEventEntity(
-            id = UUID.randomUUID(),
             groupId = "PAYMENT_HISTORY_GROUP",
             topic = "PAYMENT_HISTORY",
             payload = objectMapper.writeValueAsString(paymentHistoryDocument)

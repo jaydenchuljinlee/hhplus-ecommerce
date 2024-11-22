@@ -12,7 +12,7 @@ class OutboxEventRepository(
 ) {
     private val MAX_CNT = 3
 
-    fun findById(id: UUID): OutboxEventEntity {
+    fun findById(id: Long): OutboxEventEntity {
         return outboxEventJpaRepository.findById(id).orElseThrow { IllegalArgumentException("존재하지 않는 이벤트입니다 => $id") }
     }
 

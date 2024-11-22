@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.UUID
 
-interface OutboxEventJpaRepository: JpaRepository<OutboxEventEntity, UUID> {
+interface OutboxEventJpaRepository: JpaRepository<OutboxEventEntity, Long> {
     fun findAllByTopicAndStatus(topic: String, status: OutboxEventStatus): List<OutboxEventEntity>
 
     @Query("SELECT e FROM OutboxEventEntity e WHERE e.topic = :topic AND e.status = :status AND e.retryCnt <= :maxCnt")

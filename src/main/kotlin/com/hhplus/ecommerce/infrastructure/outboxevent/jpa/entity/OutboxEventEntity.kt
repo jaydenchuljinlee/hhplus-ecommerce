@@ -10,7 +10,7 @@ import java.util.UUID
 @Entity @Table(name = "outbox_event")
 class OutboxEventEntity(
     @Id
-    var id: UUID,
+    var id: Long = 0,
     @Column(name = "group_id")
     var groupId: String,
     @Column(name = "topic")
