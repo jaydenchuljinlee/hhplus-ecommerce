@@ -6,9 +6,11 @@ import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
+import com.hhplus.ecommerce.domain.outboxevent.dto.OutboxResult
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
-import com.hhplus.ecommerce.infrastructure.outboxevent.event.OutboxEventProducer
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -16,7 +18,7 @@ import java.util.*
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val outboxEventProducer: OutboxEventProducer,
+    private val applicationEventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
@@ -51,13 +53,14 @@ class BalanceService(
             transactionType = "CHARGE"
         )
 
-        val outboxEventEntity = OutboxEventEntity(
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
             groupId = "BALANCE_HISTORY_GROUP",
             topic = "BALANCE_HISTORY",
-            payload = ObjectMapper().writeValueAsString(balanceHistoryDocument)
+            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
         )
 
-        outboxEventProducer.afterCommit(outboxEventEntity)
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
 
@@ -78,13 +81,14 @@ class BalanceService(
             transactionType = "USE"
         )
 
-        val outboxEventEntity = OutboxEventEntity(
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
             groupId = "BALANCE_HISTORY_GROUP",
             topic = "BALANCE_HISTORY",
             payload = objectMapper.writeValueAsString(balanceHistoryDocument)
         )
 
-        outboxEventProducer.afterCommit(outboxEventEntity)
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
     }

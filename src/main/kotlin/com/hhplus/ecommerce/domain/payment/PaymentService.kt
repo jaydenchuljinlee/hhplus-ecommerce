@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
-import com.hhplus.ecommerce.infrastructure.outboxevent.event.OutboxEventProducer
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -15,7 +16,7 @@ import java.util.*
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val outboxEventProducer: OutboxEventProducer,
+    private val applicationEventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper
 ) {
     @Transactional
@@ -35,13 +36,14 @@ class PaymentService(
             status = entity.status
         )
 
-        val outboxEventEntity = OutboxEventEntity(
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
             groupId = "PAYMENT_HISTORY_GROUP",
             topic = "PAYMENT_HISTORY",
             payload = objectMapper.writeValueAsString(paymentHistoryDocument)
         )
 
-        outboxEventProducer.afterCommit(outboxEventEntity)
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         val result = PaymentResult(
             paymentId = entity.id,
