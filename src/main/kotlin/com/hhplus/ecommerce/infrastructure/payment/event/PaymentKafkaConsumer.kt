@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.infrastructure.payment.event
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.infrastructure.outboxevent.OutboxEventRepository
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.enums.OutboxEventStatus
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
@@ -19,7 +20,7 @@ class PaymentKafkaConsumer(
     private val logger = LoggerFactory.getLogger(PaymentKafkaConsumer::class.java)
 
     @KafkaListener(groupId = "OUTBOX", topics = ["PAY_HISTORY"])
-    override fun listen(event: OutboxEventEntity) {
+    override fun listen(event: OutboxEventInfo) {
         try {
             val payload = objectMapper.readValue(event.payload, PaymentHistoryDocument::class.java)
 
