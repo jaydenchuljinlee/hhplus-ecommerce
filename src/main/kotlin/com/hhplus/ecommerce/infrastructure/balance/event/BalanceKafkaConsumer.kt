@@ -5,7 +5,6 @@ import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocumen
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryMongoRepository
 import com.hhplus.ecommerce.infrastructure.outboxevent.OutboxEventRepository
 import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
-import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.enums.OutboxEventStatus
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
@@ -16,11 +15,11 @@ class BalanceKafkaConsumer(
     private val balanceHistoryMongoRepository: BalanceHistoryMongoRepository,
     private val outboxEventRepository: OutboxEventRepository,
     private val objectMapper: ObjectMapper
-): BalanceEventListener {
+) {
     private val logger = LoggerFactory.getLogger(BalanceKafkaConsumer::class.java)
 
     @KafkaListener(groupId = "OUTBOX", topics = ["BALANCE_HISTORY"])
-    override fun listener(event: OutboxEventInfo) {
+    fun listener(event: OutboxEventInfo) {
         try {
             val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)
 
