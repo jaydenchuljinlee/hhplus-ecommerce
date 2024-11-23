@@ -1,11 +1,11 @@
 package com.hhplus.ecommerce.domain.payment
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.hhplus.ecommerce.common.properties.PaymentKafkaProperties
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
 import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
-import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
 import org.springframework.context.ApplicationEventPublisher
@@ -17,7 +17,8 @@ import java.util.*
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val objectMapper: ObjectMapper
+    private val paymentKafkaProperties: PaymentKafkaProperties,
+    private val objectMapper: ObjectMapper,
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -38,8 +39,8 @@ class PaymentService(
 
         val outboxEvent = OutboxEventInfo(
             id = UUID.randomUUID(),
-            groupId = "PAYMENT_HISTORY_GROUP",
-            topic = "PAYMENT_HISTORY",
+            groupId = paymentKafkaProperties.groupId,
+            topic = paymentKafkaProperties.topic,
             payload = objectMapper.writeValueAsString(paymentHistoryDocument)
         )
 

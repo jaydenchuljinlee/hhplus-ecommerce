@@ -18,7 +18,10 @@ class PaymentKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(PaymentKafkaConsumer::class.java)
 
-    @KafkaListener(groupId = "OUTBOX", topics = ["PAY_HISTORY"])
+    @KafkaListener(
+        groupId = "\${hhplus.kafka.payment.group-id}",
+        topics = ["\${hhplus.kafka.payment.topic}"]
+    )
     fun listen(event: OutboxEventInfo) {
         try {
             val payload = objectMapper.readValue(event.payload, PaymentHistoryDocument::class.java)

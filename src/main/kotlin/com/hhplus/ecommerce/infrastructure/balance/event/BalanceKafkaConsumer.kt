@@ -18,7 +18,9 @@ class BalanceKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(BalanceKafkaConsumer::class.java)
 
-    @KafkaListener(groupId = "OUTBOX", topics = ["BALANCE_HISTORY"])
+    @KafkaListener(
+        groupId = "\${hhplus.kafka.balance.group-id}",
+        topics = ["\${hhplus.kafka.balance.topic}"])
     fun listener(event: OutboxEventInfo) {
         try {
             val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)

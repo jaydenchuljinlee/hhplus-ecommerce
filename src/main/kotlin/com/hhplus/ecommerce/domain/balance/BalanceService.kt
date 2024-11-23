@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.domain.balance
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.common.anotation.RedisLock
+import com.hhplus.ecommerce.common.properties.BalanceKafkaProperties
 import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
@@ -19,7 +20,8 @@ import java.util.*
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val objectMapper: ObjectMapper
+    private val balanceKafkaProperties: BalanceKafkaProperties,
+    private val objectMapper: ObjectMapper,
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
@@ -55,8 +57,8 @@ class BalanceService(
 
         val outboxEvent = OutboxEventInfo(
             id = UUID.randomUUID(),
-            groupId = "BALANCE_HISTORY_GROUP",
-            topic = "BALANCE_HISTORY",
+            groupId = balanceKafkaProperties.groupId,
+            topic = balanceKafkaProperties.topic,
             payload = objectMapper.writeValueAsString(balanceHistoryDocument)
         )
 
@@ -83,8 +85,8 @@ class BalanceService(
 
         val outboxEvent = OutboxEventInfo(
             id = UUID.randomUUID(),
-            groupId = "BALANCE_HISTORY_GROUP",
-            topic = "BALANCE_HISTORY",
+            groupId = balanceKafkaProperties.groupId,
+            topic = balanceKafkaProperties.topic,
             payload = objectMapper.writeValueAsString(balanceHistoryDocument)
         )
 
