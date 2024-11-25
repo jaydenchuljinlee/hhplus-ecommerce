@@ -1,22 +1,18 @@
 package com.hhplus.ecommerce.domain.payment
 
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
-import com.hhplus.ecommerce.domain.payment.dto.ExternalCallRequest
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
-import com.hhplus.ecommerce.domain.payment.repository.IPaymentHistoryRepository
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
 import com.hhplus.ecommerce.infrastructure.payment.event.PaymentEventPublisher
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
-import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentHistoryEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
-import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryMongoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val paymentEventPublisher: PaymentEventPublisher,
+    private val paymentSpringEventPublisher: PaymentEventPublisher,
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -36,7 +32,7 @@ class PaymentService(
         )
 
         // 이력 저장을 외부 연동으로 이관
-        paymentEventPublisher.publish(paymentHistoryDocument)
+        paymentSpringEventPublisher.publish(paymentHistoryDocument)
 
         val result = PaymentResult(
             paymentId = entity.id,

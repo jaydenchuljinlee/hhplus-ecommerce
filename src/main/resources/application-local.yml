@@ -15,6 +15,18 @@ spring:
     cache-names: productCache
     redis:
       time-to-live: 86400000 # 1 day in milliseconds
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: hhplus-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 #singleServerConfig:
 #  address: "redis://localhost:6379" # Docker에서 Redis가 실행 중인 호스트
