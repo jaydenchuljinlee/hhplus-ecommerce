@@ -1,19 +1,27 @@
 package com.hhplus.ecommerce.domain.balance
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.common.anotation.RedisLock
+import com.hhplus.ecommerce.common.properties.BalanceKafkaProperties
 import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
 import com.hhplus.ecommerce.domain.balance.respository.IBalanceRepository
-import com.hhplus.ecommerce.infrastructure.balance.event.BalanceEventPublisher
+import com.hhplus.ecommerce.domain.outboxevent.dto.OutboxResult
 import com.hhplus.ecommerce.infrastructure.balance.mongodb.BalanceHistoryDocument
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
+import com.hhplus.ecommerce.infrastructure.outboxevent.jpa.entity.OutboxEventEntity
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val balanceSpringEventPublisher: BalanceEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
+    private val balanceKafkaProperties: BalanceKafkaProperties,
+    private val objectMapper: ObjectMapper,
 ) {
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
@@ -47,7 +55,14 @@ class BalanceService(
             transactionType = "CHARGE"
         )
 
-        balanceSpringEventPublisher.publish(balanceHistoryDocument)
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
+            groupId = balanceKafkaProperties.groupId,
+            topic = balanceKafkaProperties.topic,
+            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
+        )
+
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
 
@@ -68,7 +83,14 @@ class BalanceService(
             transactionType = "USE"
         )
 
-        balanceSpringEventPublisher.publish(balanceHistoryDocument)
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
+            groupId = balanceKafkaProperties.groupId,
+            topic = balanceKafkaProperties.topic,
+            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
+        )
+
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
     }

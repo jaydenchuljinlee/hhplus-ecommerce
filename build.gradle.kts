@@ -57,7 +57,7 @@ dependencies {
 	// repository
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("mysql:mysql-connector-java:8.0.33") // MySQL 드라이버 (버전은 최신으로 선택)
+	runtimeOnly("mysql:mysql-connector-java:8.0.33") // MySQL 드라이버 (버전은 최신으로 선택)
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	// runtimeOnly("com.h2database:h2")
 
@@ -81,8 +81,11 @@ dependencies {
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 
 	// test
-	testImplementation("org.testcontainers:testcontainers:1.19.0")
-	testImplementation("com.h2database:h2")
+	// testImplementation("org.testcontainers:testcontainers:1.19.0")
+	testImplementation("org.testcontainers:kafka:1.19.0")
+	testImplementation("org.testcontainers:junit-jupiter:1.19.0")
+	testImplementation("org.testcontainers:mysql:1.19.0")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

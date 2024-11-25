@@ -1,18 +1,24 @@
 package com.hhplus.ecommerce.domain.payment
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.hhplus.ecommerce.common.properties.PaymentKafkaProperties
 import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
 import com.hhplus.ecommerce.domain.payment.repository.IPaymentRepository
-import com.hhplus.ecommerce.infrastructure.payment.event.PaymentEventPublisher
+import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.infrastructure.payment.jpa.entity.PaymentEntity
 import com.hhplus.ecommerce.infrastructure.payment.mongodb.PaymentHistoryDocument
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class PaymentService(
     private val paymentRepository: IPaymentRepository,
-    private val paymentSpringEventPublisher: PaymentEventPublisher,
+    private val applicationEventPublisher: ApplicationEventPublisher,
+    private val paymentKafkaProperties: PaymentKafkaProperties,
+    private val objectMapper: ObjectMapper,
 ) {
     @Transactional
     fun pay(dto: CreationPaymentCommand): PaymentResult {
@@ -31,8 +37,14 @@ class PaymentService(
             status = entity.status
         )
 
-        // 이력 저장을 외부 연동으로 이관
-        paymentSpringEventPublisher.publish(paymentHistoryDocument)
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
+            groupId = paymentKafkaProperties.groupId,
+            topic = paymentKafkaProperties.topic,
+            payload = objectMapper.writeValueAsString(paymentHistoryDocument)
+        )
+
+        applicationEventPublisher.publishEvent(outboxEvent)
 
         val result = PaymentResult(
             paymentId = entity.id,

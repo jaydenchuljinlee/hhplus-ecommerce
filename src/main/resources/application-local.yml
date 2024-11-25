@@ -28,7 +28,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-#singleServerConfig:
-#  address: "redis://localhost:6379" # Docker에서 Redis가 실행 중인 호스트
-#  connectionMinimumIdleSize: 10
-#  connectionPoolSize: 64
+hhplus:
+  kafka:
+    balance:
+      group-id: OUTBOX
+      topic: PAY_HISTORY
+    payment:
+      group-id: OUTBOX
+      topic: PAY_HISTORY

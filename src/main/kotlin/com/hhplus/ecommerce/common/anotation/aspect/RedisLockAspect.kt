@@ -13,13 +13,16 @@ import org.springframework.expression.ExpressionParser
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.support.TransactionTemplate
 import java.util.concurrent.TimeUnit
 
 @Aspect
 @Component
 class RedisLockAspect(
     private val redissonClient: RedissonClient,
-    private val pubSubLockSupporter: IRedisLockSupporter
+    private val pubSubLockSupporter: IRedisLockSupporter,
+    private val transactionManager: PlatformTransactionManager
 ) {
     private val logger = LoggerFactory.getLogger(RedisLockAspect::class.java)
     private val waitTime = 10L
@@ -43,7 +46,23 @@ class RedisLockAspect(
         }
 
         return lockSupporter.withLock(key) {
-            joinPoint.proceed()
+            try {
+                // 트랜잭션 시작
+                TransactionTemplate(transactionManager).execute { transactionStatus ->
+                    try {
+                        joinPoint.proceed()
+                    } catch (ex: Throwable) {
+                        transactionStatus.setRollbackOnly()
+                        throw ex
+                    }
+                }
+            } finally {
+                lock.unlock() // Lock 해제
+            }
+
+//
+//            return lockSupporter.withLock(key) {
+//            joinPoint.proceed()
         }
     }
 

@@ -11,14 +11,14 @@ import org.springframework.transaction.event.TransactionalEventListener
 
 @Component
 class PaymentSpringEventListener(
-    private val paymentHistoryMongoRepository: PaymentHistoryMongoRepository
-): PaymentEventListener {
+    private val paymentHistoryMongoRepository: PaymentHistoryMongoRepository,
+) {
     private val logger = LoggerFactory.getLogger(PaymentSpringEventListener::class.java)
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    override fun listen(event: PaymentHistoryDocument) {
+    fun listen(event: PaymentHistoryDocument) {
         try {
             logger.info("PAY:EVENT:LISTENER:$event", )
 
