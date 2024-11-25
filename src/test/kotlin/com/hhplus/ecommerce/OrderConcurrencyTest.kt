@@ -1,6 +1,6 @@
 package com.hhplus.ecommerce
 
-import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
+import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.infrastructure.product.jpa.ProductDetailJpaRepository
 import com.hhplus.ecommerce.usercase.order.OrderFacade
 import com.hhplus.ecommerce.usercase.order.dto.OrderCreation
@@ -8,17 +8,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Import(RedisTestContainerConfig::class)
-class OrderConcurrencyTest {
+class OrderConcurrencyTest: IntegrationConfig() {
     @Autowired
     private lateinit var orderFacade: OrderFacade
 
