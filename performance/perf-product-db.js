@@ -16,7 +16,7 @@ export default function () {
     let dbRes = http.get(`${BASE_URL}/product/db?productId=1`);
     check(dbRes, {
         'DB status is 200': (r) => r.status === 200,
-        'DB response time < 500ms': (r) => r.timings.duration < 200,
+        'DB response time < 400ms': (r) => r.timings.duration < 400,
     });
 
     sleep(1); // 1초 간격으로 반복
