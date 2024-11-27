@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.common.annotation.aspect
 
+import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.common.enums.StateYn
 import com.hhplus.ecommerce.domain.product.ProductService
@@ -21,10 +22,7 @@ import org.springframework.test.context.ActiveProfiles
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@ActiveProfiles("test")
-@SpringBootTest
-@Import(RedisTestContainerConfig::class)
-class RedisCacheableAspectTest {
+class RedisCacheableAspectTest: IntegrationConfig() {
     @Autowired
     private lateinit var productService: ProductService
 

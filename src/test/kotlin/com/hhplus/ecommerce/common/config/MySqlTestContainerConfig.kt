@@ -7,13 +7,13 @@ import org.testcontainers.utility.DockerImageName
 
 @TestConfiguration
 class MySqlTestContainerConfig {
+
     companion object {
         private val mySQLContainer = MySQLContainer(DockerImageName.parse("mysql:8.0"))
             .apply {
                 withUsername("testuser")
                 withPassword("testpassword")
                 withDatabaseName("testdb")
-                withReuse(true)
             }
 
         init {
@@ -34,4 +34,5 @@ class MySqlTestContainerConfig {
     fun mysqlContainer(): MySQLContainer<*> {
         return mySQLContainer
     }
+
 }

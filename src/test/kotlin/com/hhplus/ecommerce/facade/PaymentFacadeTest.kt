@@ -1,10 +1,8 @@
 package com.hhplus.ecommerce.facade
 
 import com.hhplus.ecommerce.domain.balance.BalanceService
-import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
 import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
 import com.hhplus.ecommerce.domain.order.OrderService
-import com.hhplus.ecommerce.domain.order.dto.OrderCreationCommand
 import com.hhplus.ecommerce.domain.order.dto.OrderQuery
 import com.hhplus.ecommerce.domain.order.dto.OrderResult
 import com.hhplus.ecommerce.domain.payment.PaymentService
@@ -40,16 +38,10 @@ class PaymentFacadeTest {
     @DisplayName("결제 정합성 테스트")
     @Test
     fun paymentTest() {
-        val balanceQuery = BalanceQuery(
-            userId = 1
-        )
-
         val balanceResult = BalanceResult(
             userId = 1,
             balance = 10_000
         )
-
-        BDDMockito.given(balanceService.getBalanceWithLock(balanceQuery)).willReturn(balanceResult)
 
         val orderQuery = OrderQuery(
             orderId = 2,
