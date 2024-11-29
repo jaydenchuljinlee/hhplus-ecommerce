@@ -17,9 +17,21 @@ spring:
     hibernate:
       ddl-auto: create
 
-
 jwt:
   secretKey: Ez8RZUiy088e15OapWMfWWMe_kNQglk6GQx3cxAHjhE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 모든 Actuator 엔드포인트 노출
+  endpoint:
+    metrics:
+      enabled: true # /metrics 활성화
+  metrics:
+    enable:
+      all: true # 모든 메트릭 활성화
+
 
 logging:
   level:
