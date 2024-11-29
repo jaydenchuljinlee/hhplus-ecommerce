@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.redis
 
+import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
 import com.hhplus.ecommerce.infrastructure.balance.BalanceRepository
 import com.hhplus.ecommerce.infrastructure.balance.jpa.BalanceJpaRepository
@@ -15,11 +16,8 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-@SpringBootTest
-@Import(RedisTestContainerConfig::class)
-class PubSubLockSupporterTest {
+class PubSubLockSupporterTest: IntegrationConfig() {
     private val userId = 1L
-    private val initialBalance = 1000L
     private val chargeAmount = 100L
 
     private val logger = LoggerFactory.getLogger(PubSubLockSupporterTest::class.java);

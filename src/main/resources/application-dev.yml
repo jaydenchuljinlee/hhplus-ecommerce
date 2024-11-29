@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:mysql://hhplus-mysql:3306/hhplus?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ironjin
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+  data:
+    mongodb:
+      uri: mongodb://ironjin:1234@hhplus-mongo:27017/hhplus?authSource=admin
+      database: hhplus
+  cache:
+    cache-names: productCache
+    redis:
+      time-to-live: 86400000 # 1 day in milliseconds
+  kafka:
+    bootstrap-servers: hhplus-kafka:9092
+    consumer:
+      group-id: hhplus-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+hhplus:
+  kafka:
+    balance:
+      group-id: OUTBOX
+      topic: PAY_HISTORY
+    payment:
+      group-id: OUTBOX
+      topic: PAY_HISTORY
