@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.product.jpa.entity
 
-import com.hhplus.ecommerce.infrastructure.product.exception.OutOfStockException
+import com.hhplus.ecommerce.product.infrastructure.exception.OutOfStockException
+import com.hhplus.ecommerce.product.infrastructure.jpa.entity.ProductDetailEntity
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

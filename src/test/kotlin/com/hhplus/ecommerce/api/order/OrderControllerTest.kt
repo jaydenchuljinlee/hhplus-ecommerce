@@ -1,10 +1,10 @@
 package com.hhplus.ecommerce.api.order
 
-import com.hhplus.ecommerce.api.order.controller.OrderController
-import com.hhplus.ecommerce.api.order.dto.OrderCreationRequest
-import com.hhplus.ecommerce.usercase.order.OrderFacade
-import com.hhplus.ecommerce.usercase.order.dto.OrderCreation
-import com.hhplus.ecommerce.usercase.order.dto.OrderInfo
+import com.hhplus.ecommerce.order.api.OrderController
+import com.hhplus.ecommerce.order.api.dto.OrderCreationRequest
+import com.hhplus.ecommerce.order.usecase.OrderFacade
+import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
+import com.hhplus.ecommerce.order.usecase.dto.OrderInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

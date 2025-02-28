@@ -1,12 +1,12 @@
 package com.hhplus.ecommerce.api.balance
 
-import com.hhplus.ecommerce.api.balance.controller.BalanceController
-import com.hhplus.ecommerce.api.balance.dto.BalanceChargeRequest
-import com.hhplus.ecommerce.api.balance.dto.BalanceViewRequest
-import com.hhplus.ecommerce.domain.balance.BalanceService
-import com.hhplus.ecommerce.domain.balance.dto.BalanceQuery
-import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
-import com.hhplus.ecommerce.domain.balance.dto.BalanceTransaction
+import com.hhplus.ecommerce.balance.api.BalanceController
+import com.hhplus.ecommerce.balance.api.dto.BalanceChargeRequest
+import com.hhplus.ecommerce.balance.api.dto.BalanceViewRequest
+import com.hhplus.ecommerce.balance.domain.BalanceService
+import com.hhplus.ecommerce.balance.domain.dto.BalanceQuery
+import com.hhplus.ecommerce.balance.domain.dto.BalanceResult
+import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

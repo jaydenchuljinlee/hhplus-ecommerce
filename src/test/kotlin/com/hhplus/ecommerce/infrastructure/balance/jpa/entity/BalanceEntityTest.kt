@@ -1,7 +1,8 @@
 package com.hhplus.ecommerce.infrastructure.balance.jpa.entity
 
-import com.hhplus.ecommerce.infrastructure.balance.exception.BalanceLimitExceededException
-import com.hhplus.ecommerce.infrastructure.balance.exception.InsufficientBalanceException
+import com.hhplus.ecommerce.balance.infrastructure.exception.BalanceLimitExceededException
+import com.hhplus.ecommerce.balance.infrastructure.exception.InsufficientBalanceException
+import com.hhplus.ecommerce.balance.infrastructure.jpa.entity.BalanceEntity
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

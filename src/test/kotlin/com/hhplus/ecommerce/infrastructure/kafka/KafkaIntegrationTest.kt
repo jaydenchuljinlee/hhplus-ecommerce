@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.infrastructure.kafka
 
 import com.hhplus.ecommerce.common.config.IntegrationConfig
-import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
+import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

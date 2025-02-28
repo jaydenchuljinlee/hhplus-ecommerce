@@ -1,15 +1,15 @@
 package com.hhplus.ecommerce.facade
 
-import com.hhplus.ecommerce.domain.balance.BalanceService
-import com.hhplus.ecommerce.domain.balance.dto.BalanceResult
-import com.hhplus.ecommerce.domain.order.OrderService
-import com.hhplus.ecommerce.domain.order.dto.OrderQuery
-import com.hhplus.ecommerce.domain.order.dto.OrderResult
-import com.hhplus.ecommerce.domain.payment.PaymentService
-import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
-import com.hhplus.ecommerce.domain.payment.dto.PaymentResult
-import com.hhplus.ecommerce.usercase.payment.PaymentFacade
-import com.hhplus.ecommerce.usercase.payment.dto.PaymentCreation
+import com.hhplus.ecommerce.balance.domain.BalanceService
+import com.hhplus.ecommerce.balance.domain.dto.BalanceResult
+import com.hhplus.ecommerce.order.domain.OrderService
+import com.hhplus.ecommerce.order.domain.dto.OrderQuery
+import com.hhplus.ecommerce.order.domain.dto.OrderResult
+import com.hhplus.ecommerce.payment.domain.PaymentService
+import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
+import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
+import com.hhplus.ecommerce.payment.usecase.PaymentFacade
+import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

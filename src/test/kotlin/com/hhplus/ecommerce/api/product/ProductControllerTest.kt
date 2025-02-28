@@ -1,11 +1,11 @@
 package com.hhplus.ecommerce.api.product
 
-import com.hhplus.ecommerce.api.product.controller.ProductController
-import com.hhplus.ecommerce.api.product.dto.ProductInfoQueryRequest
-import com.hhplus.ecommerce.domain.product.ProductService
-import com.hhplus.ecommerce.domain.product.dto.ProductInfoQuery
-import com.hhplus.ecommerce.domain.product.dto.ProductInfoResult
-import com.hhplus.ecommerce.infrastructure.product.dto.BestSellingProduct
+import com.hhplus.ecommerce.product.api.ProductController
+import com.hhplus.ecommerce.product.api.dto.ProductInfoQueryRequest
+import com.hhplus.ecommerce.product.domain.ProductService
+import com.hhplus.ecommerce.product.domain.dto.ProductInfoQuery
+import com.hhplus.ecommerce.product.domain.dto.ProductInfoResult
+import com.hhplus.ecommerce.product.infrastructure.dto.BestSellingProduct
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

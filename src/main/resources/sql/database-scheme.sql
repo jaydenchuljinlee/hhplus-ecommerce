@@ -101,9 +101,8 @@ CREATE TABLE order_info (
     product_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     quantity INT,
-    price BIGINT DEFAULT 0 NOT NULL,
     total_price BIGINT DEFAULT 0 NOT NULL,
-    status VARCHAR(255),
+    status ENUM('REQUESTED', 'CONFIRMED', 'CANCELED') NOT NULL DEFAULT 'REQUESTED',
 
     -- 베이스 필드
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성일
@@ -111,11 +110,21 @@ CREATE TABLE order_info (
     del_yn CHAR(1) DEFAULT 'N' NOT NULL -- 사용 여부 (Y/N)
 );
 
+CREATE TABLE order_detail (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT DEFAULT 1 NOT NULL,
+    price BIGINT NOT NULL
+);
+
+
 CREATE TABLE payment (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
     price BIGINT DEFAULT 0 NOT NULL,
-    status VARCHAR(255),
+    status ENUM('PENDING', 'PAID', 'FAILED') NOT NULL DEFAULT 'PENDING',
+    payment_method ENUM('CREDIT_CARD', 'BANK_TRANSFER', 'POINTS') NOT NULL,
 
     -- 베이스 필드
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성일

@@ -1,6 +1,6 @@
 package com.hhplus.ecommerce.infrastructure.kafka
 
-import com.hhplus.ecommerce.infrastructure.outboxevent.event.dto.OutboxEventInfo
+import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.util.concurrent.CountDownLatch

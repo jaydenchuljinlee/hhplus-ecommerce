@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.api.balance.dto
 
-import com.hhplus.ecommerce.api.balance.controller.exception.InsufficientBalanceAmountException
+import com.hhplus.ecommerce.balance.api.exception.InsufficientBalanceAmountException
+import com.hhplus.ecommerce.balance.api.dto.BalanceChargeRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

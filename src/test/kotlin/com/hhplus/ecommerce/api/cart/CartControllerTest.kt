@@ -1,14 +1,14 @@
 package com.hhplus.ecommerce.api.cart
 
-import com.hhplus.ecommerce.api.cart.controller.CartController
-import com.hhplus.ecommerce.api.cart.dto.CartCreationRequest
-import com.hhplus.ecommerce.api.cart.dto.CartDeletionRequest
-import com.hhplus.ecommerce.api.cart.dto.CartListQueryRequest
-import com.hhplus.ecommerce.domain.cart.CartService
-import com.hhplus.ecommerce.domain.cart.dto.CartCreation
-import com.hhplus.ecommerce.domain.cart.dto.CartDeletion
-import com.hhplus.ecommerce.domain.cart.dto.CartListQuery
-import com.hhplus.ecommerce.domain.cart.dto.CartResult
+import com.hhplus.ecommerce.cart.api.CartController
+import com.hhplus.ecommerce.cart.api.dto.CartCreationRequest
+import com.hhplus.ecommerce.cart.api.dto.CartDeletionRequest
+import com.hhplus.ecommerce.cart.api.dto.CartListQueryRequest
+import com.hhplus.ecommerce.cart.domain.CartService
+import com.hhplus.ecommerce.cart.domain.dto.CartCreation
+import com.hhplus.ecommerce.cart.domain.dto.CartDeletion
+import com.hhplus.ecommerce.cart.domain.dto.CartListQuery
+import com.hhplus.ecommerce.cart.domain.dto.CartResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

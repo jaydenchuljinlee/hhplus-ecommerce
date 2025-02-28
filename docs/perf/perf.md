@@ -59,4 +59,24 @@
 ### Docker 실행 옵션에 따른 성능 비교
   - 이 부분은 테스트 하기가 조금 까다로웠다.
   - 해당 옵션에 대해서는 cpu와 memory를 조정 해 볼 예정인데, JVM에서 사용되는 수치에 따라 적절한 값을 지정해줄 예정이다.
-    
+
+
+```mermaid
+graph TD
+  Root["Root Node: 20"]
+  Mid1["Middle Node: 10, 15"]
+  Mid2["Middle Node: 25, 30"]
+  Leaf1["Leaf Node: 5, 'Product X', 200, ..."]
+  Leaf2["Leaf Node: 10, 'Product A', 100, ..."]
+  Leaf3["Leaf Node: 15, 'Product Y', 300, ..."]
+  Leaf4["Leaf Node: 25, 'Product Z', 400, ..."]
+
+  Root --> Mid1
+  Root --> Mid2
+  Mid1 --> Leaf1
+  Mid1 --> Leaf2
+  Mid2 --> Leaf3
+  Mid2 --> Leaf4
+
+
+```

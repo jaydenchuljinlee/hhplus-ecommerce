@@ -1,11 +1,11 @@
 package com.hhplus.ecommerce.domain.product
 
 import com.hhplus.ecommerce.common.config.IntegrationConfig
-import com.hhplus.ecommerce.common.config.RedisTestContainerConfig
-import com.hhplus.ecommerce.domain.order.OrderService
-import com.hhplus.ecommerce.domain.order.dto.OrderCreationCommand
-import com.hhplus.ecommerce.domain.payment.PaymentService
-import com.hhplus.ecommerce.domain.payment.dto.CreationPaymentCommand
+import com.hhplus.ecommerce.order.domain.OrderService
+import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
+import com.hhplus.ecommerce.payment.domain.PaymentService
+import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
+import com.hhplus.ecommerce.product.domain.ProductService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

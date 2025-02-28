@@ -1,10 +1,10 @@
 package com.hhplus.ecommerce.api.payment
 
-import com.hhplus.ecommerce.api.payment.controller.PaymentController
-import com.hhplus.ecommerce.api.payment.dto.PaymentCreationRequest
-import com.hhplus.ecommerce.usercase.payment.PaymentFacade
-import com.hhplus.ecommerce.usercase.payment.dto.PaymentCreation
-import com.hhplus.ecommerce.usercase.payment.dto.PaymentInfo
+import com.hhplus.ecommerce.payment.api.PaymentController
+import com.hhplus.ecommerce.payment.api.dto.PaymentCreationRequest
+import com.hhplus.ecommerce.payment.usecase.PaymentFacade
+import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
+import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

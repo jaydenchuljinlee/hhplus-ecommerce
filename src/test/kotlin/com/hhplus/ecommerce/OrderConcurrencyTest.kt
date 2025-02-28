@@ -1,9 +1,9 @@
 package com.hhplus.ecommerce
 
 import com.hhplus.ecommerce.common.config.IntegrationConfig
-import com.hhplus.ecommerce.infrastructure.product.jpa.ProductDetailJpaRepository
-import com.hhplus.ecommerce.usercase.order.OrderFacade
-import com.hhplus.ecommerce.usercase.order.dto.OrderCreation
+import com.hhplus.ecommerce.product.infrastructure.jpa.ProductDetailJpaRepository
+import com.hhplus.ecommerce.order.usecase.OrderFacade
+import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
