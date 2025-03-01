@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.payment.usecase
 
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
+import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
@@ -22,13 +23,13 @@ class PaymentFacade(
     fun pay(dto: PaymentCreation): PaymentInfo {
         val orderQuery = OrderQuery(
             orderId = dto.orderId,
-            status = "ORDER_REQUEST"
+            status = OrderStatus.REQUESTED
         )
         val order = orderService.getOrder(orderQuery)
 
         val balanceToUseCommand = BalanceTransaction(
             userId = dto.userId,
-            amount = order.quantity * order.price,
+            amount = order.totalQuantity * order.totalPrice,
             type = BalanceTransaction.TransactionType.USE
         )
 
@@ -37,7 +38,7 @@ class PaymentFacade(
         val paymentCreation = CreationPaymentCommand(
             orderId = dto.orderId,
             userId = dto.userId,
-            price = order.quantity * order.price,
+            price = order.totalQuantity * order.totalPrice,
         )
 
         val result = paymentService.pay(paymentCreation)

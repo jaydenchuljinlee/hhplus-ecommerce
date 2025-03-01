@@ -5,15 +5,14 @@ import com.hhplus.ecommerce.order.infrastructure.jpa.entity.OrderEntity
 
 data class OrderCreationCommand(
     var userId: Long,
-    var productId: Long,
-    var quantity: Int,
-    var price: Long,
+    var details: List<OrderDetailCreationCommand>
 ) {
     fun toEntity(): OrderEntity {
+
         return OrderEntity(
             userId = userId,
-            productId = productId,
-            totalPrice = quantity * price,
+            totalPrice = details.map { it.quantity * it.price }.sum(),
+            totalQuantity = details.map { it.quantity }.sum(),
             status = OrderStatus.REQUESTED
         )
     }

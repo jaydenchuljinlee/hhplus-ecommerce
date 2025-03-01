@@ -1,20 +1,22 @@
 package com.hhplus.ecommerce.order.usecase.dto
 
 import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
+import com.hhplus.ecommerce.order.api.dto.OrderCreationRequest
 import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
 import com.hhplus.ecommerce.product.domain.dto.ProductDetailQuery
 import com.hhplus.ecommerce.user.domain.dto.UserQuery
 
 data class OrderCreation(
     var userId: Long,
-    var productId: Long,
-    var quantity: Int,
-    var price: Long,
+    var details: List<OrderDetailCreation>
 ) {
-    fun toProductDetailQuery(): ProductDetailQuery {
-        return ProductDetailQuery(
-            productId = productId,
-        )
+    companion object {
+        fun from(userId: Long, details: List<OrderDetailCreation>): OrderCreation {
+            return OrderCreation(
+                userId = userId,
+                details = details
+            )
+        }
     }
 
     fun toUserQuery(): UserQuery {
@@ -26,7 +28,7 @@ data class OrderCreation(
     fun toBalanceTransaction(): BalanceTransaction {
         return BalanceTransaction(
             userId = userId,
-            amount = quantity * price,
+            amount = details.map { it.quantity * it.price }.sum(),
             type = BalanceTransaction.TransactionType.USE
         )
     }
@@ -34,9 +36,7 @@ data class OrderCreation(
     fun toOrderCreationCommand(): OrderCreationCommand {
         return OrderCreationCommand(
             userId = userId,
-            productId = productId,
-            quantity = quantity,
-            price = price,
+            details = details.map { it.toDetailCreationCommand() }
         )
     }
 }

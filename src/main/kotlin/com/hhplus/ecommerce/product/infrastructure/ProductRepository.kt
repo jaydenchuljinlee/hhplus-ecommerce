@@ -18,11 +18,12 @@ class ProductRepository(
     private val productQueryDsl: IProductQueryDsl
 ): IProductRepository {
 
-    @Transactional
+    @Transactional(readOnly = true)
     override fun findByProductId(productId: Long): ProductDetailEntity {
         return productDetailJpaRepository.findByProductId(productId).orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
     }
 
+    @Transactional(readOnly = true)
     override fun findById(productId: Long): ProductEntity {
         return productJpaRepository.findById(productId).orElseThrow { ProductNotFoundException() }
     }
@@ -31,6 +32,7 @@ class ProductRepository(
         return productJpaRepository.save(entity)
     }
 
+    @Transactional(readOnly = true)
     override fun findTopFiveLastThreeDays(): List<BestSellingProduct> {
         return productQueryDsl.findTop5BestSellingProductsLast3Days()
     }

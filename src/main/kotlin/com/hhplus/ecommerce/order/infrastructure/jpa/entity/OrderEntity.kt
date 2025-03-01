@@ -11,12 +11,12 @@ import java.time.LocalDateTime
 class OrderEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0L,
-    @Column(name = "product_id")
-    var productId: Long,
     @Column(name = "user_id")
     var userId: Long,
     @Column(name = "total_price")
     var totalPrice: Long,
+    @Column(name = "total_quantity")
+    var totalQuantity: Int,
     @Column(name = "status")
     var status: OrderStatus = OrderStatus.REQUESTED,
 
@@ -25,5 +25,8 @@ class OrderEntity(
     @Column(name = "updated_at") @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
     @Enumerated(EnumType.STRING)
-    var delYn: StateYn = StateYn.N
+    var delYn: StateYn = StateYn.N,
+
+    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val orderDetails: List<OrderDetailEntity> = mutableListOf(),
 )

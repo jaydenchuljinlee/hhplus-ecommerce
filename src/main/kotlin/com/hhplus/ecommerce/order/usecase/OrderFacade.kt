@@ -22,42 +22,39 @@ class OrderFacade(
 ) {
 
     fun order(info: OrderCreation): OrderInfo {
-        // 상품 정보 조회
-        val productDetail = productService.getProductDetail(info.toProductDetailQuery())
+        // 상품 정보 재고 감소
+        info.details.forEach {
+            val productDetail = productService.getProductDetail(it.toProductDetailQuery())
+
+            val productDetailItem = DecreaseProductDetailStock(
+                id = productDetail.productDetailId,
+                amount = it.quantity,
+                stock = productDetail.quantity
+            )
+
+            productService.decreaseStock(productDetailItem)
+            productService.deleteCache(productDetail.productId)
+        }
 
         val user = userService.getUserById(info.toUserQuery())
         balanceService.validateBalanceToUse(info.toBalanceTransaction())
 
-        val productDetailItem = DecreaseProductDetailStock(
-            id = productDetail.productDetailId,
-            amount = info.quantity,
-            stock = productDetail.quantity
-        )
-
-        productService.decreaseStock(productDetailItem)
-        productService.deleteCache(productDetail.productId)
         val order = orderService.order(info.toOrderCreationCommand())
 
-        val cartQuery = ProductIdCartQuery(info.productId)
+        // 주문에 대한 부가 작업이라 도메인 이벤트 발행으로 뺴는 게 좋을듯
+//        // 최근 3일 간의 Top5 캐시 갱신
+//        productService.refreshTopFiveLastThreeDays()
+//
+//        val cartQuery = ProductIdCartQuery(it.productId)
+//
+//        val cart = cartService.getCartByProduct(cartQuery)
+//
+//        if (cart != null) {
+//            val cartDeletion = CartDeletion(cart.cartId)
+//            cartService.delete(cartDeletion)
+//        }
 
-        val cart = cartService.getCartByProduct(cartQuery)
-
-        if (cart != null) {
-            val cartDeletion = CartDeletion(cart.cartId)
-            cartService.delete(cartDeletion)
-        }
-
-        // 최근 3일 간의 Top5 캐시 갱신
-        productService.refreshTopFiveLastThreeDays()
-
-        val result = OrderInfo(
-            orderId = order.orderId,
-            userId = user.userId,
-            productId = info.productId,
-            quantity = info.quantity,
-            price = info.price,
-            status = order.status
-        )
+        val result = OrderInfo.from(order)
 
         return result
     }
