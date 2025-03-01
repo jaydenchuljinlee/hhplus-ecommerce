@@ -1,12 +1,14 @@
 package com.hhplus.ecommerce.payment.usecase.dto
 
+import com.hhplus.ecommerce.order.common.OrderStatus
+import com.hhplus.ecommerce.payment.common.PayStatus
 import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
 
 data class PaymentInfo(
     var paymentId: Long,
     var userId: Long,
     var orderId: Long,
-    var status: String,
+    var status: PayStatus,
     var price: Long,
 ) {
     companion object {
