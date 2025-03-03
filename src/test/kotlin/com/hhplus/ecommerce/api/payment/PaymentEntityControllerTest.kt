@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.api.payment
 
 import com.hhplus.ecommerce.payment.api.PaymentController
 import com.hhplus.ecommerce.payment.api.dto.PaymentCreationRequest
+import com.hhplus.ecommerce.payment.common.PayStatus
 import com.hhplus.ecommerce.payment.usecase.PaymentFacade
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
@@ -36,7 +37,7 @@ class PaymentEntityControllerTest {
             userId = 0L,
             orderId = 0L,
             price = 2000,
-            status = "PAYMENT_COMPLETED"
+            status = PayStatus.PAID
         )
 
         BDDMockito.given(paymentFacade.pay(param)).willReturn(result)
@@ -48,6 +49,6 @@ class PaymentEntityControllerTest {
         assertEquals(response.userId, 0L)
         assertEquals(response.orderId, 0L)
         assertEquals(response.price, 2000)
-        assertEquals(response.status, "PAYMENT_COMPLETED")
+        assertEquals(response.status, PayStatus.PAID)
     }
 }

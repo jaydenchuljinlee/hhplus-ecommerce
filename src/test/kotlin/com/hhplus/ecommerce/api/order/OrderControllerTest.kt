@@ -2,8 +2,11 @@ package com.hhplus.ecommerce.api.order
 
 import com.hhplus.ecommerce.order.api.OrderController
 import com.hhplus.ecommerce.order.api.dto.OrderCreationRequest
+import com.hhplus.ecommerce.order.common.OrderStatus
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.usecase.OrderFacade
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
+import com.hhplus.ecommerce.order.usecase.dto.OrderDetailCreation
 import com.hhplus.ecommerce.order.usecase.dto.OrderInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -30,29 +33,41 @@ class OrderControllerTest {
     @Test
     fun successOrderPrepared() {
         // Given
-        val param = OrderCreation(
-            userId = 0L,
+        val detailParam = OrderDetailCreation(
             productId = 0L,
             price = 1000,
             quantity = 2
+        )
+
+        val param = OrderCreation(
+            userId = 0L,
+            details = listOf(detailParam)
+        )
+
+        val detailResult = OrderInfo.DetailInfo(
+            productId = 0L,
+            quantity = 2,
+            price = 1000
         )
 
         val result = OrderInfo(
             orderId = 0L,
             userId = 0L,
-            productId = 0L,
-            quantity = 2,
-            price = 1000,
-            status = "ORDER_COMPLETED"
+            status = OrderStatus.REQUESTED,
+            details = listOf(detailResult)
         )
 
         BDDMockito.given(orderFacade.order(param)).willReturn(result)
 
-        val request = OrderCreationRequest(
-            userId = 0,
+        val detailRequest = OrderCreationRequest.DetailCreationRequest(
             productId = 0,
             price = 1000,
             quantity = 2
+        )
+
+        val request = OrderCreationRequest(
+            userId = 0,
+            details = listOf(detailRequest)
         )
 
         // When
@@ -60,9 +75,11 @@ class OrderControllerTest {
 
         // Then
         assertEquals(response.orderId, 0L)
-        assertEquals(response.productId, 0L)
-        assertEquals(response.price, 1000)
-        assertEquals(response.quantity, 2)
-        assertEquals(response.status, "ORDER_COMPLETED")
+        assertEquals(response.status, OrderStatus.REQUESTED)
+        response.details.forEach { res ->
+            assertEquals(res.productId, detailRequest.productId)
+            assertEquals(res.price, detailRequest.price)
+            assertEquals(res.quantity, detailRequest.quantity)
+        }
     }
 }

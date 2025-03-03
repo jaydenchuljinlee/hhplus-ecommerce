@@ -3,6 +3,7 @@ package com.hhplus.ecommerce.domain.product
 import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.product.domain.ProductService
@@ -25,22 +26,26 @@ class ProductServiceTest: IntegrationConfig() {
     @BeforeEach
     fun before() {
         (1..7).forEach {
-            val order_command = OrderCreationCommand(
-                userId = 1,
+            val orderDetailCommand = OrderDetailCreationCommand(
                 productId = it.toLong(),
                 quantity = 1,
                 price = 100
             )
 
-            orderService.order(order_command)
+            val orderCommand = OrderCreationCommand(
+                userId = 1,
+                details = listOf(orderDetailCommand)
+            )
 
-            val payment_command = CreationPaymentCommand(
+            orderService.order(orderCommand)
+
+            val paymentCommand = CreationPaymentCommand(
                 orderId = it.toLong(),
                 userId = 1,
                 price = 100
             )
 
-            paymentService.pay(payment_command)
+            paymentService.pay(paymentCommand)
         }
     }
 

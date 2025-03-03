@@ -4,8 +4,11 @@ import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.cart.domain.CartService
 import com.hhplus.ecommerce.cart.domain.dto.CartResult
 import com.hhplus.ecommerce.cart.domain.dto.ProductIdCartQuery
+import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.domain.dto.OrderResult
 import com.hhplus.ecommerce.product.domain.ProductService
 import com.hhplus.ecommerce.product.domain.dto.ProductDetailQuery
@@ -15,6 +18,7 @@ import com.hhplus.ecommerce.user.domain.dto.UserQuery
 import com.hhplus.ecommerce.user.domain.dto.UserResult
 import com.hhplus.ecommerce.order.usecase.OrderFacade
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
+import com.hhplus.ecommerce.order.usecase.dto.OrderDetailCreation
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -63,22 +67,31 @@ class OrderFacadeTest {
         )
         BDDMockito.given(productService.getProductDetail(productQuery)).willReturn(productResult)
 
-
-        val orderCommand = OrderCreationCommand(
-            userId = userQuery.userId,
+        val orderDetailCommand = OrderDetailCreationCommand(
             productId = productResult.productId,
             quantity = 5,
             price = 200
         )
 
+        val orderCommand = OrderCreationCommand(
+            userId = userQuery.userId,
+            details = listOf(orderDetailCommand)
+        )
+
+        val orderDetailResult = OrderDetailResult(
+            id = 0,
+            productId = productResult.productId,
+            quantity = orderDetailCommand.quantity,
+            price = orderDetailCommand.price,
+        )
+
         val orderResult = OrderResult(
             orderId = 4,
             userId = userResult.userId,
-            productId = productResult.productId,
-            quantity = productResult.quantity - orderCommand.quantity,
-            price = orderCommand.price,
-            totalPrice = orderCommand.price * orderCommand.quantity,
-            status =  "ORDER_REQUEST"
+            details = listOf(orderDetailResult),
+            totalPrice = listOf(orderDetailResult).map { it.price }.sum(),
+            totalQuantity = listOf(orderDetailResult).map { it.quantity }.sum(),
+            status =  OrderStatus.REQUESTED
         )
 
         BDDMockito.given(orderService.order(orderCommand)).willReturn(orderResult)
@@ -96,20 +109,26 @@ class OrderFacadeTest {
 
         BDDMockito.given(cartService.getCartByProduct(cartQuery)).willReturn(cartResult)
 
+        val orderDetailCreation = OrderDetailCreation(
+            productId = productResult.productId,
+            price = orderDetailCommand.price,
+            quantity = orderDetailCommand.quantity
+        )
+
         val orderCreation = OrderCreation(
             userId = userQuery.userId,
-            productId = productResult.productId,
-            price = orderCommand.price,
-            quantity = orderCommand.quantity
+            details = listOf(orderDetailCreation)
         )
 
         val orderInfo = orderFacade.order(orderCreation)
 
         assertEquals(orderInfo.orderId, orderResult.orderId)
         assertEquals(orderInfo.userId, orderResult.userId)
-        assertEquals(orderInfo.productId, orderResult.productId)
-        assertEquals(orderInfo.price, orderResult.price)
-        assertEquals(orderInfo.quantity, orderResult.quantity)
         assertEquals(orderInfo.status, orderResult.status)
+        orderInfo.details.forEach { info ->
+            assertEquals(info.productId, orderDetailResult.productId)
+            assertEquals(info.price, orderDetailResult.price)
+            assertEquals(info.quantity, orderDetailResult.quantity)
+        }
     }
 }

@@ -2,9 +2,12 @@ package com.hhplus.ecommerce.facade
 
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.balance.domain.dto.BalanceResult
+import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
 import com.hhplus.ecommerce.order.domain.dto.OrderResult
+import com.hhplus.ecommerce.payment.common.PayStatus
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
@@ -45,17 +48,23 @@ class PaymentFacadeTest {
 
         val orderQuery = OrderQuery(
             orderId = 2,
-            status = "ORDER_REQUEST"
+            status = OrderStatus.REQUESTED
+        )
+
+        val orderDetailResult = OrderDetailResult(
+            id = 2,
+            productId = 2,
+            quantity = 5,
+            price = 100
         )
 
         val orderResult = OrderResult(
             orderId = 2,
             userId = balanceResult.userId,
-            productId = 2,
-            quantity = 5,
-            price = 100,
-            totalPrice = 500,
-            status =  "ORDER_REQUEST"
+            totalPrice = listOf(orderDetailResult).map { it.price }.sum(),
+            totalQuantity = listOf(orderDetailResult).map { it.quantity }.sum(),
+            status =  OrderStatus.REQUESTED,
+            details = listOf(orderDetailResult)
         )
 
         BDDMockito.given(orderService.getOrder(orderQuery)).willReturn(orderResult)
@@ -70,7 +79,7 @@ class PaymentFacadeTest {
             paymentId = 1,
             userId = balanceResult.userId,
             orderId = orderResult.orderId,
-            status = "PAYMENT_COMPLETED",
+            status = PayStatus.PAID,
             price = orderResult.totalPrice,
         )
 
