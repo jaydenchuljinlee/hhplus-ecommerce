@@ -1,0 +1,7 @@
+POST http://localhost:8888/payment
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "userId": 1
+}
