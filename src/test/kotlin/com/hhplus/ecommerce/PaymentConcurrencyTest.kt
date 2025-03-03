@@ -2,8 +2,10 @@ package com.hhplus.ecommerce
 
 import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.balance.infrastructure.BalanceRepository
+import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
 import com.hhplus.ecommerce.order.usecase.OrderFacade
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
+import com.hhplus.ecommerce.order.usecase.dto.OrderDetailCreation
 import com.hhplus.ecommerce.payment.usecase.PaymentFacade
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -45,7 +47,11 @@ class PaymentConcurrencyTest: IntegrationConfig() {
                     // 모든 스레드가 준비될 때까지 대기
                     readyLatch.await()
 
-                    val orderCommand = OrderCreation(1, i.toLong()+1, 1, 100)
+                    val orderDetailCommand = OrderDetailCreation(
+                        i.toLong()+1, 1, 100
+                    )
+
+                    val orderCommand = OrderCreation(1, details = listOf(orderDetailCommand))
 
                     // 주문 신청
                     val order = orderFacade.order(orderCommand)
