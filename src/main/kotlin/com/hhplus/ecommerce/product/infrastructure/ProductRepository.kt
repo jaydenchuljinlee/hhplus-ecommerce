@@ -38,11 +38,10 @@ class ProductRepository(
     }
 
     @Transactional
-    override fun decreaseStock(productDetailId: Long, amount: Int): ProductDetailEntity {
-        val productDetailEntity = productDetailJpaRepository.findById(productDetailId).orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
+    override fun decreaseStock(productId: Long, amount: Int): ProductDetailEntity {
+        val productDetailEntity = productDetailJpaRepository.findByProductId(productId).orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
 
         productDetailEntity.decrease(amount)
-        println(productDetailEntity.quantity)
         productDetailJpaRepository.save(productDetailEntity)
 
         return productDetailEntity

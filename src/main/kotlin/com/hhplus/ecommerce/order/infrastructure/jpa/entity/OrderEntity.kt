@@ -17,6 +17,7 @@ class OrderEntity(
     var totalPrice: Long,
     @Column(name = "total_quantity")
     var totalQuantity: Int,
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     var status: OrderStatus = OrderStatus.REQUESTED,
 
@@ -28,5 +29,5 @@ class OrderEntity(
     var delYn: StateYn = StateYn.N,
 
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val orderDetails: List<OrderDetailEntity> = mutableListOf(),
+    val orderDetails: MutableList<OrderDetailEntity> = mutableListOf(),
 )

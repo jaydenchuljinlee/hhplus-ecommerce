@@ -40,30 +40,44 @@ class RedisLockAspect(
         }
 
         val lock = redissonClient.getLock(key)
-        if (!lock.tryLock(waitTime, releaseTime, TimeUnit.SECONDS)) {
-            logger.error("REDIS:PUB_SUB:LOCK:ERROR:$key -> 락을 얻지 못 했습니다.")
-            throw IllegalStateException("Could not acquire lock for key: $key")
-        }
 
-        return lockSupporter.withLock(key) {
-            try {
-                // 트랜잭션 시작
-                TransactionTemplate(transactionManager).execute { transactionStatus ->
-                    try {
-                        joinPoint.proceed()
-                    } catch (ex: Throwable) {
-                        transactionStatus.setRollbackOnly()
-                        throw ex
+        try {
+            // ✅ `lock.lock()`을 사용하여 락을 기다렸다가 얻음
+            lock.lock(-1, TimeUnit.SECONDS) // leaseTime = -1 (Watchdog 활성화)
+
+            return lockSupporter.withLock(key) {
+                var transactionSuccess = false
+                try {
+                    // ✅ 트랜잭션 시작
+                    TransactionTemplate(transactionManager).execute { transactionStatus ->
+                        try {
+                            val returnValue = joinPoint.proceed() // ✅ 원래 메서드 실행 후 반환값 저장
+                            transactionSuccess = true
+                            returnValue // ✅ 최종적으로 반환할 값
+                        } catch (ex: Throwable) {
+                            transactionStatus.setRollbackOnly()
+                            logger.error("REDIS:LOCK:ERROR:$key -> 트랜잭션 롤백 발생, Lock 해제 안 함")
+                            throw ex
+                        }
+                    }
+                } finally {
+                    // ✅ 트랜잭션이 성공적으로 커밋된 경우에만 lock 해제
+                    if (transactionSuccess) {
+                        if (lock.isHeldByCurrentThread) {
+                            lock.unlock()
+                        } else {
+                            logger.warn("REDIS:LOCK:WARN:$key -> 현재 쓰레드가 락을 보유하지 않은 상태에서 unlock()을 호출하려 했습니다.")
+                        }
+                    } else {
+                        logger.warn("REDIS:LOCK:WARN:$key -> 트랜잭션 롤백으로 인해 락을 해제하지 않음")
                     }
                 }
-            } finally {
-                lock.unlock() // Lock 해제
             }
-
-//
-//            return lockSupporter.withLock(key) {
-//            joinPoint.proceed()
+        } catch (ex: Exception) {
+            logger.error("REDIS:LOCK:ERROR:$key -> 락을 얻는 중 예외 발생: ${ex.message}")
+            throw ex
         }
+
     }
 
     // SpEL 표현식을 평가하여 실제 락 키로 변환하는 함수

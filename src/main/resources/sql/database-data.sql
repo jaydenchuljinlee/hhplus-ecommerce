@@ -9,11 +9,11 @@ INSERT INTO user_info (id, name, phone) VALUES
 -- 각 사용자와 매핑된 balance 데이터 삽입
 -- 예시로 각 사용자에게 10000.00의 초기 잔액을 부여
 INSERT INTO balance (user_id, balance) VALUES
-    (1, 10000),
-    (2, 10000),
-    (3, 10000),
-    (4, 10000),
-    (5, 18000);
+    (1, 10000000),
+    (2, 10000000),
+    (3, 10000000),
+    (4, 10000000),
+    (5, 10000000);
 
 
 -- 1. Product 삽입 (상품 이름: 가방)
@@ -50,7 +50,7 @@ INSERT INTO product_detail (product_id, product_option_id, quantity, created_at,
 VALUES (
            (SELECT id FROM product WHERE name = '가방'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
-           1,
+           50,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
@@ -59,7 +59,7 @@ INSERT INTO product_detail (product_id, product_option_id, quantity, created_at,
 VALUES (
            (SELECT id FROM product WHERE name = '신발'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
-           1,
+           10,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );

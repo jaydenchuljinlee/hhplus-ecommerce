@@ -18,8 +18,9 @@ class OrderService(
     @Transactional
     fun order(item: OrderCreationCommand): OrderResult {
         val entity = item.toEntity()
-        item.details.map { it.toEntity(entity) }
-        orderRepository.insertOrUpdate(item.toEntity())
+        val details = item.details.map { it.toEntity(entity) }
+        entity.orderDetails.addAll(details)
+        orderRepository.insertOrUpdate(entity)
         return OrderResult.from(entity)
     }
 

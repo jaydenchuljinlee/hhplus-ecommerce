@@ -10,7 +10,7 @@ spring:
 
   jpa:
     defer-datasource-initialization: true
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -24,6 +24,6 @@ jwt:
 logging:
   level:
     root: INFO                    # 기본 로그 레벨 (INFO)
-    org.hibernate.SQL: DEBUG
+    # org.hibernate.SQL: DEBUG
     org.springframework.web: DEBUG # 특정 패키지에 대한 로그 레벨 (예: Spring MVC 관련)
     com.hhplus.ecommerce: DEBUG

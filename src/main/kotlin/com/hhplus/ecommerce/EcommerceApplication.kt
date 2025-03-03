@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 
 @EnableAspectJAutoProxy
+@SpringBootApplication
 class EcommerceApplication
 
 fun main(args: Array<String>) {

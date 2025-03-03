@@ -32,7 +32,7 @@ hhplus:
   kafka:
     balance:
       group-id: OUTBOX
-      topic: PAY_HISTORY
+      topic: BALANCE_HISTORY
     payment:
       group-id: OUTBOX
       topic: PAY_HISTORY

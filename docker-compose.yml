@@ -80,32 +80,6 @@ services:
     networks:
       - app-net
 
-  spring-app:
-    image: ecommerce-app:latest
-    container_name: hhplus-spring-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      JAVA_OPTS: "-Xms256m -Xmx512m"
-      SPRING_PROFILES_ACTIVE: dev
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "2"  # 최대 2개의 CPU 코어 사용
-#          memory: 1g  # 최대 1GB 메모리 사용
-#        reservations:
-#          cpus: "1"  # 최소 1개의 CPU 코어 보장
-#          memory: 512m  # 최소 512MB 메모리 보장
-    ports:
-      - "8080:8080"
-    depends_on:
-      - redis
-      - mysql
-      - mongodb
-      - kafka
-    networks:
-      - app-net
 networks:
   app-net:
     driver: bridge

@@ -15,7 +15,8 @@ class RedissonConfig {
     fun redissonClient(): RedissonClient {
         val config = Config()
         config.useSingleServer()
-            .setAddress("redis://hhplus-redis:6379") // Docker에서 Redis가 실행 중인 호스트
+            .setAddress("redis://localhost:6379")
+            // .setAddress("redis://hhplus-redis:6379") // Docker에서 Redis가 실행 중인 호스트
             .setConnectionMinimumIdleSize(10)
             .setConnectionPoolSize(64)
 

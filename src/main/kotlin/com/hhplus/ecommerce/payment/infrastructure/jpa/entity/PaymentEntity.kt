@@ -15,6 +15,7 @@ class PaymentEntity(
     var id: Long = 0L,
     @Column(name = "order_id")
     var orderId: Long,
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     var status: PayStatus,
     @Column(name = "payment_method")
@@ -27,5 +28,6 @@ class PaymentEntity(
     @Column(name = "updated_at") @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
     @Enumerated(EnumType.STRING)
+    @Column(name = "del_yn")
     var delYn: StateYn = StateYn.N
 )

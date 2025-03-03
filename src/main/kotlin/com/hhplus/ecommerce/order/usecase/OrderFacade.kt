@@ -24,16 +24,13 @@ class OrderFacade(
     fun order(info: OrderCreation): OrderInfo {
         // 상품 정보 재고 감소
         info.details.forEach {
-            val productDetail = productService.getProductDetail(it.toProductDetailQuery())
-
             val productDetailItem = DecreaseProductDetailStock(
-                id = productDetail.productDetailId,
+                id = it.productId,
                 amount = it.quantity,
-                stock = productDetail.quantity
             )
 
             productService.decreaseStock(productDetailItem)
-            productService.deleteCache(productDetail.productId)
+            productService.deleteCache(it.productId)
         }
 
         val user = userService.getUserById(info.toUserQuery())

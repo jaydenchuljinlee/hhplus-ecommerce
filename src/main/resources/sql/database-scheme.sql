@@ -102,7 +102,7 @@ CREATE TABLE order_info (
     user_id BIGINT NOT NULL,
     quantity INT,
     total_price BIGINT DEFAULT 0 NOT NULL,
-    status ENUM('REQUESTED', 'CONFIRMED', 'CANCELED') NOT NULL DEFAULT 'REQUESTED',
+    status VARCHAR(255),
 
     -- 베이스 필드
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성일
@@ -123,8 +123,8 @@ CREATE TABLE payment (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
     price BIGINT DEFAULT 0 NOT NULL,
-    status ENUM('PENDING', 'PAID', 'FAILED') NOT NULL DEFAULT 'PENDING',
-    payment_method ENUM('CREDIT_CARD', 'BANK_TRANSFER', 'POINTS') NOT NULL,
+    status VARCHAR(255),
+    payment_method VARCHAR(255),
 
     -- 베이스 필드
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성일
