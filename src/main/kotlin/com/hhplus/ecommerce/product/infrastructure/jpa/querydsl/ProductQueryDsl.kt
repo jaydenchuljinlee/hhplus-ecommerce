@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.product.infrastructure.jpa.querydsl
 
+import com.hhplus.ecommerce.order.infrastructure.jpa.entity.QOrderDetailEntity
 import com.hhplus.ecommerce.order.infrastructure.jpa.entity.QOrderEntity
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.QPaymentEntity
 import com.hhplus.ecommerce.product.infrastructure.dto.BestSellingProduct
@@ -20,6 +21,7 @@ class ProductQueryDsl(
 
     private val payment: QPaymentEntity = QPaymentEntity.paymentEntity
     private val order: QOrderEntity = QOrderEntity.orderEntity
+    private val orderDetail: QOrderDetailEntity = QOrderDetailEntity.orderDetailEntity
 
     private val user: QUserEntity = QUserEntity.userEntity
 
@@ -30,15 +32,16 @@ class ProductQueryDsl(
                 product.id.`as`("productId"),
                 product.name.`as`("productName"),
                 productDetail.quantity.max().`as`("stock"),
-                order.totalPrice.sum().`as`("totalOrderCount"),
+                order.totalQuantity.sum().`as`("totalOrderCount"),
                 payment.price.sum().`as`("totalPayPrice"),  // payment.price의 합계
                 order.id.count().`as`("orderCount"),  // order의 합계
                 payment.id.count().`as`("payCount")  // payment의 합계
                 ))
             .innerJoin(productDetail).on(productDetail.productId.eq(product.id))
             .fetchJoin()
-            // .innerJoin(order).on(order.productId.eq(product.id))
-            // .fetchJoin()
+            .innerJoin(orderDetail).on(orderDetail.productId.eq(product.id))
+             .innerJoin(order).on(order.id.eq(orderDetail.order.id))
+             .fetchJoin()
             .innerJoin(payment).on(payment.orderId.eq(order.id))
             .fetchJoin()
             .innerJoin(user).on(user.id.eq(order.userId))

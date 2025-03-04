@@ -61,8 +61,8 @@ class PaymentFacadeTest {
         val orderResult = OrderResult(
             orderId = 2,
             userId = balanceResult.userId,
-            totalPrice = listOf(orderDetailResult).map { it.price }.sum(),
-            totalQuantity = listOf(orderDetailResult).map { it.quantity }.sum(),
+            totalPrice = listOf(orderDetailResult).sumOf { it.price },
+            totalQuantity = listOf(orderDetailResult).sumOf { it.quantity },
             status =  OrderStatus.REQUESTED,
             details = listOf(orderDetailResult)
         )
@@ -72,7 +72,7 @@ class PaymentFacadeTest {
         val paymentCommand = CreationPaymentCommand(
             userId = balanceResult.userId,
             orderId = orderResult.orderId,
-            price = orderResult.totalPrice
+            price = orderResult.totalPrice * orderResult.totalQuantity
         )
 
         val paymentResult = PaymentResult(
@@ -80,7 +80,7 @@ class PaymentFacadeTest {
             userId = balanceResult.userId,
             orderId = orderResult.orderId,
             status = PayStatus.PAID,
-            price = orderResult.totalPrice,
+            price = orderResult.totalPrice * orderResult.totalQuantity,
         )
 
         BDDMockito.given(paymentService.pay(paymentCommand)).willReturn(paymentResult)

@@ -59,13 +59,11 @@ class OrderFacadeTest {
         )
         BDDMockito.given(userService.getUserById(userQuery)).willReturn(userResult)
 
-        val productQuery = ProductDetailQuery(2)
         val productResult = ProductDetailResult(
             productId = 2,
             productDetailId = 3,
             quantity = 10,
         )
-        BDDMockito.given(productService.getProductDetail(productQuery)).willReturn(productResult)
 
         val orderDetailCommand = OrderDetailCreationCommand(
             productId = productResult.productId,
@@ -96,18 +94,18 @@ class OrderFacadeTest {
 
         BDDMockito.given(orderService.order(orderCommand)).willReturn(orderResult)
 
-        val cartQuery = ProductIdCartQuery(
-            productId = productResult.productId
-        )
-
-        val cartResult = CartResult(
-            cartId = 5,
-            userId = userResult.userId,
-            productId = productResult.productId,
-            quantity = 1
-        )
-
-        BDDMockito.given(cartService.getCartByProduct(cartQuery)).willReturn(cartResult)
+//        val cartQuery = ProductIdCartQuery(
+//            productId = productResult.productId
+//        )
+//
+//        val cartResult = CartResult(
+//            cartId = 5,
+//            userId = userResult.userId,
+//            productId = productResult.productId,
+//            quantity = 1
+//        )
+//
+//        BDDMockito.given(cartService.getCartByProduct(cartQuery)).willReturn(cartResult)
 
         val orderDetailCreation = OrderDetailCreation(
             productId = productResult.productId,
