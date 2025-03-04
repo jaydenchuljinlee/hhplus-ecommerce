@@ -27,7 +27,6 @@ class PubSubLockSupporter(
             action()  // 락 획득 성공 시 `action`의 결과 반환
         } finally {
             logger.info("REDIS:PUB_SUB:UNLOCK:INFO:$key")
-            lock.unlock()
         }
     }
 }

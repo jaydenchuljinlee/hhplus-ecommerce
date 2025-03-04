@@ -11,6 +11,7 @@ import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class PaymentFacade(

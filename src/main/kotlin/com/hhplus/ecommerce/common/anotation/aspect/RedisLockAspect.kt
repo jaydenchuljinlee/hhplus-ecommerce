@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
+import org.redisson.api.RLock
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.expression.ExpressionParser
@@ -25,8 +26,9 @@ class RedisLockAspect(
     private val transactionManager: PlatformTransactionManager
 ) {
     private val logger = LoggerFactory.getLogger(RedisLockAspect::class.java)
-    private val waitTime = 10L
-    private val releaseTime = 1L
+    private val waitTime = 5L
+    private val releaseTime = -1L // ✅ Redisson Watchdog 활성화
+    // private val releaseTime = 3L
     private val parser: ExpressionParser = SpelExpressionParser()
 
     @Around("@annotation(redisLock)")
@@ -39,48 +41,19 @@ class RedisLockAspect(
             RedisLockStrategy.PUB_SUB -> pubSubLockSupporter
         }
 
-        val lock = redissonClient.getLock(key)
-
-        try {
-            // ✅ `lock.lock()`을 사용하여 락을 기다렸다가 얻음
-            lock.lock(-1, TimeUnit.SECONDS) // leaseTime = -1 (Watchdog 활성화)
-
-            return lockSupporter.withLock(key) {
-                var transactionSuccess = false
+        return lockSupporter.withLock(key) {
+            TransactionTemplate(transactionManager).execute { transactionStatus ->
                 try {
-                    // ✅ 트랜잭션 시작
-                    TransactionTemplate(transactionManager).execute { transactionStatus ->
-                        try {
-                            val returnValue = joinPoint.proceed() // ✅ 원래 메서드 실행 후 반환값 저장
-                            transactionSuccess = true
-                            returnValue // ✅ 최종적으로 반환할 값
-                        } catch (ex: Throwable) {
-                            transactionStatus.setRollbackOnly()
-                            logger.error("REDIS:LOCK:ERROR:$key -> 트랜잭션 롤백 발생, Lock 해제 안 함")
-                            throw ex
-                        }
-                    }
-                } finally {
-                    // ✅ 트랜잭션이 성공적으로 커밋된 경우에만 lock 해제
-                    if (transactionSuccess) {
-                        if (lock.isHeldByCurrentThread) {
-                            lock.unlock()
-                        } else {
-                            logger.warn("REDIS:LOCK:WARN:$key -> 현재 쓰레드가 락을 보유하지 않은 상태에서 unlock()을 호출하려 했습니다.")
-                        }
-                    } else {
-                        logger.warn("REDIS:LOCK:WARN:$key -> 트랜잭션 롤백으로 인해 락을 해제하지 않음")
-                    }
+                    joinPoint.proceed()
+                } catch (ex: Throwable) {
+                    transactionStatus.setRollbackOnly()
+                    logger.error("REDIS:LOCK:ERROR:$key -> 트랜잭션 롤백 발생")
+                    throw ex
                 }
             }
-        } catch (ex: Exception) {
-            logger.error("REDIS:LOCK:ERROR:$key -> 락을 얻는 중 예외 발생: ${ex.message}")
-            throw ex
         }
-
     }
 
-    // SpEL 표현식을 평가하여 실제 락 키로 변환하는 함수
     private fun parseKey(keyExpression: String, joinPoint: ProceedingJoinPoint): String {
         val signature = joinPoint.signature as MethodSignature
         val paramNames = signature.parameterNames
@@ -91,4 +64,5 @@ class RedisLockAspect(
 
         return parser.parseExpression(keyExpression).getValue(context, String::class.java) ?: ""
     }
+
 }

@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
 @Entity @Table(name = "balance")
-class BalanceEntity(
+data class BalanceEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0L,
     @Column(name = "user_id")

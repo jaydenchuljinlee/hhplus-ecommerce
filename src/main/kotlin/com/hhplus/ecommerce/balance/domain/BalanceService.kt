@@ -74,6 +74,8 @@ class BalanceService(
 
         balanceRepository.insertOrUpdate(balanceEntity)
 
+        println("잔액 정보 => ${balanceEntity.toString()}")
+
         val balanceHistoryDocument = BalanceHistoryDocument(
             balanceId = balanceEntity.id,
             amount = item.amount,
