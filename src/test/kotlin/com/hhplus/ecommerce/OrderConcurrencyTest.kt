@@ -4,6 +4,7 @@ import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.product.infrastructure.jpa.ProductDetailJpaRepository
 import com.hhplus.ecommerce.order.usecase.OrderFacade
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
+import com.hhplus.ecommerce.order.usecase.dto.OrderDetailCreation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -40,8 +41,10 @@ class OrderConcurrencyTest: IntegrationConfig() {
                     // 모든 스레드가 준비될 때까지 대기
                     readyLatch.await()
 
+                    val detailCommand = OrderDetailCreation(3L, 1, 100)
+
                     // 요청마다 같은 상품 ID를 사용하여 LectureCommandData 생성
-                    val command = OrderCreation(i.toLong(), 1L, 1, 100)
+                    val command = OrderCreation(i.toLong(), listOf(detailCommand))
 
                     // 주문 신청
                     orderFacade.order(command)
@@ -66,7 +69,7 @@ class OrderConcurrencyTest: IntegrationConfig() {
         // 스레드 풀 종료
         executorService.shutdown()
 
-        val productDetail = productRepository.findById(1).get()
+        val productDetail = productRepository.findById(3).get()
 
         assertEquals(productDetail.quantity, 0) // 수량이 남았는지 검사
         assertEquals(successUserIds.size, 1) // 5건의 요청중 가장 먼저 처리된건이 성공한다.

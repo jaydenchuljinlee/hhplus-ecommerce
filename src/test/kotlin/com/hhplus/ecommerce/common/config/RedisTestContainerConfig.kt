@@ -27,6 +27,7 @@ class RedisTestContainerConfig {
             connectionMinimumIdleSize = 10
             connectionPoolSize = 64
         }
+        config.lockWatchdogTimeout = 30000
 
         return Redisson.create(config)
     }

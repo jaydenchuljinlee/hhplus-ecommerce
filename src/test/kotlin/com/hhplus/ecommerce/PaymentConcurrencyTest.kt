@@ -1,5 +1,8 @@
 package com.hhplus.ecommerce
 
+import com.hhplus.ecommerce.balance.domain.BalanceService
+import com.hhplus.ecommerce.balance.domain.dto.BalanceQuery
+import com.hhplus.ecommerce.balance.domain.respository.IBalanceRepository
 import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.balance.infrastructure.BalanceRepository
 import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
@@ -24,14 +28,16 @@ class PaymentConcurrencyTest: IntegrationConfig() {
     private lateinit var orderFacade: OrderFacade
 
     @Autowired
-    private lateinit var balanceRepository: BalanceRepository
+    private lateinit var balanceService: BalanceService
 
     @DisplayName("같은 사용자가 동시에 주문을 하면 잔액 정합성이 일치해야 한다")
     @Test
     fun concurrencyDuplicationTest() {
         val totalRequests = 3
 
-        val original = balanceRepository.findByUserId(1)
+        val balanceQuery = BalanceQuery(1)
+
+        val original = balanceService.getBalance(balanceQuery)
 
         // 동시 요청을 대기할 Latch 설정
         val readyLatch = CountDownLatch(1)
@@ -82,7 +88,7 @@ class PaymentConcurrencyTest: IntegrationConfig() {
         // 스레드 풀 종료
         executorService.shutdown()
 
-        val newOne = balanceRepository.findByUserId(1)
+        val newOne = balanceService.getBalance(balanceQuery)
 
         assertEquals(original.balance - newOne.balance, 300)
 
