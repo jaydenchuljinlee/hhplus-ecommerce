@@ -80,7 +80,37 @@ services:
     networks:
       - app-net
 
-  spring-app:
+prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - app-net
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    networks:
+      - app-net
+
+spring-app:
     image: ecommerce-app:latest
     container_name: hhplus-spring-app
     build:
@@ -104,8 +134,7 @@ services:
       - mysql
       - mongodb
       - kafka
-    networks:
-      - app-net
+      
 networks:
   app-net:
     driver: bridge
@@ -113,3 +142,4 @@ networks:
 volumes:
   mysql-data:
   mongo-data:
+  grafana-data:

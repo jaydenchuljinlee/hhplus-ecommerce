@@ -48,6 +48,8 @@ dependencies {
 
 	// logging
 	implementation("org.springframework.boot:spring-boot-starter-logging")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
