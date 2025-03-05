@@ -33,13 +33,32 @@
 
 ---
 
-## Step 8
+## 주요 작업 내용
 
-- 주문 동시성 제어 -> [주문 동시성 제어 링크](/docs/concurrency/order.md)
-  - 주문 동시성 제어의 경우, 여러 사용자가 동시에 한 상품에 접근하는 상황으로 테스트를 진행했습니다.
-- 결제 동시성 제어 -> [결제 동시성 제어 링크](/docs/concurrency/payment.md)
-  - 결제 동시성 제어의 경우, 한 사용자가 동시에 여러 결제를 하는 상황으로 테스트를 진행했습니다.
+### 동시성 제어
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/6)
 
+### 레디스를 통한 분산락 처리
+- [관련 PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/9)
 
+### 캐싱 전략
+- [관련 PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/11)
 
+### DB 인덱스에 대한 성능 분석
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/12)
+
+### 공통 작업 분리
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/5)
+
+### 서비스 규모 확장에 대한 분석
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/13)
+
+### 카프카를 통한 아웃박스 패턴
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/15)
+
+### 부하 테스트
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/23)
+
+### 프로메테우스 & 그라파나를 통한 모니터링 및 장애 대응
+- [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/24)
 
