@@ -39,7 +39,7 @@ class ProductControllerTest {
             price = 1000,
             stock = 100,
         )
-        BDDMockito.given(productService.getProduct(param)).willReturn(result)
+        BDDMockito.given(productService.getProductCache(param)).willReturn(result)
 
         val request = ProductInfoQueryRequest(0)
         val response = productController.getProductFromCache(request).data!!
