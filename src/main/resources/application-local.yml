@@ -36,3 +36,6 @@ hhplus:
     payment:
       group-id: OUTBOX
       topic: PAY_HISTORY
+    product:
+      group-id: OUTBOX
+      topic: PRODCUT_STOCK
