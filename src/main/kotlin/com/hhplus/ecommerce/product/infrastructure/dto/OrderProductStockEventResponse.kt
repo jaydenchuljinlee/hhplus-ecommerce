@@ -1,5 +1,7 @@
 package com.hhplus.ecommerce.product.infrastructure.dto
 
+import com.hhplus.ecommerce.order.domain.dto.OrderDeletionCommand
+
 data class OrderProductStockEventResponse(
     var orderId: Long,
     var userId: Long,

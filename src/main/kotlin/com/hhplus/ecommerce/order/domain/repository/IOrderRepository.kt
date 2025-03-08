@@ -10,4 +10,5 @@ interface IOrderRepository {
     fun findDetailsById(orderId: Long): List<OrderDetailEntity>
 
     fun insertOrUpdate(entity: OrderEntity): OrderEntity
+    fun deleteOrderDetail(orderId: Long, productId: Long)
 }

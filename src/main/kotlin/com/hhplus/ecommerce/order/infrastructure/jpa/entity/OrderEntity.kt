@@ -30,4 +30,20 @@ class OrderEntity(
 
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
     val orderDetails: MutableList<OrderDetailEntity> = mutableListOf(),
-)
+) {
+    fun removeOf(productId: Long) {
+        val detail = this.orderDetails.filter { it.productId == productId }[0]
+        this.totalPrice -= (detail.price * detail.quantity)
+        this.totalQuantity -= detail.quantity
+
+        if (this.isZero()) {
+            this.delYn = StateYn.Y
+        }
+
+        orderDetails.remove(detail)
+    }
+
+    fun isZero(): Boolean {
+        return this.totalPrice <= 0  && this.totalQuantity <= 0
+    }
+}

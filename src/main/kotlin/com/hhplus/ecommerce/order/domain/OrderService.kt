@@ -16,18 +16,23 @@ class OrderService(
     }
 
     @Transactional
-    fun order(item: OrderCreationCommand): OrderResult {
-        val entity = item.toEntity()
-        val details = item.details.map { it.toEntity(entity) }
+    fun order(command: OrderCreationCommand): OrderResult {
+        val entity = command.toEntity()
+        val details = command.details.map { it.toEntity(entity) }
         entity.orderDetails.addAll(details)
         orderRepository.insertOrUpdate(entity)
         return OrderResult.from(entity)
     }
 
-    fun orderComplete(item: OrderCompleteCommand) {
-        val entity = orderRepository.findByIdAndStatus(item.orderId, OrderStatus.REQUESTED)
+    @Transactional
+    fun orderComplete(command: OrderCompleteCommand) {
+        val entity = orderRepository.findByIdAndStatus(command.orderId, OrderStatus.REQUESTED)
         entity.status = OrderStatus.CONFIRMED
 
         orderRepository.insertOrUpdate(entity)
+    }
+
+    fun deleteOrderDetail(command: OrderDeletionCommand) {
+        orderRepository.deleteOrderDetail(command.orderId, command.productId)
     }
 }

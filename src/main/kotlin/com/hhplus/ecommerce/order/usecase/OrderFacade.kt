@@ -23,10 +23,8 @@ import java.util.*
 @Component
 class OrderFacade(
     private val userService: UserService,
-    private val productService: ProductService,
     private val balanceService: BalanceService,
     private val orderService: OrderService,
-    private val cartService: CartService,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val productStockKafkaProperties: ProductStockKafkaProperties,
     private val objectMapper: ObjectMapper,

@@ -39,3 +39,6 @@ hhplus:
     product:
       group-id: OUTBOX
       topic: PRODCUT_STOCK
+    order:
+      group-id: OUTBOX
+      topic: ORDER_STOCK_FAIL
