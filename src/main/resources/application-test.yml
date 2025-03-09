@@ -38,3 +38,9 @@ hhplus:
     payment:
       group-id: OUTBOX_TEST
       topic: PAYMENT_HISTORY_TEST
+    product:
+      group-id: OUTBOX_TEST
+      topic: PRODUCT_STOCK_TEST
+    order:
+      group-id: OUTBOX_TEST
+      topic: ORDER_STOCK_FAIL_TEST

@@ -1,9 +1,11 @@
 package com.hhplus.ecommerce.facade
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.cart.domain.CartService
 import com.hhplus.ecommerce.cart.domain.dto.CartResult
 import com.hhplus.ecommerce.cart.domain.dto.ProductIdCartQuery
+import com.hhplus.ecommerce.common.properties.ProductStockKafkaProperties
 import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.context.ApplicationEventPublisher
 import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
@@ -33,19 +36,21 @@ class OrderFacadeTest {
     @Mock
     private lateinit var userService: UserService
     @Mock
-    private lateinit var productService: ProductService
-    @Mock
     private lateinit var balanceService: BalanceService
     @Mock
     private lateinit var orderService: OrderService
     @Mock
-    private lateinit var cartService: CartService
+    private lateinit var applicationEventPublisher: ApplicationEventPublisher
+    @Mock
+    private lateinit var productStockKafkaProperties: ProductStockKafkaProperties
+    @Mock
+    private lateinit var objectMapper: ObjectMapper
 
     private lateinit var orderFacade: OrderFacade
 
     @BeforeEach
     fun before() {
-        orderFacade = OrderFacade(userService, productService, balanceService, orderService, cartService)
+        orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper)
     }
 
     @DisplayName("주문 정합성 테스트")
