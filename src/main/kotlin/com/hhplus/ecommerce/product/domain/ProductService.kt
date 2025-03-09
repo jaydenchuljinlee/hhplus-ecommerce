@@ -37,7 +37,7 @@ class ProductService(
         return getProduct(dto)
     }
 
-    @RedisLock(key = "'product:' + #dto.id") // 상품의 재고 ID를 기반으로 Lock을 점유한다.
+    // @RedisLock(key = "'product:' + #dto.id") // 상품의 재고 ID를 기반으로 Lock을 점유한다.
     fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
         val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
 

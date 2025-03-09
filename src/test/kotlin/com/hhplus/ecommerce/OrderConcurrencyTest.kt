@@ -71,7 +71,7 @@ class OrderConcurrencyTest: IntegrationConfig() {
         // 스레드 풀 종료
         executorService.shutdown()
 
-        Thread.sleep(5000)
+        Thread.sleep(500)
 
         val productDetail = productRepository.findById(3).get()
 
