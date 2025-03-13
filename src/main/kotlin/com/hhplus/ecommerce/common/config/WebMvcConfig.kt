@@ -23,4 +23,5 @@ class WebMvcConfig(
         registry.addInterceptor(adminInterceptor)
             .addPathPatterns("/admin/**")
     }
+
 }
