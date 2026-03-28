@@ -21,6 +21,7 @@ class PaymentFacade(
 )
 {
 
+    @Transactional
     fun pay(dto: PaymentCreation): PaymentInfo {
         val orderQuery = OrderQuery(
             orderId = dto.orderId,
@@ -30,7 +31,7 @@ class PaymentFacade(
 
         val balanceToUseCommand = BalanceTransaction(
             userId = dto.userId,
-            amount = order.totalQuantity * order.totalPrice,
+            amount = order.totalPrice,
             type = BalanceTransaction.TransactionType.USE
         )
 
@@ -39,7 +40,7 @@ class PaymentFacade(
         val paymentCreation = CreationPaymentCommand(
             orderId = dto.orderId,
             userId = dto.userId,
-            price = order.totalQuantity * order.totalPrice,
+            price = order.totalPrice,
         )
 
         val result = paymentService.pay(paymentCreation)

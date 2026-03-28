@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.payment.api.dto
 
+import com.hhplus.ecommerce.payment.common.PayStatus
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -18,17 +19,17 @@ class PaymentResponse(
     @Schema(description = "결제 가격", example = "1000")
     var price: Long,
     @Parameter(description = "결제 상태", required = true)
-    @Schema(description = "결제 상태", example = "PAYMENT_COMPLETED")
-    var status: String,
+    @Schema(description = "결제 상태", example = "PAID")
+    var status: PayStatus,
 ) {
     companion object {
         fun from(info: PaymentInfo): PaymentResponse {
             return PaymentResponse(
-                id = info.orderId,
-                userId = info.orderId,
+                id = info.paymentId,
+                userId = info.userId,
                 orderId = info.orderId,
                 price = info.price,
-                status = "PAYMENT_COMPLETED"
+                status = info.status
             )
         }
     }

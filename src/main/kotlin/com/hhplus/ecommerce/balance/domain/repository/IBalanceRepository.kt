@@ -1,4 +1,4 @@
-package com.hhplus.ecommerce.balance.domain.respository
+package com.hhplus.ecommerce.balance.domain.repository
 
 import com.hhplus.ecommerce.balance.infrastructure.jpa.entity.BalanceEntity
 

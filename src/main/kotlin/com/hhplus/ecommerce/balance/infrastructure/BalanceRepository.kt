@@ -1,7 +1,7 @@
 package com.hhplus.ecommerce.balance.infrastructure
 
 import com.hhplus.ecommerce.balance.infrastructure.exception.BalanceNotFoundException
-import com.hhplus.ecommerce.balance.domain.respository.IBalanceRepository
+import com.hhplus.ecommerce.balance.domain.repository.IBalanceRepository
 import com.hhplus.ecommerce.balance.infrastructure.jpa.BalanceJpaRepository
 import com.hhplus.ecommerce.balance.infrastructure.jpa.entity.BalanceEntity
 import org.springframework.stereotype.Repository

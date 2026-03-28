@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
 import org.mockito.Mock
+import org.mockito.ArgumentMatchers
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.context.ApplicationEventPublisher
 import kotlin.test.assertEquals
@@ -42,14 +43,17 @@ class OrderFacadeTest {
     @Mock
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
     @Mock
-    private lateinit var productStockKafkaProperties: ProductStockKafkaProperties
-    @Mock
     private lateinit var objectMapper: ObjectMapper
 
     private lateinit var orderFacade: OrderFacade
 
     @BeforeEach
     fun before() {
+        val productStockKafkaProperties = ProductStockKafkaProperties().apply {
+            groupId = "test-product-group"
+            topic = "test-product-topic"
+        }
+        BDDMockito.given(objectMapper.writeValueAsString(ArgumentMatchers.any())).willReturn("{}")
         orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper)
     }
 
