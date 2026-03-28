@@ -243,24 +243,25 @@ TOCTOU 문제 해소
 
 ---
 
-### Step 3-3. Kafka Consumer 에러 핸들링 & DLQ
+### Step 3-3. Kafka Consumer 에러 핸들링 & DLQ ✅
 
-- [ ] Spring Kafka `ErrorHandler` 설정 추가
-  ```kotlin
-  @Bean
-  fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<...> {
-      // DefaultErrorHandler with BackOff 설정
-      // DeadLetterPublishingRecoverer 연결
-  }
-  ```
-- [ ] 재시도 정책 정의 (예: 3회 재시도, exponential backoff)
-- [ ] DLQ 토픽 생성 및 실패 메시지 라우팅
-- [ ] DLQ 모니터링/알림 메커니즘 (Kafka-UI 또는 별도 Consumer)
-- [ ] 재시도 초과 시나리오 테스트
+- [x] `KafkaConsumerConfig.kt` 신규 생성
+  - `ConcurrentKafkaListenerContainerFactory` 커스텀 빈 등록 (Spring Boot 기본 팩토리 대체)
+  - `DefaultErrorHandler` with `ExponentialBackOff` 설정
+- [x] 재시도 정책 정의 — ExponentialBackOff
+  - 초기 대기: 2초, 배수: 2.0 (2s → 4s → 8s)
+  - 최대 단일 간격: 10초, 최대 경과 시간: 20초 (약 3회 재시도)
+- [x] DLT 라우팅 설정 — `DeadLetterPublishingRecoverer`
+  - 네이밍 규칙: `{원본 토픽}.DLT` (예: `PAY_HISTORY.DLT`, `BALANCE_HISTORY.DLT`)
+  - 파티션: -1 (Kafka 프로듀서 기본 라우팅)
+  - 라우팅 시 WARN 로그로 식별 가능 (topic, key, dltTopic, error 포함)
+- [x] KDoc으로 재시도 정책 및 DLT 토픽 목록 명시
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
+- [ ] DLT Consumer 구현 (DLT 메시지 재처리/알림) — 장기 과제
+- [ ] 재시도 초과 시나리오 통합 테스트 (Step 7-3에서 통합 진행)
 
 **대상 파일**:
-- `common/config/` (신규: `KafkaConsumerConfig.kt`)
-- `infrastructure/kafka/` (DLQ Consumer 신규)
+- `common/config/KafkaConsumerConfig.kt` (신규)
 
 ---
 
