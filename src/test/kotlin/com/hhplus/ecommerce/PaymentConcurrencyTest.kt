@@ -2,7 +2,7 @@ package com.hhplus.ecommerce
 
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.balance.domain.dto.BalanceQuery
-import com.hhplus.ecommerce.balance.domain.respository.IBalanceRepository
+import com.hhplus.ecommerce.balance.domain.repository.IBalanceRepository
 import com.hhplus.ecommerce.common.config.IntegrationConfig
 import com.hhplus.ecommerce.balance.infrastructure.BalanceRepository
 import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
