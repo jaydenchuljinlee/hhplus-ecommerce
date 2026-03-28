@@ -23,10 +23,17 @@ class PaymentKafkaConsumer(
         topics = ["\${hhplus.kafka.payment.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
+        // 멱등성 보장: 이미 성공 처리된 이벤트는 재소비 시 스킵
+        val outboxEvent = outboxEventRepository.findById(event.id)
+        if (outboxEvent.status == OutboxEventStatus.SUCCESS) {
+            logger.info("PAY:KAFKA:CONSUMER:SKIP 이미 처리된 이벤트: eventId={}", event.id)
+            return
+        }
+
         try {
             val payload = objectMapper.readValue(event.payload, PaymentHistoryDocument::class.java)
 
-            logger.info("PAY:KAFKA:CONSUMER: $event" )
+            logger.info("PAY:KAFKA:CONSUMER: {}", event)
 
             // 에러가 발생해도 잘 동작하는지 테스트하기 위함
             if (payload.id == "ERROR") {
@@ -36,13 +43,11 @@ class PaymentKafkaConsumer(
             // 외부 MongoDB에 이력 데이터를 저장
             paymentHistoryMongoRepository.save(payload)
 
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
             outboxEventRepository.insertOrUpdate(outboxEvent)
         } catch (e: Exception) {
             logger.error("PAY:KAFKA:CONSUMER:ERROR", e)
 
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.FAILED)
             outboxEventRepository.insertOrUpdate(outboxEvent)
         }

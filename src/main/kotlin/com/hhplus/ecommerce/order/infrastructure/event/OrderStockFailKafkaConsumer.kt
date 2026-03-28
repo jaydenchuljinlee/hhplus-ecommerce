@@ -25,17 +25,25 @@ class OrderStockFailKafkaConsumer(
         topics = ["\${hhplus.kafka.order.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
+        // 멱등성 보장: 이미 성공 처리된 이벤트는 재소비 시 스킵
+        val outboxEvent = outboxEventRepository.findById(event.id)
+        if (outboxEvent.status == OutboxEventStatus.SUCCESS) {
+            logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER:SKIP 이미 처리된 이벤트: eventId={}", event.id)
+            return
+        }
+
         try {
             val payload = objectMapper.readValue(event.payload, OrderStockFailEventResponse::class.java)
-            logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER orderId=${payload.orderId}, productId=${payload.productId}")
+            logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER orderId={}, productId={}", payload.orderId, payload.productId)
 
             val command = payload.toOrderDeletionCommand()
             orderService.deleteOrderDetail(command)
 
+            outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
+            outboxEventRepository.insertOrUpdate(outboxEvent)
         } catch (e: Exception) {
-            logger.error("ORDER-STOCK-FAILED:KAFKA:CONSUMER:ERROR eventId=${event.id}", e)
+            logger.error("ORDER-STOCK-FAILED:KAFKA:CONSUMER:ERROR eventId={}", event.id, e)
 
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.FAILED)
             outboxEventRepository.insertOrUpdate(outboxEvent)
         }

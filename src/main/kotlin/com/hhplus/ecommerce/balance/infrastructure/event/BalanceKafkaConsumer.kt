@@ -22,10 +22,17 @@ class BalanceKafkaConsumer(
         groupId = "\${hhplus.kafka.balance.group-id}",
         topics = ["\${hhplus.kafka.balance.topic}"])
     fun listener(event: OutboxEventInfo) {
+        // 멱등성 보장: 이미 성공 처리된 이벤트는 재소비 시 스킵
+        val outboxEvent = outboxEventRepository.findById(event.id)
+        if (outboxEvent.status == OutboxEventStatus.SUCCESS) {
+            logger.info("BALANCE:KAFKA:CONSUMER:SKIP 이미 처리된 이벤트: eventId={}", event.id)
+            return
+        }
+
         try {
             val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)
 
-            logger.info("BALANCE:KAFKA:CONSUMER: $payload")
+            logger.info("BALANCE:KAFKA:CONSUMER: {}", payload)
 
             // 에러가 발생해도 잘 동작하는지 테스트하기 위함
             if (payload.id == "ERROR") {
@@ -35,12 +42,10 @@ class BalanceKafkaConsumer(
             // 외부 MongoDB에 이력 데이터를 저장
             balanceHistoryMongoRepository.save(payload)
 
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
             outboxEventRepository.insertOrUpdate(outboxEvent)
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             logger.error("BALANCE:KAFKA:CONSUMER:ERROR", e)
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.FAILED)
             outboxEventRepository.insertOrUpdate(outboxEvent)
         }

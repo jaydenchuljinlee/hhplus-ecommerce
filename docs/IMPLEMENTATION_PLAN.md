@@ -216,28 +216,28 @@ TOCTOU 문제 해소
 
 ---
 
-### Step 3-2. Kafka Consumer 멱등성 보장
+### Step 3-2. Kafka Consumer 멱등성 보장 ✅
 
-- [ ] Consumer 진입 시 `OutboxEventInfo.id`(UUID) 기반 중복 체크 로직 추가
-  ```kotlin
-  fun listen(event: OutboxEventInfo) {
-      val outbox = outboxEventRepository.findById(event.id)
-      if (outbox.status == OutboxEventStatus.SUCCESS) {
-          logger.info("이미 처리된 이벤트: ${event.id}")
-          return
-      }
-      // 기존 처리 로직...
-  }
-  ```
-- [ ] `PaymentKafkaConsumer` 멱등성 적용
-- [ ] `BalanceKafkaConsumer` 멱등성 적용
-- [ ] `OrderProductStockKafkaConsumer` 멱등성 적용
-- [ ] `OrderStockFailKafkaConsumer` 멱등성 적용
-- [ ] 동일 메시지 중복 수신 시나리오 테스트
+- [x] `PaymentKafkaConsumer` 멱등성 적용
+  - 진입 시 outboxEvent 1회 조회 후 SUCCESS면 스킵, entity 재사용으로 중복 조회 제거
+  - SLF4J 로거 포맷 통일
+- [x] `BalanceKafkaConsumer` 멱등성 적용
+  - 동일 패턴 적용, entity 재사용
+  - SLF4J 로거 포맷 통일
+- [x] `OrderStockFailKafkaConsumer` 멱등성 적용
+  - 성공 시 SUCCESS 상태 업데이트 누락 버그 수정
+  - SLF4J 로거 포맷 통일
+- [x] `OrderProductStockKafkaConsumer` 멱등성 적용
+  - `OutboxEventRepository` 주입 추가 (기존에는 미주입)
+  - 처리 완료 후 SUCCESS 업데이트 누락 버그 수정
+  - 전체 try-catch로 감싸고 FAILED 상태 업데이트 추가
+  - SLF4J 로거 포맷 통일 (private 메서드 포함)
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
+- [ ] 동일 메시지 중복 수신 시나리오 테스트 (Step 7-3에서 통합 진행)
 
 **대상 파일**:
 - `payment/infrastructure/event/PaymentKafkaConsumer.kt`
-- `balance/infrastructure/event/BalanceKafkaConsumer.kt` (존재 시)
+- `balance/infrastructure/event/BalanceKafkaConsumer.kt`
 - `product/infrastructure/event/OrderProductStockKafkaConsumer.kt`
 - `order/infrastructure/event/OrderStockFailKafkaConsumer.kt`
 

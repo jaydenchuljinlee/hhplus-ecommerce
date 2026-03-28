@@ -7,6 +7,7 @@ import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderStockConfirmCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderStockFailCommand
 import com.hhplus.ecommerce.outboxevent.domain.OutboxEventService
+import com.hhplus.ecommerce.outboxevent.infrastructure.OutboxEventRepository
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEventStatus
 import com.hhplus.ecommerce.product.domain.ProductService
@@ -24,6 +25,7 @@ class OrderProductStockKafkaConsumer(
     private val productService: ProductService,
     private val orderService: OrderService,
     private val outboxEventService: OutboxEventService,
+    private val outboxEventRepository: OutboxEventRepository,
     private val kafkaProducer: KafkaProducer,
     private val orderStockFailKafkaProperties: OrderStockFailKafkaProperties,
     private val objectMapper: ObjectMapper
@@ -35,26 +37,42 @@ class OrderProductStockKafkaConsumer(
         topics = ["\${hhplus.kafka.product.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
-        val payload = objectMapper.readValue(event.payload, OrderProductStockEventResponse::class.java)
-        logger.info("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: orderId=${payload.orderId}")
-
-        val failedProductIds = mutableListOf<Long>()
-
-        // 상품별 재고 차감 — 각 decreaseStock()은 자체 트랜잭션으로 독립 커밋
-        payload.products.forEach { product ->
-            try {
-                productService.decreaseStock(DecreaseProductDetailStock.of(product))
-                productService.deleteCache(product.productId)
-                logger.debug("PRODUCT-ORDER-STOCK:DECREASE:SUCCESS orderId=${payload.orderId}, productId=${product.productId}")
-            } catch (e: OutOfStockException) {
-                logger.warn("PRODUCT-ORDER-STOCK:DECREASE:OUT_OF_STOCK orderId=${payload.orderId}, productId=${product.productId}")
-                failedProductIds.add(product.productId)
-                sendStockFailEvent(payload.orderId, product.productId)
-            }
+        // 멱등성 보장: 이미 성공 처리된 이벤트는 재소비 시 스킵
+        val outboxEvent = outboxEventRepository.findById(event.id)
+        if (outboxEvent.status == OutboxEventStatus.SUCCESS) {
+            logger.info("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER:SKIP 이미 처리된 이벤트: eventId={}", event.id)
+            return
         }
 
-        // 전체 결과에 따라 주문 상태 전이
-        updateOrderStatus(payload.orderId, failedProductIds.size, payload.products.size)
+        try {
+            val payload = objectMapper.readValue(event.payload, OrderProductStockEventResponse::class.java)
+            logger.info("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: orderId={}", payload.orderId)
+
+            val failedProductIds = mutableListOf<Long>()
+
+            // 상품별 재고 차감 — 각 decreaseStock()은 자체 트랜잭션으로 독립 커밋
+            payload.products.forEach { product ->
+                try {
+                    productService.decreaseStock(DecreaseProductDetailStock.of(product))
+                    productService.deleteCache(product.productId)
+                    logger.debug("PRODUCT-ORDER-STOCK:DECREASE:SUCCESS orderId={}, productId={}", payload.orderId, product.productId)
+                } catch (e: OutOfStockException) {
+                    logger.warn("PRODUCT-ORDER-STOCK:DECREASE:OUT_OF_STOCK orderId={}, productId={}", payload.orderId, product.productId)
+                    failedProductIds.add(product.productId)
+                    sendStockFailEvent(payload.orderId, product.productId)
+                }
+            }
+
+            // 전체 결과에 따라 주문 상태 전이
+            updateOrderStatus(payload.orderId, failedProductIds.size, payload.products.size)
+
+            outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
+            outboxEventRepository.insertOrUpdate(outboxEvent)
+        } catch (e: Exception) {
+            logger.error("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER:ERROR eventId={}", event.id, e)
+            outboxEvent.updateStatus(OutboxEventStatus.FAILED)
+            outboxEventRepository.insertOrUpdate(outboxEvent)
+        }
     }
 
     /**
@@ -65,14 +83,14 @@ class OrderProductStockKafkaConsumer(
     private fun updateOrderStatus(orderId: Long, failedCount: Int, totalCount: Int) {
         try {
             if (failedCount == totalCount) {
-                logger.warn("PRODUCT-ORDER-STOCK:ALL_FAILED orderId=$orderId → STOCK_FAILED")
+                logger.warn("PRODUCT-ORDER-STOCK:ALL_FAILED orderId={} → STOCK_FAILED", orderId)
                 orderService.failStock(OrderStockFailCommand(orderId))
             } else {
-                logger.info("PRODUCT-ORDER-STOCK:CONFIRMED orderId=$orderId → STOCK_CONFIRMED (failed=$failedCount/$totalCount)")
+                logger.info("PRODUCT-ORDER-STOCK:CONFIRMED orderId={} → STOCK_CONFIRMED (failed={}/{})", orderId, failedCount, totalCount)
                 orderService.confirmStock(OrderStockConfirmCommand(orderId))
             }
         } catch (e: Exception) {
-            logger.error("PRODUCT-ORDER-STOCK:STATUS_UPDATE:ERROR orderId=$orderId", e)
+            logger.error("PRODUCT-ORDER-STOCK:STATUS_UPDATE:ERROR orderId={}", orderId, e)
         }
     }
 
