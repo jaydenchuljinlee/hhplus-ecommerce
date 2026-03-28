@@ -24,11 +24,27 @@ class OrderService(
         return OrderResult.from(entity)
     }
 
+    /** 재고 확보 완료: REQUESTED → STOCK_CONFIRMED */
+    @Transactional
+    fun confirmStock(command: OrderStockConfirmCommand) {
+        val entity = orderRepository.findByIdAndStatus(command.orderId, OrderStatus.REQUESTED)
+        entity.confirmStock()
+        orderRepository.insertOrUpdate(entity)
+    }
+
+    /** 재고 확보 실패: REQUESTED → STOCK_FAILED */
+    @Transactional
+    fun failStock(command: OrderStockFailCommand) {
+        val entity = orderRepository.findByIdAndStatus(command.orderId, OrderStatus.REQUESTED)
+        entity.failStock()
+        orderRepository.insertOrUpdate(entity)
+    }
+
+    /** 결제 완료 확정: STOCK_CONFIRMED → CONFIRMED */
     @Transactional
     fun orderComplete(command: OrderCompleteCommand) {
-        val entity = orderRepository.findByIdAndStatus(command.orderId, OrderStatus.REQUESTED)
-        entity.status = OrderStatus.CONFIRMED
-
+        val entity = orderRepository.findByIdAndStatus(command.orderId, OrderStatus.STOCK_CONFIRMED)
+        entity.confirm()
         orderRepository.insertOrUpdate(entity)
     }
 

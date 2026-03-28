@@ -9,6 +9,7 @@ import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
 import com.hhplus.ecommerce.balance.domain.respository.IBalanceRepository
 import com.hhplus.ecommerce.balance.infrastructure.mongodb.BalanceHistoryDocument
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,10 +22,14 @@ class BalanceService(
     private val balanceKafkaProperties: BalanceKafkaProperties,
     private val objectMapper: ObjectMapper,
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(BalanceService::class.java)
+    }
+
     fun validateBalanceToUse(item: BalanceTransaction) {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
 
-        balanceEntity.validateToUse(balanceEntity.balance - item.amount)
+        balanceEntity.validateRemainingBalance(balanceEntity.balance - item.amount)
     }
 
     @Transactional
@@ -63,7 +68,6 @@ class BalanceService(
         applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
-
     }
 
     @RedisLock(key = "'balance:' + #item.userId") // 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
@@ -74,7 +78,7 @@ class BalanceService(
 
         balanceRepository.insertOrUpdate(balanceEntity)
 
-        println("잔액 정보 => ${balanceEntity.toString()}")
+        logger.debug("잔액 정보 => {}", balanceEntity)
 
         val balanceHistoryDocument = BalanceHistoryDocument(
             balanceId = balanceEntity.id,

@@ -16,9 +16,9 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
 
     // Controller 계층 예외 처리
     @ExceptionHandler(ControllerException::class)
-    fun handleControllerException(e: ServiceException): ResponseEntity<CustomErrorResponse> {
+    fun handleControllerException(e: ControllerException): ResponseEntity<CustomErrorResponse> {
         val response = CustomErrorResponse.fail(e.message ?: "Controller error")
-        logger.error("ControllerException: $e")
+        logger.error("ControllerException: {}", e)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
     }
 

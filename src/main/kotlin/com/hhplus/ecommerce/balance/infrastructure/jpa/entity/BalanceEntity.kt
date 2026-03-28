@@ -34,16 +34,20 @@ data class BalanceEntity(
     }
 
     fun use(amount: Long) {
-        require(amount >= BalancePolicy.MIN) { throw InsufficientBalanceException("최소 사용 금액은 100원 입니다.") }
+        require(amount >= BalancePolicy.MIN) { throw InsufficientBalanceException("최소 사용 금액은 ${BalancePolicy.MIN}원 입니다.") }
 
         val newBalance = balance - amount
 
-        validateToUse(newBalance)
+        validateRemainingBalance(newBalance)
 
         balance = newBalance
-     }
+    }
 
-    fun validateToUse(amount: Long) {
-        require(amount >= BalancePolicy.MIN) { throw InsufficientBalanceException() }
+    /**
+     * 차감 후 남은 잔액이 최소 유지 금액(BalancePolicy.MIN) 이상인지 검증
+     * @param remainingBalance 차감 후 예상 잔액
+     */
+    fun validateRemainingBalance(remainingBalance: Long) {
+        require(remainingBalance >= BalancePolicy.MIN) { throw InsufficientBalanceException("잔액이 부족합니다. (최소 유지 잔액: ${BalancePolicy.MIN}원)") }
     }
 }

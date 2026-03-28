@@ -9,27 +9,31 @@ import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEv
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class OrderStockFailKafkaConsumer(
     private val outboxEventRepository: OutboxEventRepository,
-    private var orderService: OrderService,
+    private val orderService: OrderService,
     private val objectMapper: ObjectMapper
 ) {
     private val logger = LoggerFactory.getLogger(OrderStockFailKafkaConsumer::class.java)
 
+    @Transactional
     @KafkaListener(
         groupId = "\${hhplus.kafka.order.group-id}",
         topics = ["\${hhplus.kafka.order.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
         try {
-            logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER: $event")
             val payload = objectMapper.readValue(event.payload, OrderStockFailEventResponse::class.java)
+            logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER orderId=${payload.orderId}, productId=${payload.productId}")
+
             val command = payload.toOrderDeletionCommand()
             orderService.deleteOrderDetail(command)
+
         } catch (e: Exception) {
-            logger.error("ORDER-STOCK-FAILED:KAFKA:CONSUMER:ERROR", e)
+            logger.error("ORDER-STOCK-FAILED:KAFKA:CONSUMER:ERROR eventId=${event.id}", e)
 
             val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.FAILED)

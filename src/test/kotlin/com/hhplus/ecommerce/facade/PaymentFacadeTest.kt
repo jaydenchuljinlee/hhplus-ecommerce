@@ -48,7 +48,7 @@ class PaymentFacadeTest {
 
         val orderQuery = OrderQuery(
             orderId = 2,
-            status = OrderStatus.REQUESTED
+            status = OrderStatus.STOCK_CONFIRMED  // 재고 확보 완료 상태에서만 결제 가능
         )
 
         val orderDetailResult = OrderDetailResult(
@@ -61,9 +61,9 @@ class PaymentFacadeTest {
         val orderResult = OrderResult(
             orderId = 2,
             userId = balanceResult.userId,
-            totalPrice = listOf(orderDetailResult).sumOf { it.price },
+            totalPrice = listOf(orderDetailResult).sumOf { it.quantity * it.price }, // sum(수량 × 단가) = 실제 총 금액
             totalQuantity = listOf(orderDetailResult).sumOf { it.quantity },
-            status =  OrderStatus.REQUESTED,
+            status = OrderStatus.STOCK_CONFIRMED,  // 재고 확보 완료 상태
             details = listOf(orderDetailResult)
         )
 
@@ -72,7 +72,7 @@ class PaymentFacadeTest {
         val paymentCommand = CreationPaymentCommand(
             userId = balanceResult.userId,
             orderId = orderResult.orderId,
-            price = orderResult.totalPrice * orderResult.totalQuantity
+            price = orderResult.totalPrice  // totalPrice 자체가 최종 결제 금액
         )
 
         val paymentResult = PaymentResult(
@@ -80,7 +80,7 @@ class PaymentFacadeTest {
             userId = balanceResult.userId,
             orderId = orderResult.orderId,
             status = PayStatus.PAID,
-            price = orderResult.totalPrice * orderResult.totalQuantity,
+            price = orderResult.totalPrice,  // totalPrice 자체가 최종 결제 금액
         )
 
         BDDMockito.given(paymentService.pay(paymentCommand)).willReturn(paymentResult)
