@@ -26,12 +26,6 @@ class BalanceService(
         private val logger = LoggerFactory.getLogger(BalanceService::class.java)
     }
 
-    fun validateBalanceToUse(item: BalanceTransaction) {
-        val balanceEntity = balanceRepository.findByUserId(item.userId)
-
-        balanceEntity.validateRemainingBalance(balanceEntity.balance - item.amount)
-    }
-
     @Transactional
     fun getBalanceWithLock(item: BalanceQuery): BalanceResult {
         val balanceEntity = balanceRepository.findByUserIdWithLock(item.userId)

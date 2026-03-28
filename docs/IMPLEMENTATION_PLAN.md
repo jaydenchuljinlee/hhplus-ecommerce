@@ -150,18 +150,22 @@
 
 ---
 
-### Step 2-4. PaymentFacade 트랜잭션 정합성 확보
+### Step 2-4. PaymentFacade 트랜잭션 정합성 확보 ✅
 
 `balanceService.use()` → `paymentService.pay()` → `orderService.orderComplete()` 간 원자성 보장
 
-- [ ] 전략 결정:
-  - **방안 A**: `@RedisLock` 내부의 `TransactionTemplate` 전파 전략을 `REQUIRES_NEW`로 변경 → `PaymentFacade`에 `@Transactional` 추가 가능
-  - **방안 B**: `PaymentFacade`에서 try-catch로 실패 시 보상 로직 구현 (balance 복구)
-  - **방안 C**: Saga 패턴 — 각 단계를 이벤트로 분리하고 실패 시 역방향 보상 이벤트 발행
-- [ ] 선택한 방안 구현
-- [ ] `paymentService.pay()` 실패 시 잔액 복구 테스트
-- [ ] `orderService.orderComplete()` 실패 시 결제 취소 + 잔액 복구 테스트
-- [ ] 동시성 환경에서의 정합성 테스트
+- [x] 전략 결정: **방안 B (보상 트랜잭션)**
+  - 방안 A 불가: `@RedisLock`은 Lock 안에서 커밋하는 구조 — `@Transactional`을 추가하면 Lock 해제 전 커밋 안 됨 → 다른 스레드가 갱신 전 잔액을 읽는 문제 발생
+  - 방안 C는 별도 인프라 설계 필요 (장기 과제)
+- [x] `balanceService.use()` 이후 try-catch 적용
+  - 성공: `paymentService.pay()` → `orderService.orderComplete()` → 반환
+  - 실패: `balanceService.charge(refundCommand)`로 잔액 환불 후 예외 재전파
+- [x] 환불 자체 실패 시 `[수동 처리 필요]` 에러 로그로 식별 가능
+- [x] KDoc으로 트랜잭션 전략 및 단계별 실패 처리 설명 추가
+- [x] `paymentService.pay()` 실패 시 잔액 환불 테스트 추가
+- [x] `orderService.orderComplete()` 실패 시 잔액 환불 테스트 추가
+- [x] 테스트 3개 통과 확인 (`BUILD SUCCESSFUL`)
+- [ ] 동시성 환경에서의 정합성 테스트 (Step 7-3에서 통합 진행)
 
 **대상 파일**:
 - `payment/usecase/PaymentFacade.kt`
@@ -170,23 +174,23 @@
 
 ---
 
-### Step 2-5. OrderFacade 잔액 사전 검증 처리
+### Step 2-5. OrderFacade 잔액 사전 검증 처리 ✅
 
 TOCTOU 문제 해소
 
-- [ ] `OrderFacade.order()`에서 `validateBalanceToUse()` 호출 제거
+- [x] `OrderFacade.order()`에서 `validateBalanceToUse()` 호출 제거
   - 이유: 주문 시점과 결제 시점이 분리되어 있어 검증에 실효성 없음
   - 결제 시점(`PaymentFacade.pay()`)에서 `balanceService.use()` 내 실제 차감 시 검증으로 충분
-- [ ] 또는 잔액 "홀드" 메커니즘 구현 (선택 시):
-  - `BalanceEntity`에 `holdAmount` 필드 추가
-  - 주문 시 hold, 결제 시 확정, 주문 취소/타임아웃 시 해제
-- [ ] `OrderFacade`에서 미사용이 된 `BalanceService` 의존성 제거 (hold 미구현 시)
-- [ ] 관련 테스트 수정
+  - hold 메커니즘은 별도 인프라 설계 필요 → Phase 3 이후 장기 과제로 보류
+- [x] `OrderFacade`에서 미사용 `BalanceService` 의존성 제거
+- [x] `OrderCreation`에서 미사용 `toBalanceTransaction()` 메서드 및 import 제거
+- [x] `BalanceService`에서 호출부 없어진 `validateBalanceToUse()` 메서드 제거
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
 
 **대상 파일**:
 - `order/usecase/OrderFacade.kt`
-- `balance/infrastructure/jpa/entity/BalanceEntity.kt` (hold 구현 시)
-- `balance/domain/BalanceService.kt` (hold 구현 시)
+- `order/usecase/dto/OrderCreation.kt`
+- `balance/domain/BalanceService.kt`
 
 ---
 

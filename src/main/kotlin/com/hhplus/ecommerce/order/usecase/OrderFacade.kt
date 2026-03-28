@@ -1,7 +1,6 @@
 package com.hhplus.ecommerce.order.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.common.properties.ProductStockKafkaProperties
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.user.domain.UserService
@@ -17,7 +16,6 @@ import java.util.*
 @Component
 class OrderFacade(
     private val userService: UserService,
-    private val balanceService: BalanceService,
     private val orderService: OrderService,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val productStockKafkaProperties: ProductStockKafkaProperties,
@@ -27,7 +25,6 @@ class OrderFacade(
     @Transactional
     fun order(info: OrderCreation): OrderInfo {
         val user = userService.getUserById(info.toUserQuery())
-        balanceService.validateBalanceToUse(info.toBalanceTransaction())
 
         val order = orderService.order(info.toOrderCreationCommand())
         val result = OrderInfo.from(order)

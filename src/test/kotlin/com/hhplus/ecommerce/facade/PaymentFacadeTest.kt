@@ -2,8 +2,10 @@ package com.hhplus.ecommerce.facade
 
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.balance.domain.dto.BalanceResult
+import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
 import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
+import com.hhplus.ecommerce.order.domain.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
 import com.hhplus.ecommerce.order.domain.dto.OrderResult
@@ -16,8 +18,10 @@ import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
+import org.mockito.BDDMockito.then
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
@@ -38,65 +42,93 @@ class PaymentFacadeTest {
         paymentFacade = PaymentFacade(balanceService, paymentService, orderService)
     }
 
-    @DisplayName("결제 정합성 테스트")
+    private fun makeOrderResult(userId: Long, orderId: Long): OrderResult {
+        val detail = OrderDetailResult(id = 2, productId = 2, quantity = 5, price = 100)
+        return OrderResult(
+            orderId = orderId,
+            userId = userId,
+            totalPrice = listOf(detail).sumOf { it.quantity * it.price },
+            totalQuantity = listOf(detail).sumOf { it.quantity },
+            status = OrderStatus.STOCK_CONFIRMED,
+            details = listOf(detail)
+        )
+    }
+
+    @DisplayName("정상 결제 — 잔액 차감 → 결제 생성 → 주문 확정 순서로 처리된다")
     @Test
     fun paymentTest() {
-        val balanceResult = BalanceResult(
-            userId = 1,
-            balance = 10_000
-        )
+        val userId = 1L
+        val orderId = 2L
+        val orderResult = makeOrderResult(userId, orderId)
 
-        val orderQuery = OrderQuery(
-            orderId = 2,
-            status = OrderStatus.STOCK_CONFIRMED  // 재고 확보 완료 상태에서만 결제 가능
-        )
+        BDDMockito.given(orderService.getOrder(OrderQuery(orderId, OrderStatus.STOCK_CONFIRMED)))
+            .willReturn(orderResult)
 
-        val orderDetailResult = OrderDetailResult(
-            id = 2,
-            productId = 2,
-            quantity = 5,
-            price = 100
-        )
-
-        val orderResult = OrderResult(
-            orderId = 2,
-            userId = balanceResult.userId,
-            totalPrice = listOf(orderDetailResult).sumOf { it.quantity * it.price }, // sum(수량 × 단가) = 실제 총 금액
-            totalQuantity = listOf(orderDetailResult).sumOf { it.quantity },
-            status = OrderStatus.STOCK_CONFIRMED,  // 재고 확보 완료 상태
-            details = listOf(orderDetailResult)
-        )
-
-        BDDMockito.given(orderService.getOrder(orderQuery)).willReturn(orderResult)
-
-        val paymentCommand = CreationPaymentCommand(
-            userId = balanceResult.userId,
-            orderId = orderResult.orderId,
-            price = orderResult.totalPrice  // totalPrice 자체가 최종 결제 금액
-        )
-
+        val paymentCommand = CreationPaymentCommand(userId = userId, orderId = orderId, price = orderResult.totalPrice)
         val paymentResult = PaymentResult(
-            paymentId = 1,
-            userId = balanceResult.userId,
-            orderId = orderResult.orderId,
-            status = PayStatus.PAID,
-            price = orderResult.totalPrice,  // totalPrice 자체가 최종 결제 금액
+            paymentId = 1, userId = userId, orderId = orderId,
+            status = PayStatus.PAID, price = orderResult.totalPrice
         )
-
         BDDMockito.given(paymentService.pay(paymentCommand)).willReturn(paymentResult)
 
-        val paymentCreation = PaymentCreation(
-            userId = balanceResult.userId,
-            orderId = orderResult.orderId,
-        )
-
-        val paymentInfo = paymentFacade.pay(paymentCreation)
+        val paymentInfo = paymentFacade.pay(PaymentCreation(userId = userId, orderId = orderId))
 
         assertEquals(paymentInfo.paymentId, paymentResult.paymentId)
         assertEquals(paymentInfo.userId, paymentResult.userId)
         assertEquals(paymentInfo.orderId, paymentResult.orderId)
         assertEquals(paymentInfo.price, paymentResult.price)
         assertEquals(paymentInfo.status, paymentResult.status)
+    }
 
+    @DisplayName("결제 생성 실패 — 잔액 차감 후 paymentService 예외 발생 시 잔액이 환불된다")
+    @Test
+    fun paymentFail_shouldRefundBalance() {
+        val userId = 1L
+        val orderId = 2L
+        val orderResult = makeOrderResult(userId, orderId)
+
+        BDDMockito.given(orderService.getOrder(OrderQuery(orderId, OrderStatus.STOCK_CONFIRMED)))
+            .willReturn(orderResult)
+        BDDMockito.given(paymentService.pay(
+            CreationPaymentCommand(userId = userId, orderId = orderId, price = orderResult.totalPrice)
+        )).willThrow(RuntimeException("결제 생성 실패"))
+
+        assertThrows<RuntimeException> {
+            paymentFacade.pay(PaymentCreation(userId = userId, orderId = orderId))
+        }
+
+        // 잔액 환불(charge) 호출 여부 검증
+        then(balanceService).should().charge(
+            BalanceTransaction(userId = userId, amount = orderResult.totalPrice, type = BalanceTransaction.TransactionType.CHARGE)
+        )
+    }
+
+    @DisplayName("주문 확정 실패 — 결제 생성 후 orderComplete 예외 발생 시 잔액이 환불된다")
+    @Test
+    fun orderCompleteFail_shouldRefundBalance() {
+        val userId = 1L
+        val orderId = 2L
+        val orderResult = makeOrderResult(userId, orderId)
+
+        BDDMockito.given(orderService.getOrder(OrderQuery(orderId, OrderStatus.STOCK_CONFIRMED)))
+            .willReturn(orderResult)
+
+        val paymentCommand = CreationPaymentCommand(userId = userId, orderId = orderId, price = orderResult.totalPrice)
+        val paymentResult = PaymentResult(
+            paymentId = 1, userId = userId, orderId = orderId,
+            status = PayStatus.PAID, price = orderResult.totalPrice
+        )
+        BDDMockito.given(paymentService.pay(paymentCommand)).willReturn(paymentResult)
+        BDDMockito.willThrow(RuntimeException("주문 확정 실패"))
+            .given(orderService).orderComplete(OrderCompleteCommand(orderId))
+
+        assertThrows<RuntimeException> {
+            paymentFacade.pay(PaymentCreation(userId = userId, orderId = orderId))
+        }
+
+        // 잔액 환불(charge) 호출 여부 검증
+        then(balanceService).should().charge(
+            BalanceTransaction(userId = userId, amount = orderResult.totalPrice, type = BalanceTransaction.TransactionType.CHARGE)
+        )
     }
 }
