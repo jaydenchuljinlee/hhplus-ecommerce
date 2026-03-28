@@ -2,17 +2,18 @@ package com.hhplus.ecommerce.balance.api
 
 import com.hhplus.ecommerce.balance.api.dto.BalanceChargeRequest
 import com.hhplus.ecommerce.balance.api.dto.BalanceTransactionResponse
-import com.hhplus.ecommerce.balance.api.dto.BalanceViewRequest
 import com.hhplus.ecommerce.balance.api.dto.BalanceViewResponse
 import com.hhplus.ecommerce.common.dto.CustomApiResponse
 import com.hhplus.ecommerce.common.dto.CustomErrorResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Min
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("balance")
@@ -32,10 +33,12 @@ interface IBalanceController {
     @Operation(summary = "잔액 조회 API", description = "잔액을 조회해주는 API입니다.")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "잔액 조회 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "400", description = "잘못된 요청", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @GetMapping()
     fun getBalance(
-        @Valid @RequestBody request: BalanceViewRequest
+        @Parameter(description = "사용자 ID", required = true, example = "1")
+        @RequestParam @Min(1) userId: Long
     ): CustomApiResponse<BalanceViewResponse>
 }

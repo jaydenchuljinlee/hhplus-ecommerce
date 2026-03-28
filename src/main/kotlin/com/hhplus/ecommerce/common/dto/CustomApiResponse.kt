@@ -23,5 +23,14 @@ data class CustomApiResponse<T>(
                 data = data
             )
         }
+
+        fun<T> created(data: T? = null): CustomApiResponse<T> {
+            return CustomApiResponse(
+                code = 201,
+                status = HttpStatus.CREATED,
+                message = "Created",
+                data = data
+            )
+        }
     }
 }

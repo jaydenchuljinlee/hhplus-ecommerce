@@ -1,7 +1,6 @@
 package com.hhplus.ecommerce.common.anotation.aspect
 
 import com.hhplus.ecommerce.common.anotation.RedisLock
-import com.hhplus.ecommerce.common.anotation.aspect.enums.RedisLockStrategy
 import com.hhplus.ecommerce.infrastructure.redis.IRedisLockSupporter
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -31,15 +30,9 @@ class RedisLockAspect(
     @Around("@annotation(redisLock)")
     fun around(joinPoint: ProceedingJoinPoint, redisLock: RedisLock): Any? {
         val key = parseKey(redisLock.key, joinPoint)
-        val strategy = redisLock.strategy
-
-        val lockSupporter = when (strategy) {
-            RedisLockStrategy.SIMPLE, RedisLockStrategy.SPIN, RedisLockStrategy.FAIR -> pubSubLockSupporter
-            RedisLockStrategy.PUB_SUB -> pubSubLockSupporter
-        }
 
         return try {
-            lockSupporter.withLock(key) {
+            pubSubLockSupporter.withLock(key) {
                 TransactionTemplate(transactionManager).execute { transactionStatus ->
                     try {
                         joinPoint.proceed()
