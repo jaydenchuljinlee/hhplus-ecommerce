@@ -296,37 +296,32 @@ TOCTOU 문제 해소
 
 ## Phase 4. 아키텍처 레이어 분리
 
-### Step 4-1. Domain 서비스에서 Infrastructure 의존성 제거
+### Step 4-1. Domain 서비스에서 Infrastructure 의존성 제거 ✅
 
 Domain 서비스가 순수 비즈니스 로직만 담당하도록 Outbox 이벤트 발행 로직을 분리
 
-- [ ] `BalanceService`에서 제거할 의존성 정리
-  - `ObjectMapper`, `BalanceKafkaProperties`, `ApplicationEventPublisher`
-  - `BalanceHistoryDocument` (MongoDB Infrastructure)
-- [ ] `BalanceService.charge()`, `use()` → 순수 비즈니스 로직만 유지 (잔액 변경 + 저장)
-- [ ] 이벤트 발행 로직을 Facade 또는 전용 이벤트 퍼블리셔로 이동
-  ```kotlin
-  // BalanceFacade (또는 기존 호출부)
-  fun charge(item: BalanceTransaction): BalanceResult {
-      val result = balanceService.charge(item)  // 순수 비즈니스
-      balanceEventPublisher.publishChargeEvent(result)  // 이벤트 발행
-      return result
-  }
-  ```
-- [ ] `PaymentService`에도 동일한 분리 적용
-  - `ObjectMapper`, `PaymentKafkaProperties`, `ApplicationEventPublisher` 제거
-  - `PaymentHistoryDocument` 참조 제거
-- [ ] 전용 EventPublisher 클래스 생성
-  - `BalanceEventPublisher.kt`
-  - `PaymentEventPublisher.kt`
-- [ ] 기존 테스트 수정 및 실행 확인
+- [x] DIP 패턴 적용: Domain 인터페이스 정의, Infrastructure 구현체 분리
+  - `@RedisLock` 내부 `TransactionTemplate` 트랜잭션 안에서 이벤트가 발행되어야 하므로
+    Facade 분리 대신 Service 내에서 인터페이스 호출 방식 선택
+    (Facade 방식은 트랜잭션 커밋 후 호출되어 `@TransactionalEventListener(BEFORE_COMMIT)` 미동작)
+- [x] `balance/domain/event/IBalanceEventPublisher.kt` 신규 생성 (Domain 인터페이스)
+- [x] `balance/infrastructure/event/BalanceEventPublisher.kt` 신규 생성 (Infrastructure 구현체)
+  - `BalanceHistoryDocument`, `OutboxEventInfo` 생성 및 `ApplicationEventPublisher` 발행 담당
+  - `TransactionType` enum 내부 정의로 "CHARGE"/"USE" 하드코딩 제거
+- [x] `BalanceService` 인프라 의존성 제거: `ObjectMapper`, `BalanceKafkaProperties`, `ApplicationEventPublisher`, `BalanceHistoryDocument`, `OutboxEventInfo`
+- [x] `payment/domain/event/IPaymentEventPublisher.kt` 신규 생성 (Domain 인터페이스)
+- [x] `payment/infrastructure/event/PaymentEventPublisher.kt` 신규 생성 (Infrastructure 구현체)
+- [x] `PaymentService` 인프라 의존성 제거: `ObjectMapper`, `PaymentKafkaProperties`, `ApplicationEventPublisher`, `PaymentHistoryDocument`, `OutboxEventInfo`
+- [x] 기존 테스트 영향 없음 확인 (`@Mock` 방식이라 생성자 변경 무관)
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
 
 **대상 파일**:
 - `balance/domain/BalanceService.kt`
+- `balance/domain/event/IBalanceEventPublisher.kt` (신규)
+- `balance/infrastructure/event/BalanceEventPublisher.kt` (신규)
 - `payment/domain/PaymentService.kt`
-- `balance/usecase/` (신규: `BalanceFacade.kt` 또는 기존 호출부 수정)
-- `balance/infrastructure/event/` (신규: `BalanceEventPublisher.kt`)
-- `payment/infrastructure/event/` (신규: `PaymentEventPublisher.kt`)
+- `payment/domain/event/IPaymentEventPublisher.kt` (신규)
+- `payment/infrastructure/event/PaymentEventPublisher.kt` (신규)
 
 ---
 

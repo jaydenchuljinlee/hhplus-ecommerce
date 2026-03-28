@@ -1,26 +1,19 @@
 package com.hhplus.ecommerce.balance.domain
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.common.anotation.RedisLock
-import com.hhplus.ecommerce.common.properties.BalanceKafkaProperties
 import com.hhplus.ecommerce.balance.domain.dto.BalanceQuery
 import com.hhplus.ecommerce.balance.domain.dto.BalanceResult
 import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
+import com.hhplus.ecommerce.balance.domain.event.IBalanceEventPublisher
 import com.hhplus.ecommerce.balance.domain.respository.IBalanceRepository
-import com.hhplus.ecommerce.balance.infrastructure.mongodb.BalanceHistoryDocument
-import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import org.slf4j.LoggerFactory
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class BalanceService(
     private val balanceRepository: IBalanceRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher,
-    private val balanceKafkaProperties: BalanceKafkaProperties,
-    private val objectMapper: ObjectMapper,
+    private val balanceEventPublisher: IBalanceEventPublisher,
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(BalanceService::class.java)
@@ -37,58 +30,36 @@ class BalanceService(
         return BalanceResult.from(balanceEntity)
     }
 
-    @RedisLock(key = "'balance:' + #item.userId") // 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
+    @RedisLock(key = "'balance:' + #item.userId")
     fun charge(item: BalanceTransaction): BalanceResult {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
 
         balanceEntity.charge(item.amount)
-
         balanceRepository.insertOrUpdate(balanceEntity)
 
-        val balanceHistoryDocument = BalanceHistoryDocument(
+        balanceEventPublisher.publishCharge(
             balanceId = balanceEntity.id,
             amount = item.amount,
-            balance = balanceEntity.balance,
-            transactionType = "CHARGE"
+            balance = balanceEntity.balance
         )
-
-        val outboxEvent = OutboxEventInfo(
-            id = UUID.randomUUID(),
-            groupId = balanceKafkaProperties.groupId,
-            topic = balanceKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
-        )
-
-        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
     }
 
-    @RedisLock(key = "'balance:' + #item.userId") // 잔액 정보에 대한 사용자 ID를 기반으로 Lock을 점유한다. 1:1 매핑이라 사용자 ID로 락을 잡도록 했다.
+    @RedisLock(key = "'balance:' + #item.userId")
     fun use(item: BalanceTransaction): BalanceResult {
         val balanceEntity = balanceRepository.findByUserId(item.userId)
 
         balanceEntity.use(item.amount)
-
         balanceRepository.insertOrUpdate(balanceEntity)
 
         logger.debug("잔액 정보 => {}", balanceEntity)
 
-        val balanceHistoryDocument = BalanceHistoryDocument(
+        balanceEventPublisher.publishUse(
             balanceId = balanceEntity.id,
             amount = item.amount,
-            balance = balanceEntity.balance,
-            transactionType = "USE"
+            balance = balanceEntity.balance
         )
-
-        val outboxEvent = OutboxEventInfo(
-            id = UUID.randomUUID(),
-            groupId = balanceKafkaProperties.groupId,
-            topic = balanceKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(balanceHistoryDocument)
-        )
-
-        applicationEventPublisher.publishEvent(outboxEvent)
 
         return BalanceResult.from(balanceEntity)
     }
