@@ -8,6 +8,7 @@ import com.hhplus.ecommerce.product.infrastructure.jpa.ProductJpaRepository
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.ProductDetailEntity
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.ProductEntity
 import com.hhplus.ecommerce.product.infrastructure.jpa.querydsl.IProductQueryDsl
+import org.redisson.api.RedissonClient
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 class ProductRepository(
     private val productJpaRepository: ProductJpaRepository,
     private val productDetailJpaRepository: ProductDetailJpaRepository,
-    private val productQueryDsl: IProductQueryDsl
+    private val productQueryDsl: IProductQueryDsl,
+    private val redissonClient: RedissonClient,
 ): IProductRepository {
 
     @Transactional(readOnly = true)
@@ -45,5 +47,15 @@ class ProductRepository(
         productDetailJpaRepository.save(productDetailEntity)
 
         return productDetailEntity
+    }
+
+    override fun invalidateProductCache(productId: Long) {
+        redissonClient.getBucket<Any>("product:cache:$productId").delete()
+    }
+
+    override fun refreshBestSellersCache() {
+        val redisList = redissonClient.getList<BestSellingProduct>("bestSellingProducts:last3days")
+        redisList.clear()
+        redisList.addAll(findTopFiveLastThreeDays())
     }
 }

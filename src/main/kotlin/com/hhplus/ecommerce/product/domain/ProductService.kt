@@ -1,33 +1,28 @@
 package com.hhplus.ecommerce.product.domain
 
 import com.hhplus.ecommerce.common.anotation.RedisCacheable
-import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.product.domain.repository.IProductRepository
 import com.hhplus.ecommerce.product.infrastructure.dto.BestSellingProduct
 import com.hhplus.ecommerce.product.domain.dto.*
-import org.redisson.api.RedissonClient
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
 class ProductService(
     private val productRepository: IProductRepository,
-    private val redissonClient: RedissonClient
 ) {
     fun getProduct(dto: ProductInfoQuery): ProductInfoResult {
         val productDetailEntity = productRepository.findByProductId(dto.productId)
         val productEntity = productRepository.findById(dto.productId)
 
-        val result = ProductInfoResult(
+        return ProductInfoResult(
             productId = productEntity.id,
             productName = productEntity.name,
             price = productEntity.price,
             stock = productDetailEntity.quantity
         )
-        return result
     }
 
-    // @Cacheable(cacheNames = ["productCache"], key = "'product:cache:' + #dto.productId")
     @RedisCacheable(key = "'product:cache:' + #dto.productId")
     fun getProductCache(dto: ProductInfoQuery): ProductInfoResult {
         return getProduct(dto)
@@ -37,7 +32,6 @@ class ProductService(
         return getProduct(dto)
     }
 
-    // @RedisLock(key = "'product:' + #dto.id") // 상품의 재고 ID를 기반으로 Lock을 점유한다.
     fun decreaseStock(dto: DecreaseProductDetailStock): ProductDetailResult {
         val productDetailEntity = productRepository.decreaseStock(dto.id, dto.amount)
 
@@ -59,21 +53,10 @@ class ProductService(
     }
 
     fun deleteCache(productId: Long) {
-        val productCache = redissonClient.getBucket<ProductInfoResult>("product:cache:$productId")
-
-        productCache.delete()
+        productRepository.invalidateProductCache(productId)
     }
 
     fun refreshTopFiveLastThreeDays() {
-        val redisList = redissonClient.getList<BestSellingProduct>("bestSellingProducts:last3days")
-
-        // 기존 데이터를 모두 제거
-        redisList.clear()
-
-        val list = productRepository.findTopFiveLastThreeDays()
-
-        // 새 데이터 추가
-        redisList.addAll(list)
+        productRepository.refreshBestSellersCache()
     }
-
 }

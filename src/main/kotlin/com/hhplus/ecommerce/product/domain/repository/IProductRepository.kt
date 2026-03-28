@@ -12,4 +12,7 @@ interface IProductRepository {
 
     fun insertOrUpdate(entity: ProductEntity): ProductEntity
     fun decreaseStock(productDetailId: Long, amount: Int): ProductDetailEntity
+
+    fun invalidateProductCache(productId: Long)
+    fun refreshBestSellersCache()
 }
