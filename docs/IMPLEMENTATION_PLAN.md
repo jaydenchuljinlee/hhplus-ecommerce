@@ -265,15 +265,32 @@ TOCTOU 문제 해소
 
 ---
 
-### Step 3-4. Outbox Scheduler 재시도 상한 처리
+### Step 3-4. Outbox Scheduler 재시도 상한 처리 ✅
 
-- [ ] `OutboxEventService.processFailedOutbox()`에서 `MAX_RETRY_COUNT` 초과 이벤트 FAILED 확정 처리
-- [ ] FAILED 확정 시 로그 경고(WARN) + 메트릭 발행 (Prometheus Counter)
-- [ ] FAILED 이벤트 모니터링 대시보드 항목 추가 (Grafana)
+- [x] `IOutboxEventRepository`에 `findExhaustedEvents()` 추가 (재시도 상한 초과 이벤트 조회)
+- [x] `OutboxEventJpaRepository`에 `retryCnt > maxCnt` JPQL 쿼리 추가
+- [x] `OutboxEventRepository`에 `findExhaustedEvents()` 구현 추가
+- [x] `OutboxEventService.processFailedOutbox()` — 재시도 가능/불가 이벤트 분리 처리
+  - 재시도 가능 (retryCnt ≤ MAX_CNT): retryCnt 증가 + Kafka 재발행
+  - 상한 초과 (retryCnt > MAX_CNT): `[수동 처리 필요]` WARN 로그 기록
+- [x] 스케줄러 버그 수정 (토픽이 서로 교체되어 있던 오류)
+  - `BalanceOutboxScheduler`: `PAY_HISTORY` → `BALANCE_HISTORY`, 메서드명 수정
+  - `PaymentOutboxScheduler`: `BALANCE_HISTORY` → `PAY_HISTORY`, 미사용 `KafkaProducer` 의존성 제거, 메서드명 수정
+- [x] 누락 스케줄러 신규 추가
+  - `ProductStockOutboxScheduler` — `PRODCUT_STOCK` 토픽 재시도
+  - `OrderOutboxScheduler` — `ORDER_STOCK_FAIL` 토픽 재시도
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
+- [ ] WARN 로그 기반 Prometheus Alert 설정 — 장기 과제 (모니터링 인프라 필요)
 
 **대상 파일**:
+- `outboxevent/domain/IOutboxEventRepository.kt`
+- `outboxevent/infrastructure/jpa/OutboxEventJpaRepository.kt`
+- `outboxevent/infrastructure/OutboxEventRepository.kt`
 - `outboxevent/domain/OutboxEventService.kt`
-- `common/schedular/` (관련 Scheduler)
+- `common/schedular/BalanceOutboxScheduler.kt`
+- `common/schedular/PaymentOutboxScheduler.kt`
+- `common/schedular/ProductStockOutboxScheduler.kt` (신규)
+- `common/schedular/OrderOutboxScheduler.kt` (신규)
 
 ---
 

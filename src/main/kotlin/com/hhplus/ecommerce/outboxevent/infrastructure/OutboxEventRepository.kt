@@ -21,6 +21,10 @@ class OutboxEventRepository(
         return outboxEventJpaRepository.findAllByTopicStatusAndMaxRetryCnt(topic, status, MAX_CNT)
     }
 
+    override fun findExhaustedEvents(topic: String, status: OutboxEventStatus): List<OutboxEventEntity> {
+        return outboxEventJpaRepository.findAllByTopicStatusAndExceedMaxRetryCnt(topic, status, MAX_CNT)
+    }
+
     override fun insertOrUpdate(event: OutboxEventEntity): OutboxEventEntity {
         return outboxEventJpaRepository.save(event)
     }

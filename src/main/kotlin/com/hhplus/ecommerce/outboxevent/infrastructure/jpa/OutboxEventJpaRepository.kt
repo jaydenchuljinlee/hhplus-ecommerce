@@ -17,4 +17,11 @@ interface OutboxEventJpaRepository: JpaRepository<OutboxEventEntity, UUID> {
         @Param("maxCnt") maxCnt: Int
     ): List<OutboxEventEntity>
 
+    /** 재시도 횟수가 [maxCnt]를 초과한 이벤트 조회 — 수동 처리 대상 식별용 */
+    @Query("SELECT e FROM OutboxEventEntity e WHERE e.topic = :topic AND e.status = :status AND e.retryCnt > :maxCnt")
+    fun findAllByTopicStatusAndExceedMaxRetryCnt(
+        @Param("topic") topic: String,
+        @Param("status") status: OutboxEventStatus,
+        @Param("maxCnt") maxCnt: Int
+    ): List<OutboxEventEntity>
 }

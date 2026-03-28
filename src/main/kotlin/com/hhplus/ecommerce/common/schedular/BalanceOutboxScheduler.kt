@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component
 class BalanceOutboxScheduler(
     private val outboxEventService: OutboxEventService
 ) {
+    /** 매 1분마다 BALANCE_HISTORY FAILED 이벤트를 재시도한다. */
     @Scheduled(cron = "0 */1 * * * *")
-    fun retryPaymentHistory() {
-        outboxEventService.processFailedOutbox("PAY_HISTORY")
+    fun retryBalanceHistory() {
+        outboxEventService.processFailedOutbox("BALANCE_HISTORY")
     }
 }
