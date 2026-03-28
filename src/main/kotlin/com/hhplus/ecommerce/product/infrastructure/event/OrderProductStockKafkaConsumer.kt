@@ -38,31 +38,34 @@ class OrderProductStockKafkaConsumer(
 
         logger.info("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: $event")
 
-        // TODO 재고 감소 목록 중에 특정 품목이 실패할 경우, 해당 품목을 주문 정보에서 제거(가격 정보도 제거 필요)
-        // 상품 정보 재고 감소
         payload.products.forEach {
             try {
                 val productDetailItem = DecreaseProductDetailStock.of(it)
                 productService.decreaseStock(productDetailItem)
                 productService.deleteCache(it.productId)
             } catch (e: OutOfStockException) {
-                logger.warn("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: 재고 부족으로 인한 OrderDetail 삭제 => ${payload.orderId}, ${it.productId}")
-
-                val orderStockFailEvent = OrderDetailDeletionEventRequest.of(payload.orderId, it.productId)
-                val outboxEvent = OutboxEventInfo(
-                    id = UUID.randomUUID(),
-                    groupId = orderStockFailKafkaProperties.groupId,
-                    topic = orderStockFailKafkaProperties.topic,
-                    payload = objectMapper.writeValueAsString(orderStockFailEvent)
-                )
-
-                val outboxEntity = outboxEvent.toEntity()
-                outboxEntity.status = OutboxEventStatus.PUBLISH
-                outboxEventService.insertOrUpdate(outboxEntity)
-
-                kafkaProducer.sendOutboxEvent(outboxEvent)
+                logger.warn("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: 재고 부족으로 인한 OrderDetail 삭제 => orderId=${payload.orderId}, productId=${it.productId}")
+                publishStockFailEvent(payload.orderId, it.productId)
+            } catch (e: Exception) {
+                logger.error("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: 재고 감소 중 오류 발생 => orderId=${payload.orderId}, productId=${it.productId}", e)
+                publishStockFailEvent(payload.orderId, it.productId)
             }
-
         }
+    }
+
+    private fun publishStockFailEvent(orderId: Long, productId: Long) {
+        val orderStockFailEvent = OrderDetailDeletionEventRequest.of(orderId, productId)
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
+            groupId = orderStockFailKafkaProperties.groupId,
+            topic = orderStockFailKafkaProperties.topic,
+            payload = objectMapper.writeValueAsString(orderStockFailEvent)
+        )
+
+        val outboxEntity = outboxEvent.toEntity()
+        outboxEntity.status = OutboxEventStatus.PUBLISH
+        outboxEventService.insertOrUpdate(outboxEntity)
+
+        kafkaProducer.sendOutboxEvent(outboxEvent)
     }
 }
