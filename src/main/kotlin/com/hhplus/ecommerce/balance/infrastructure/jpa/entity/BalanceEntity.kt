@@ -28,22 +28,22 @@ data class BalanceEntity(
     fun charge(amount: Long) {
         val newBalance = amount + balance
 
-        require(newBalance <= BalancePolicy.MAX) { throw BalanceLimitExceededException() }
+        if (newBalance > BalancePolicy.MAX) throw BalanceLimitExceededException()
 
         balance = newBalance
     }
 
     fun use(amount: Long) {
-        require(amount >= BalancePolicy.MIN) { throw InsufficientBalanceException("최소 사용 금액은 100원 입니다.") }
+        if (amount < BalancePolicy.MIN) throw InsufficientBalanceException("최소 사용 금액은 100원 입니다.")
 
         val newBalance = balance - amount
 
         validateToUse(newBalance)
 
         balance = newBalance
-     }
+    }
 
     fun validateToUse(amount: Long) {
-        require(amount >= BalancePolicy.MIN) { throw InsufficientBalanceException() }
+        if (amount < BalancePolicy.MIN) throw InsufficientBalanceException()
     }
 }
