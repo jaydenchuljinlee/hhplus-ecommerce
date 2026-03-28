@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew test --tests \"com.hhplus.ecommerce.domain.order.OrderServiceTest\" --tests \"com.hhplus.ecommerce.domain.payment.PaymentServiceTest\" --tests \"com.hhplus.ecommerce.facade.OrderFacadeTest\" --tests \"com.hhplus.ecommerce.facade.PaymentFacadeTest\")",
+      "Bash(./gradlew test:*)",
+      "Bash(ls:*)",
+      "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce -maxdepth 3 -type f \\\\\\(-name build.gradle* -o -name settings.gradle* -o -name pom.xml -o -name package.json -o -name gradle.properties \\\\\\))",
+      "Bash(grep -E \"\\\\.\\(md|txt|gradle\\)$\")"
+    ]
+  }
+}
