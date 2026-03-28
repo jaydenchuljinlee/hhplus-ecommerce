@@ -15,7 +15,8 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      # ddl-auto는 각 프로필에서 설정 (local: create, dev: update, test: create, prod: validate)
+      ddl-auto: none
 
 jwt:
   # 환경변수 JWT_SECRET_KEY 미설정 시 로컬 개발용 기본값 사용 (운영 배포 시 반드시 환경변수로 주입)

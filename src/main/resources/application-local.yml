@@ -4,6 +4,9 @@ spring:
     username: ironjin
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create # 로컬 개발용: 매 시작 시 스키마 재생성
   sql:
     init:
       mode: always

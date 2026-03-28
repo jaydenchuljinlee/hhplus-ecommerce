@@ -1,6 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create # 테스트 격리: 매 실행 시 스키마 재생성
   sql:
     init:
       mode: always

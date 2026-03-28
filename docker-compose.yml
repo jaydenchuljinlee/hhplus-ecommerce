@@ -7,6 +7,11 @@ services:
       - "6379:6379"
     networks:
       - app-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mysql:
     image: mysql:8.0
@@ -22,6 +27,12 @@ services:
       - app-net
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   mongodb:
     image: mongo:latest
@@ -36,6 +47,12 @@ services:
       - app-net
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -47,12 +64,18 @@ services:
       - "2181:2181"
     networks:
       - app-net
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: hhplus-kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: hhplus-zookeeper:2181
@@ -66,6 +89,12 @@ services:
       - "9093:9093"  # 외부 리스너
     networks:
       - app-net
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -76,7 +105,8 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     networks:
       - app-net
 
@@ -131,10 +161,16 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - redis
-      - mysql
-      - mongodb
-      - kafka
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-net
 
 networks:
   app-net:
