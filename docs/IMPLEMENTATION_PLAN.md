@@ -196,13 +196,20 @@ TOCTOU 문제 해소
 
 ## Phase 3. 이벤트 & 메시징 안정화
 
-### Step 3-1. Outbox 이벤트 리스너 실행 순서 보장
+### Step 3-1. Outbox 이벤트 리스너 실행 순서 보장 ✅
 
-- [ ] `OutboxEventListener.handleOutboxEvent()`에 `@Order(1)` 추가
-- [ ] `OutboxEventListener.publish()`에 `@Order(2)` 추가
-- [ ] `@EventListener`를 `@TransactionalEventListener(phase = BEFORE_COMMIT)`으로 변경 검토
-  - 현재 `@EventListener`는 트랜잭션 유무와 관계없이 즉시 실행되므로, 트랜잭션 안에서만 동작하도록 제한하는 것이 안전
-- [ ] 트랜잭션 없이 이벤트 발행되는 경우(예: Kafka Consumer 내부) 처리 확인
+- [x] `OutboxEventListener.handleOutboxEvent()`에 `@Order(1)` 추가
+- [x] `OutboxEventListener.publish()`에 `@Order(2)` 추가
+- [x] `@EventListener` → `@TransactionalEventListener(phase = BEFORE_COMMIT)` 변경
+  - 트랜잭션 안에서만 동작하도록 제한 → 외부 트랜잭션과 동일한 커밋/롤백 단위로 묶임
+  - `@EventListener`는 트랜잭션 유무 관계없이 즉시 실행되어 정합성 보장 불가
+- [x] `@Async publish()`에 `@Transactional(propagation = REQUIRES_NEW)` 추가
+  - 비동기 별도 스레드에는 트랜잭션 컨텍스트 없음 → `updateStatus()` JPA 연산을 위한 신규 트랜잭션 시작 필요
+- [x] SLF4J 로거 포맷 통일 (`"$event"` 문자열 보간 → `"{}", event`)
+- [x] 트랜잭션 없이 이벤트 발행되는 경우(Kafka Consumer 내부) 확인
+  - `OrderProductStockKafkaConsumer.sendStockFailEvent()`는 `applicationEventPublisher` 대신 `outboxEventService.insertOrUpdate()` + `kafkaProducer.sendOutboxEvent()`를 직접 호출하므로 영향 없음
+- [x] KDoc으로 단계별 처리 이유 명시
+- [x] 컴파일 확인 (`BUILD SUCCESSFUL`)
 
 **대상 파일**:
 - `outboxevent/infrastructure/event/OutboxEventListener.kt`
