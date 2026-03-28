@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("balance")
@@ -25,7 +26,7 @@ interface IBalanceController {
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PatchMapping("charge")
-    fun charge(@RequestBody request: BalanceChargeRequest): CustomApiResponse<BalanceTransactionResponse>
+    fun charge(@Valid @RequestBody request: BalanceChargeRequest): CustomApiResponse<BalanceTransactionResponse>
 
     @Tag(name = "잔액 기능")
     @Operation(summary = "잔액 조회 API", description = "잔액을 조회해주는 API입니다.")
@@ -35,6 +36,6 @@ interface IBalanceController {
     ])
     @GetMapping()
     fun getBalance(
-        @RequestBody request: BalanceViewRequest
+        @Valid @RequestBody request: BalanceViewRequest
     ): CustomApiResponse<BalanceViewResponse>
 }

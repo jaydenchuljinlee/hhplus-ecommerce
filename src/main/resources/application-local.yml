@@ -28,6 +28,12 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 로컬 개발 환경: 모든 Actuator 엔드포인트 노출
+
 hhplus:
   kafka:
     balance:

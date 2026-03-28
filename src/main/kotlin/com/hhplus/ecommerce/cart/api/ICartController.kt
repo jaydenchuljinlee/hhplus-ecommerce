@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("cart")
@@ -24,7 +25,7 @@ interface ICartController {
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PostMapping()
-    fun addCart(@RequestBody request: CartCreationRequest): CustomApiResponse<CartResponse>
+    fun addCart(@Valid @RequestBody request: CartCreationRequest): CustomApiResponse<CartResponse>
 
     @Tag(name = "장바구니 기능")
     @Operation(summary = "장바구니 삭제 API", description = "장바구니의 상품을 삭제하는 API입니다.")
@@ -35,7 +36,7 @@ interface ICartController {
     @DeleteMapping()
     fun deleteCart(
         @Parameter(description = "삭제할 장바구니 정보", required = true)
-        @RequestBody request: CartDeletionRequest
+        @Valid @RequestBody request: CartDeletionRequest
     ): CustomApiResponse<Long>
 
     @Tag(name = "장바구니 기능")
@@ -45,5 +46,5 @@ interface ICartController {
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @GetMapping("list")
-    fun getCartList(@RequestBody request: CartListQueryRequest): CustomApiResponse<List<CartResponse>>
+    fun getCartList(@Valid @RequestBody request: CartListQueryRequest): CustomApiResponse<List<CartResponse>>
 }

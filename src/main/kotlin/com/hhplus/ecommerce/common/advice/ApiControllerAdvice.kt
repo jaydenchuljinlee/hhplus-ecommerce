@@ -7,6 +7,7 @@ import com.hhplus.ecommerce.common.exception.RepositoryException
 import com.hhplus.ecommerce.common.exception.ServiceException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -44,6 +45,15 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
         val response = CustomErrorResponse.fail(e.message ?: "Facade error")
         logger.error("FacadeException: {}", e)
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response)
+    }
+
+    // Bean Validation 예외 처리
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<CustomErrorResponse> {
+        val message = e.bindingResult.fieldErrors.joinToString(", ") { "${it.field}: ${it.defaultMessage}" }
+        val response = CustomErrorResponse.fail(message)
+        logger.error("ValidationException: {}", message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
     }
 
     // 그 이외의 계층 Exception

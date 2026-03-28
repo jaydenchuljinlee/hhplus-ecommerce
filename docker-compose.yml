@@ -119,6 +119,7 @@ services:
     environment:
       JAVA_OPTS: "-Xms256m -Xmx512m"
       SPRING_PROFILES_ACTIVE: dev
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 #    deploy:
 #      resources:
 #        limits:

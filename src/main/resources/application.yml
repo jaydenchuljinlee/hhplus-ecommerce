@@ -18,19 +18,23 @@ spring:
       ddl-auto: create
 
 jwt:
-  secretKey: Ez8RZUiy088e15OapWMfWWMe_kNQglk6GQx3cxAHjhE
+  # 환경변수 JWT_SECRET_KEY 미설정 시 로컬 개발용 기본값 사용 (운영 배포 시 반드시 환경변수로 주입)
+  secretKey: ${JWT_SECRET_KEY:local-dev-only-not-for-production-change-me}
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*" # 모든 Actuator 엔드포인트 노출
+        # 운영 안전 기본값: 필요한 엔드포인트만 노출 (로컬 개발은 application-local.yml에서 확장)
+        include: health,info,metrics,prometheus
   endpoint:
     metrics:
-      enabled: true # /metrics 활성화
+      enabled: true
+    health:
+      show-details: when-authorized
   metrics:
     enable:
-      all: true # 모든 메트릭 활성화
+      all: true
 
 
 logging:
