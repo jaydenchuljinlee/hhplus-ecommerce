@@ -11,6 +11,9 @@ import com.hhplus.ecommerce.payment.common.PayStatus
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
+import com.hhplus.ecommerce.payment.common.PaymentSagaStatus
+import com.hhplus.ecommerce.payment.domain.PaymentSagaService
+import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.usecase.PaymentFacade
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.product.domain.StockReservationService
@@ -34,12 +37,17 @@ class PaymentFacadeTest {
     private lateinit var orderService: OrderService
     @Mock
     private lateinit var stockReservationService: StockReservationService
+    @Mock
+    private lateinit var paymentSagaService: PaymentSagaService
 
     private lateinit var paymentFacade: PaymentFacade
 
     @BeforeEach
     fun before() {
-        paymentFacade = PaymentFacade(balanceService, paymentService, orderService, stockReservationService)
+        paymentFacade = PaymentFacade(balanceService, paymentService, orderService, stockReservationService, paymentSagaService)
+
+        val mockSaga = PaymentSagaEntity(id = 1L, orderId = 0L, userId = 0L, sagaStatus = PaymentSagaStatus.STARTED)
+        BDDMockito.given(paymentSagaService.start(BDDMockito.anyLong(), BDDMockito.anyLong())).willReturn(mockSaga)
     }
 
     @DisplayName("결제 정합성 테스트")
