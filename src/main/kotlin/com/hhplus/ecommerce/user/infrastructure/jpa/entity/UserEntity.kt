@@ -43,4 +43,15 @@ class UserEntity(
         grade = UserGrade.from(totalPurchaseAmount)
         updatedAt = LocalDateTime.now()
     }
+
+    fun usePoint(amount: Long) {
+        check(point >= amount) { "포인트가 부족합니다. 현재 포인트: $point, 요청 금액: $amount" }
+        point -= amount
+        updatedAt = LocalDateTime.now()
+    }
+
+    fun chargePoint(amount: Long) {
+        point += amount
+        updatedAt = LocalDateTime.now()
+    }
 }

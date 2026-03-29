@@ -15,6 +15,7 @@ import com.hhplus.ecommerce.payment.domain.PaymentSagaService
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
+import com.hhplus.ecommerce.payment.usecase.dto.PaymentBreakdown
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import com.hhplus.ecommerce.product.domain.StockReservationService
@@ -41,22 +42,34 @@ class PaymentFacade(
             OrderQuery(orderId = dto.orderId, status = OrderStatus.REQUESTED)
         )
 
+        val breakdown = dto.breakdown ?: PaymentBreakdown(balanceAmount = order.totalPrice)
+
         var balanceDeducted = false
+        var pointDeducted = false
         var stockCommitted = false
 
         try {
             // 1. 잔액 차감
-            balanceService.use(
-                BalanceTransaction(
-                    userId = dto.userId,
-                    amount = order.totalPrice,
-                    type = BalanceTransaction.TransactionType.USE
+            if (breakdown.balanceAmount > 0) {
+                balanceService.use(
+                    BalanceTransaction(
+                        userId = dto.userId,
+                        amount = breakdown.balanceAmount,
+                        type = BalanceTransaction.TransactionType.USE
+                    )
                 )
-            )
-            balanceDeducted = true
+                balanceDeducted = true
+            }
+
+            // 2. 포인트 차감
+            if (breakdown.pointAmount > 0) {
+                userService.usePoint(dto.userId, breakdown.pointAmount)
+                pointDeducted = true
+            }
+
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.BALANCE_DEDUCTED)
 
-            // 2. 결제 생성
+            // 3. 결제 생성
             val result = paymentService.pay(
                 CreationPaymentCommand(
                     orderId = dto.orderId,
@@ -68,11 +81,11 @@ class PaymentFacade(
                 dto.orderId, PaymentSagaStatus.PAYMENT_CREATED, paymentId = result.paymentId
             )
 
-            // 3. 주문 확정
+            // 4. 주문 확정
             orderService.orderComplete(OrderCompleteCommand(dto.orderId))
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.ORDER_CONFIRMED)
 
-            // 4. 재고 확정
+            // 5. 재고 확정
             stockReservationService.commit(dto.orderId)
             stockCommitted = true
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.STOCK_COMMITTED)
@@ -96,7 +109,7 @@ class PaymentFacade(
             return PaymentInfo.from(result)
 
         } catch (e: Exception) {
-            compensate(saga, dto, order.totalPrice, balanceDeducted, stockCommitted, e)
+            compensate(saga, dto, breakdown, balanceDeducted, pointDeducted, stockCommitted, e)
             throw e
         }
     }
@@ -104,8 +117,9 @@ class PaymentFacade(
     private fun compensate(
         saga: PaymentSagaEntity,
         dto: PaymentCreation,
-        amount: Long,
+        breakdown: PaymentBreakdown,
         balanceDeducted: Boolean,
+        pointDeducted: Boolean,
         stockCommitted: Boolean,
         cause: Exception
     ) {
@@ -116,11 +130,14 @@ class PaymentFacade(
             if (stockCommitted) {
                 stockReservationService.release(dto.orderId)
             }
+            if (pointDeducted) {
+                userService.chargePoint(dto.userId, breakdown.pointAmount)
+            }
             if (balanceDeducted) {
                 balanceService.charge(
                     BalanceTransaction(
                         userId = dto.userId,
-                        amount = amount,
+                        amount = breakdown.balanceAmount,
                         type = BalanceTransaction.TransactionType.CHARGE
                     )
                 )
