@@ -57,12 +57,107 @@ class OrderEntity(
         status = OrderStatus.CONFIRMED
     }
 
-    /** 어떤 상태에서든 CANCELED 로 전환 (단, 이미 CONFIRMED 된 경우 제외) */
+    /** CONFIRMED → PREPARING: 출고 준비 시작 */
+    fun startPreparing() {
+        if (status != OrderStatus.CONFIRMED) {
+            throw InvalidOrderStatusException("출고 준비는 CONFIRMED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.PREPARING
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** PREPARING → READY_TO_SHIP: 출고 완료 */
+    fun readyToShip() {
+        if (status != OrderStatus.PREPARING) {
+            throw InvalidOrderStatusException("출고 완료는 PREPARING 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.READY_TO_SHIP
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** READY_TO_SHIP → SHIPPED: 배송 시작 */
+    fun ship() {
+        if (status != OrderStatus.READY_TO_SHIP) {
+            throw InvalidOrderStatusException("배송 시작은 READY_TO_SHIP 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.SHIPPED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** SHIPPED → IN_TRANSIT: 배송 중 */
+    fun startTransit() {
+        if (status != OrderStatus.SHIPPED) {
+            throw InvalidOrderStatusException("배송 중 전이는 SHIPPED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.IN_TRANSIT
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** IN_TRANSIT → DELIVERED: 배송 완료 */
+    fun deliver() {
+        if (status != OrderStatus.IN_TRANSIT) {
+            throw InvalidOrderStatusException("배송 완료 전이는 IN_TRANSIT 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.DELIVERED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** DELIVERED → PURCHASE_CONFIRMED: 구매 확정 */
+    fun confirmPurchase() {
+        if (status != OrderStatus.DELIVERED) {
+            throw InvalidOrderStatusException("구매 확정은 DELIVERED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.PURCHASE_CONFIRMED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** DELIVERED | PURCHASE_CONFIRMED → RETURN_REQUESTED: 반품 신청 */
+    fun requestReturn() {
+        if (status != OrderStatus.DELIVERED && status != OrderStatus.PURCHASE_CONFIRMED) {
+            throw InvalidOrderStatusException("반품 신청은 DELIVERED 또는 PURCHASE_CONFIRMED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.RETURN_REQUESTED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** RETURN_REQUESTED → RETURNED: 반품 완료 */
+    fun completeReturn() {
+        if (status != OrderStatus.RETURN_REQUESTED) {
+            throw InvalidOrderStatusException("반품 완료는 RETURN_REQUESTED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.RETURNED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** RETURNED → REFUND_PENDING: 환불 처리 중 */
+    fun requestRefund() {
+        if (status != OrderStatus.RETURNED) {
+            throw InvalidOrderStatusException("환불 처리는 RETURNED 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.REFUND_PENDING
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** REFUND_PENDING → REFUNDED: 환불 완료 */
+    fun completeRefund() {
+        if (status != OrderStatus.REFUND_PENDING) {
+            throw InvalidOrderStatusException("환불 완료는 REFUND_PENDING 상태에서만 가능합니다. (현재: $status)")
+        }
+        status = OrderStatus.REFUNDED
+        updatedAt = LocalDateTime.now()
+    }
+
+    /** 어떤 상태에서든 CANCELED 로 전환 (단, PURCHASE_CONFIRMED 이후 불가) */
     fun cancel() {
-        if (status == OrderStatus.CONFIRMED) {
-            throw InvalidOrderStatusException("이미 확정된 주문은 취소할 수 없습니다.")
+        val nonCancelableStatuses = setOf(
+            OrderStatus.PURCHASE_CONFIRMED, OrderStatus.RETURN_REQUESTED,
+            OrderStatus.RETURNED, OrderStatus.REFUND_PENDING, OrderStatus.REFUNDED
+        )
+        if (status in nonCancelableStatuses) {
+            throw InvalidOrderStatusException("$status 상태에서는 주문을 취소할 수 없습니다.")
         }
         status = OrderStatus.CANCELED
+        updatedAt = LocalDateTime.now()
     }
 
     fun removeOf(productId: Long) {
