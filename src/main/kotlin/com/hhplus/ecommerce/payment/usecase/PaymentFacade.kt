@@ -6,6 +6,10 @@ import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
+import com.hhplus.ecommerce.notification.common.NotificationChannel
+import com.hhplus.ecommerce.notification.common.NotificationType
+import com.hhplus.ecommerce.notification.domain.INotificationEventPublisher
+import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
 import com.hhplus.ecommerce.payment.common.PaymentSagaStatus
 import com.hhplus.ecommerce.payment.domain.PaymentSagaService
 import com.hhplus.ecommerce.payment.domain.PaymentService
@@ -23,7 +27,8 @@ class PaymentFacade(
     private val paymentService: PaymentService,
     private val orderService: OrderService,
     private val stockReservationService: StockReservationService,
-    private val paymentSagaService: PaymentSagaService
+    private val paymentSagaService: PaymentSagaService,
+    private val notificationEventPublisher: INotificationEventPublisher
 ) {
     private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
 
@@ -71,6 +76,17 @@ class PaymentFacade(
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.STOCK_COMMITTED)
 
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.COMPLETED)
+
+            notificationEventPublisher.publish(
+                NotificationEvent(
+                    userId = dto.userId,
+                    type = NotificationType.PAYMENT_CONFIRMED,
+                    channel = NotificationChannel.PUSH,
+                    title = "결제가 완료되었습니다.",
+                    body = "주문 번호 ${dto.orderId}번 결제가 정상적으로 완료되었습니다.",
+                    orderId = dto.orderId
+                )
+            )
 
             return PaymentInfo.from(result)
 

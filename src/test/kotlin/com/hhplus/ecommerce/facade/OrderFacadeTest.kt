@@ -18,6 +18,7 @@ import com.hhplus.ecommerce.product.domain.dto.ProductDetailResult
 import com.hhplus.ecommerce.user.domain.UserService
 import com.hhplus.ecommerce.user.domain.dto.UserQuery
 import com.hhplus.ecommerce.user.domain.dto.UserResult
+import com.hhplus.ecommerce.notification.domain.INotificationEventPublisher
 import com.hhplus.ecommerce.order.usecase.OrderFacade
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
 import com.hhplus.ecommerce.order.usecase.dto.OrderDetailCreation
@@ -44,6 +45,8 @@ class OrderFacadeTest {
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
     @Mock
     private lateinit var objectMapper: ObjectMapper
+    @Mock
+    private lateinit var notificationEventPublisher: INotificationEventPublisher
 
     private lateinit var orderFacade: OrderFacade
 
@@ -54,7 +57,7 @@ class OrderFacadeTest {
             topic = "test-product-topic"
         }
         BDDMockito.given(objectMapper.writeValueAsString(ArgumentMatchers.any())).willReturn("{}")
-        orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper)
+        orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper, notificationEventPublisher)
     }
 
     @DisplayName("주문 정합성 테스트")
