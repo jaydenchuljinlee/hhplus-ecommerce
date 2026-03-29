@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository
 class UserRepository(
     private val userJpaRepository: UserJpaRepository
 ): IUserRepository {
-    override fun findById(userId: Long): UserEntity {
-        return userJpaRepository.findById(userId).orElseThrow { UserNotFoundException() }
-    }
+    override fun findById(userId: Long): UserEntity =
+        userJpaRepository.findById(userId).orElseThrow { UserNotFoundException() }
+
+    override fun save(entity: UserEntity): UserEntity =
+        userJpaRepository.save(entity)
 }

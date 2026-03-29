@@ -1,0 +1,27 @@
+package com.hhplus.ecommerce.user.domain.dto
+
+import com.hhplus.ecommerce.user.infrastructure.jpa.entity.UserAddressEntity
+
+data class UserAddressResult(
+    val id: Long,
+    val userId: Long,
+    val alias: String,
+    val receiverName: String,
+    val phone: String,
+    val address: String,
+    val zipCode: String,
+    val isDefault: Boolean
+) {
+    companion object {
+        fun from(entity: UserAddressEntity) = UserAddressResult(
+            id = entity.id,
+            userId = entity.userId,
+            alias = entity.alias,
+            receiverName = entity.receiverName,
+            phone = entity.phone,
+            address = entity.address,
+            zipCode = entity.zipCode,
+            isDefault = entity.isDefault
+        )
+    }
+}

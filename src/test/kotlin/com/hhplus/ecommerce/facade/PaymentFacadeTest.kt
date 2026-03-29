@@ -13,6 +13,7 @@ import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
 import com.hhplus.ecommerce.notification.domain.INotificationEventPublisher
 import com.hhplus.ecommerce.payment.common.PaymentSagaStatus
+import com.hhplus.ecommerce.user.domain.UserService
 import com.hhplus.ecommerce.payment.domain.PaymentSagaService
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.usecase.PaymentFacade
@@ -42,12 +43,14 @@ class PaymentFacadeTest {
     private lateinit var paymentSagaService: PaymentSagaService
     @Mock
     private lateinit var notificationEventPublisher: INotificationEventPublisher
+    @Mock
+    private lateinit var userService: UserService
 
     private lateinit var paymentFacade: PaymentFacade
 
     @BeforeEach
     fun before() {
-        paymentFacade = PaymentFacade(balanceService, paymentService, orderService, stockReservationService, paymentSagaService, notificationEventPublisher)
+        paymentFacade = PaymentFacade(balanceService, paymentService, orderService, stockReservationService, paymentSagaService, notificationEventPublisher, userService)
 
         val mockSaga = PaymentSagaEntity(id = 1L, orderId = 0L, userId = 0L, sagaStatus = PaymentSagaStatus.STARTED)
         BDDMockito.given(paymentSagaService.start(BDDMockito.anyLong(), BDDMockito.anyLong())).willReturn(mockSaga)

@@ -18,6 +18,7 @@ import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import com.hhplus.ecommerce.product.domain.StockReservationService
+import com.hhplus.ecommerce.user.domain.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -28,7 +29,8 @@ class PaymentFacade(
     private val orderService: OrderService,
     private val stockReservationService: StockReservationService,
     private val paymentSagaService: PaymentSagaService,
-    private val notificationEventPublisher: INotificationEventPublisher
+    private val notificationEventPublisher: INotificationEventPublisher,
+    private val userService: UserService
 ) {
     private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
 
@@ -76,6 +78,9 @@ class PaymentFacade(
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.STOCK_COMMITTED)
 
             paymentSagaService.updateStatusByOrderId(dto.orderId, PaymentSagaStatus.COMPLETED)
+
+            // 구매 금액 누적 및 등급 재산정
+            userService.addPurchaseAmount(dto.userId, order.totalPrice)
 
             notificationEventPublisher.publish(
                 NotificationEvent(
