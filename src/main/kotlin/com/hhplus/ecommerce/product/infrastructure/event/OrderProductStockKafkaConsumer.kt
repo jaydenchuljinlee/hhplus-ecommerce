@@ -11,7 +11,7 @@ import com.hhplus.ecommerce.outboxevent.infrastructure.OutboxEventRepository
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEventStatus
 import com.hhplus.ecommerce.product.domain.ProductService
-import com.hhplus.ecommerce.product.domain.dto.DecreaseProductDetailStock
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderDetailDeletionEventRequest
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderProductStockEventResponse
 import com.hhplus.ecommerce.product.infrastructure.exception.OutOfStockException
@@ -23,6 +23,7 @@ import java.util.*
 @Component
 class OrderProductStockKafkaConsumer(
     private val productService: ProductService,
+    private val stockReservationService: StockReservationService,
     private val orderService: OrderService,
     private val outboxEventService: OutboxEventService,
     private val outboxEventRepository: OutboxEventRepository,
@@ -50,14 +51,17 @@ class OrderProductStockKafkaConsumer(
 
             val failedProductIds = mutableListOf<Long>()
 
-            // 상품별 재고 차감 — 각 decreaseStock()은 자체 트랜잭션으로 독립 커밋
+            // 상품별 재고 Soft Reserve — availableQuantity 기준으로 점유
             payload.products.forEach { product ->
                 try {
-                    productService.decreaseStock(DecreaseProductDetailStock.of(product))
+                    stockReservationService.reserve(
+                        orderId = payload.orderId,
+                        items = listOf(product.productId to product.quantity)
+                    )
                     productService.deleteCache(product.productId)
-                    logger.debug("PRODUCT-ORDER-STOCK:DECREASE:SUCCESS orderId={}, productId={}", payload.orderId, product.productId)
+                    logger.debug("PRODUCT-ORDER-STOCK:RESERVE:SUCCESS orderId={}, productId={}", payload.orderId, product.productId)
                 } catch (e: OutOfStockException) {
-                    logger.warn("PRODUCT-ORDER-STOCK:DECREASE:OUT_OF_STOCK orderId={}, productId={}", payload.orderId, product.productId)
+                    logger.warn("PRODUCT-ORDER-STOCK:RESERVE:OUT_OF_STOCK orderId={}, productId={}", payload.orderId, product.productId)
                     failedProductIds.add(product.productId)
                     sendStockFailEvent(payload.orderId, product.productId)
                 }

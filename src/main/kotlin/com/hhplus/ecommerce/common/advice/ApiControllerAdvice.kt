@@ -86,7 +86,7 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<CustomErrorResponse> {
         val message = e.bindingResult.fieldErrors.joinToString(", ") { "${it.field}: ${it.defaultMessage}" }
         val response = CustomErrorResponse.fail(message)
-        logger.error("ValidationException: {}", message)
+        logger.error("ValidationException: $message")
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
     }
 
@@ -94,7 +94,7 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleMethodArgumentTypeMismatch(e: MethodArgumentTypeMismatchException): ResponseEntity<CustomErrorResponse> {
         val response = CustomErrorResponse.fail("잘못된 파라미터 타입입니다: ${e.name}")
-        logger.error("MethodArgumentTypeMismatchException: {}", e.message)
+        logger.error("MethodArgumentTypeMismatchException: ${e.message}")
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
     }
 
@@ -106,7 +106,7 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val response = CustomErrorResponse.fail("잘못된 요청 형식입니다.")
-        logger.error("HttpMessageNotReadableException: {}", ex.message)
+        logger.error("HttpMessageNotReadableException: ${ex.message}")
         @Suppress("UNCHECKED_CAST")
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response) as ResponseEntity<Any>
     }
@@ -119,7 +119,7 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val response = CustomErrorResponse.fail("요청한 리소스를 찾을 수 없습니다: ${ex.requestURL}")
-        logger.error("NoHandlerFoundException: {}", ex.message)
+        logger.error("NoHandlerFoundException: ${ex.message}")
         @Suppress("UNCHECKED_CAST")
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response) as ResponseEntity<Any>
     }

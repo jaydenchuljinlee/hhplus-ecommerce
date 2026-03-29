@@ -10,6 +10,7 @@ import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -31,7 +32,8 @@ import org.springframework.stereotype.Component
 class PaymentFacade(
     private val balanceService: BalanceService,
     private val paymentService: PaymentService,
-    private val orderService: OrderService
+    private val orderService: OrderService,
+    private val stockReservationService: StockReservationService
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
@@ -70,6 +72,8 @@ class PaymentFacade(
                 )
             )
             orderService.orderComplete(OrderCompleteCommand(dto.orderId))
+            // 결제 완료 후 예약 재고 확정 차감 (soft reserve → commit)
+            stockReservationService.commit(dto.orderId)
             PaymentInfo.from(result)
 
         } catch (e: Exception) {

@@ -46,4 +46,31 @@ class ProductRepository(
 
         return productDetailEntity
     }
+
+    @Transactional
+    override fun reserveStock(productDetailId: Long, amount: Int): ProductDetailEntity {
+        val entity = productDetailJpaRepository.findByProductId(productDetailId)
+            .orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
+        entity.reserve(amount)
+        productDetailJpaRepository.save(entity)
+        return entity
+    }
+
+    @Transactional
+    override fun commitStock(productDetailId: Long, amount: Int): ProductDetailEntity {
+        val entity = productDetailJpaRepository.findByProductId(productDetailId)
+            .orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
+        entity.commit(amount)
+        productDetailJpaRepository.save(entity)
+        return entity
+    }
+
+    @Transactional
+    override fun releaseStock(productDetailId: Long, amount: Int): ProductDetailEntity {
+        val entity = productDetailJpaRepository.findByProductId(productDetailId)
+            .orElseThrow { RuntimeException("상세 정보를 찾을 수 없습니다.") }
+        entity.release(amount)
+        productDetailJpaRepository.save(entity)
+        return entity
+    }
 }
