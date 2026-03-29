@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.payment.api
 
+import com.hhplus.ecommerce.common.anotation.RateLimit
 import com.hhplus.ecommerce.payment.api.dto.PaymentCreationRequest
 import com.hhplus.ecommerce.payment.api.dto.PaymentResponse
 import com.hhplus.ecommerce.common.dto.CustomApiResponse
@@ -20,9 +21,11 @@ interface IPaymentController {
     @Operation(summary = "결제 API", description = "주문한 상품을 결제하는 API입니다.")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "결제 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "429", description = "요청 한도 초과", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PostMapping()
+    @RateLimit(key = "#request.userId", limit = 10, seconds = 60)
     fun payment(
         @RequestBody request: PaymentCreationRequest
     ): CustomApiResponse<PaymentResponse>

@@ -3,6 +3,7 @@ package com.hhplus.ecommerce.common.advice
 import com.hhplus.ecommerce.common.dto.CustomErrorResponse
 import com.hhplus.ecommerce.common.exception.ControllerException
 import com.hhplus.ecommerce.common.exception.FacadeException
+import com.hhplus.ecommerce.common.exception.RateLimitExceededException
 import com.hhplus.ecommerce.common.exception.RepositoryException
 import com.hhplus.ecommerce.common.exception.ServiceException
 import org.springframework.http.HttpStatus
@@ -44,6 +45,14 @@ class ApiControllerAdvice : ResponseEntityExceptionHandler() {
         val response = CustomErrorResponse.fail(e.message ?: "Facade error")
         logger.error("FacadeException: {}", e)
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response)
+    }
+
+    // Rate Limit 초과
+    @ExceptionHandler(RateLimitExceededException::class)
+    fun handleRateLimitExceededException(e: RateLimitExceededException): ResponseEntity<CustomErrorResponse> {
+        val response = CustomErrorResponse.fail(e.message ?: "Too Many Requests")
+        logger.warn("RateLimitExceededException: $e")
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(response)
     }
 
     // 그 이외의 계층 Exception

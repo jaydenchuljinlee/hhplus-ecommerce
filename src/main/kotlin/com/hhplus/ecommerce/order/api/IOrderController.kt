@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.order.api
 
+import com.hhplus.ecommerce.common.anotation.RateLimit
 import com.hhplus.ecommerce.order.api.dto.OrderCreationRequest
 import com.hhplus.ecommerce.order.api.dto.OrderResponse
 import com.hhplus.ecommerce.common.dto.CustomApiResponse
@@ -20,9 +21,11 @@ interface IOrderController {
     @Operation(summary = "주문 API", description = "주문 요청을 처리하는 API입니다.")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "주문 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "429", description = "요청 한도 초과", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
         ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
     ])
     @PostMapping()
+    @RateLimit(key = "#request.userId", limit = 20, seconds = 60)
     fun prepareOrder(
         @RequestBody request: OrderCreationRequest
     ): CustomApiResponse<OrderResponse>
