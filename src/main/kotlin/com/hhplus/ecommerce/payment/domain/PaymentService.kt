@@ -44,7 +44,9 @@ class PaymentService(
             id = UUID.randomUUID(),
             groupId = paymentKafkaProperties.groupId,
             topic = paymentKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(paymentHistoryDocument)
+            payload = objectMapper.writeValueAsString(paymentHistoryDocument),
+            eventType = "Payment",
+            schemaVersion = "1"
         )
 
         applicationEventPublisher.publishEvent(outboxEvent)

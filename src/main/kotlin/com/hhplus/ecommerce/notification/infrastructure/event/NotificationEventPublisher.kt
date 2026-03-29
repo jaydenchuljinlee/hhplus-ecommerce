@@ -25,7 +25,9 @@ class NotificationEventPublisher(
                 id = UUID.randomUUID(),
                 groupId = notificationKafkaProperties.groupId,
                 topic = notificationKafkaProperties.topic,
-                payload = objectMapper.writeValueAsString(event)
+                payload = objectMapper.writeValueAsString(event),
+                eventType = "Notification",
+                schemaVersion = "1"
             )
             kafkaProducer.sendOutboxEvent(outboxEvent)
         } catch (e: Exception) {

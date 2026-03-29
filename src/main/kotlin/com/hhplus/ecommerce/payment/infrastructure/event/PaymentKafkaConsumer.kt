@@ -18,11 +18,19 @@ class PaymentKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(PaymentKafkaConsumer::class.java)
 
+    companion object {
+        private val SUPPORTED_VERSIONS = setOf("1")
+    }
+
     @KafkaListener(
         groupId = "\${hhplus.kafka.payment.group-id}",
         topics = ["\${hhplus.kafka.payment.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
+        if (event.schemaVersion !in SUPPORTED_VERSIONS) {
+            logger.warn("PAY:KAFKA:CONSUMER:UNSUPPORTED_VERSION - version=${event.schemaVersion}, eventId=${event.id}")
+            return
+        }
         try {
             val payload = objectMapper.readValue(event.payload, PaymentHistoryDocument::class.java)
 

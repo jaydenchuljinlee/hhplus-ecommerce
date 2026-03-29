@@ -49,7 +49,9 @@ class OrderFacade(
             id = UUID.randomUUID(),
             groupId = productStockKafkaProperties.groupId,
             topic = productStockKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(productEvent)
+            payload = objectMapper.writeValueAsString(productEvent),
+            eventType = "OrderProductStock",
+            schemaVersion = "1"
         )
 
         applicationEventPublisher.publishEvent(outboxEvent)
