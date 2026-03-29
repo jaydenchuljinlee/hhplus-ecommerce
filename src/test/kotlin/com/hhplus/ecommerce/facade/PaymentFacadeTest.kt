@@ -13,11 +13,13 @@ import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.domain.dto.PaymentResult
 import com.hhplus.ecommerce.payment.usecase.PaymentFacade
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
+import org.mockito.BDDMockito.then
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
@@ -30,12 +32,14 @@ class PaymentFacadeTest {
     private lateinit var paymentService: PaymentService
     @Mock
     private lateinit var orderService: OrderService
+    @Mock
+    private lateinit var stockReservationService: StockReservationService
 
     private lateinit var paymentFacade: PaymentFacade
 
     @BeforeEach
     fun before() {
-        paymentFacade = PaymentFacade(balanceService, paymentService, orderService)
+        paymentFacade = PaymentFacade(balanceService, paymentService, orderService, stockReservationService)
     }
 
     @DisplayName("결제 정합성 테스트")
@@ -97,6 +101,58 @@ class PaymentFacadeTest {
         assertEquals(paymentInfo.orderId, paymentResult.orderId)
         assertEquals(paymentInfo.price, paymentResult.price)
         assertEquals(paymentInfo.status, paymentResult.status)
+    }
 
+    @DisplayName("결제 완료 시 stockReservationService.commit(orderId)가 호출된다.")
+    @Test
+    fun payInvokesStockReservationCommitWithOrderId() {
+        // Given
+        val orderId = 2L
+        val userId = 1L
+
+        val orderQuery = OrderQuery(
+            orderId = orderId,
+            status = OrderStatus.REQUESTED
+        )
+
+        val orderDetailResult = OrderDetailResult(
+            id = 2,
+            productId = 2,
+            quantity = 5,
+            price = 100
+        )
+
+        val orderResult = OrderResult(
+            orderId = orderId,
+            userId = userId,
+            totalPrice = listOf(orderDetailResult).sumOf { it.price * it.quantity },
+            totalQuantity = listOf(orderDetailResult).sumOf { it.quantity },
+            status = OrderStatus.REQUESTED,
+            details = listOf(orderDetailResult)
+        )
+
+        BDDMockito.given(orderService.getOrder(orderQuery)).willReturn(orderResult)
+
+        val paymentCommand = CreationPaymentCommand(
+            userId = userId,
+            orderId = orderId,
+            price = orderResult.totalPrice
+        )
+
+        val paymentResult = PaymentResult(
+            paymentId = 1,
+            userId = userId,
+            orderId = orderId,
+            status = PayStatus.PAID,
+            price = orderResult.totalPrice,
+        )
+
+        BDDMockito.given(paymentService.pay(paymentCommand)).willReturn(paymentResult)
+
+        // When
+        paymentFacade.pay(PaymentCreation(userId = userId, orderId = orderId))
+
+        // Then
+        then(stockReservationService).should().commit(orderId)
     }
 }

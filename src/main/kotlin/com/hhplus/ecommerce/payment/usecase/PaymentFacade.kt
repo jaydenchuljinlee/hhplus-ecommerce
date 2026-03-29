@@ -10,6 +10,7 @@ import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 class PaymentFacade(
     private val balanceService: BalanceService,
     private val paymentService: PaymentService,
-    private val orderService: OrderService
+    private val orderService: OrderService,
+    private val stockReservationService: StockReservationService
 )
 {
 
@@ -48,6 +50,8 @@ class PaymentFacade(
         val orderCompleteCommand = OrderCompleteCommand(dto.orderId)
 
         orderService.orderComplete(orderCompleteCommand)
+
+        stockReservationService.commit(dto.orderId)
 
         return PaymentInfo.from(result)
     }

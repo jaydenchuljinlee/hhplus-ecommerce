@@ -8,7 +8,7 @@ import com.hhplus.ecommerce.outboxevent.domain.OutboxEventService
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEventStatus
 import com.hhplus.ecommerce.product.domain.ProductService
-import com.hhplus.ecommerce.product.domain.dto.DecreaseProductDetailStock
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderDetailDeletionEventRequest
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderProductStockEventResponse
 import com.hhplus.ecommerce.product.infrastructure.exception.OutOfStockException
@@ -22,6 +22,7 @@ import java.util.*
 @Component
 class OrderProductStockKafkaConsumer(
     private var productService: ProductService,
+    private val stockReservationService: StockReservationService,
     private val outboxEventService: OutboxEventService,
     private val kafkaProducer: KafkaProducer,
     private val orderStockFailKafkaProperties: OrderStockFailKafkaProperties,
@@ -40,8 +41,7 @@ class OrderProductStockKafkaConsumer(
 
         payload.products.forEach {
             try {
-                val productDetailItem = DecreaseProductDetailStock.of(it)
-                productService.decreaseStock(productDetailItem)
+                stockReservationService.reserve(payload.orderId, it.productId, it.quantity)
                 productService.deleteCache(it.productId)
             } catch (e: OutOfStockException) {
                 logger.warn("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: 재고 부족으로 인한 OrderDetail 삭제 => orderId=${payload.orderId}, productId=${it.productId}")

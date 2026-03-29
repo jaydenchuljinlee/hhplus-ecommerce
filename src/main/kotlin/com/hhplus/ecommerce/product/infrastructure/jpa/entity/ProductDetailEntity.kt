@@ -19,6 +19,9 @@ class ProductDetailEntity(
     @Column(name = "quantity")
     var quantity: Int,
 
+    @Column(name = "reserved_quantity")
+    var reservedQuantity: Int = 0,
+
     @Column(name = "created_at") @CreatedDate
     var createdAt: LocalDateTime = LocalDateTime.now(),
     @Column(name = "updated_at") @LastModifiedDate
@@ -26,12 +29,31 @@ class ProductDetailEntity(
     @Enumerated(EnumType.STRING)
     var delYn: StateYn = StateYn.N
 ) {
+    val availableQuantity: Int
+        get() = quantity - reservedQuantity
+
     fun decrease(amount: Int) {
         val newQuantity = quantity - amount
 
         require(newQuantity >= 0) { throw OutOfStockException() }
 
         quantity = newQuantity
+    }
+
+    fun reserve(amount: Int) {
+        if (amount > availableQuantity) throw OutOfStockException()
+        reservedQuantity += amount
+    }
+
+    fun commit(amount: Int) {
+        require(amount <= reservedQuantity) { "commit 수량($amount)이 예약 수량($reservedQuantity)을 초과합니다." }
+        reservedQuantity -= amount
+        quantity -= amount
+    }
+
+    fun release(amount: Int) {
+        require(amount <= reservedQuantity) { "release 수량($amount)이 예약 수량($reservedQuantity)을 초과합니다." }
+        reservedQuantity -= amount
     }
 
 }
