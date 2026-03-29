@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("shipment")
+@RequestMapping("/api/v1/shipment")
 interface IShipmentController {
 
     @Tag(name = "배송 기능")

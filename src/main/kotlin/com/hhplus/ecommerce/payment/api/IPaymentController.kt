@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
-@RequestMapping("/payment")
+@RequestMapping("/api/v1/payment")
 interface IPaymentController {
     @Tag(name = "결제 기능")
     @Operation(summary = "결제 API", description = "주문한 상품을 결제하는 API입니다.")

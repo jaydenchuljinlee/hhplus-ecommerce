@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
-@RequestMapping("order")
+@RequestMapping("/api/v1/order")
 interface IOrderController {
     @Tag(name = "주문 기능")
     @Operation(summary = "주문 API", description = "주문 요청을 처리하는 API입니다.")

@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("cart")
+@RequestMapping("/api/v1/cart")
 interface ICartController {
     @Tag(name = "장바구니 기능")
     @Operation(summary = "장바구니 추가 API", description = "상품을 장바구니에 추가하는 API입니다.")

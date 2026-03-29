@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("user/address")
+@RequestMapping("/api/v1/user/address")
 interface IUserAddressController {
 
     @Tag(name = "사용자 주소 기능")
