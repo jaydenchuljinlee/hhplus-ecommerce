@@ -18,10 +18,18 @@ class BalanceKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(BalanceKafkaConsumer::class.java)
 
+    companion object {
+        private val SUPPORTED_VERSIONS = setOf("1")
+    }
+
     @KafkaListener(
         groupId = "\${hhplus.kafka.balance.group-id}",
         topics = ["\${hhplus.kafka.balance.topic}"])
     fun listener(event: OutboxEventInfo) {
+        if (event.schemaVersion !in SUPPORTED_VERSIONS) {
+            logger.warn("BALANCE:KAFKA:CONSUMER:UNSUPPORTED_VERSION - version=${event.schemaVersion}, eventId=${event.id}")
+            return
+        }
         try {
             val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)
 

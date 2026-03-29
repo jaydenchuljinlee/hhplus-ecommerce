@@ -8,7 +8,9 @@ data class OutboxEventInfo(
     var id: UUID,
     val groupId: String,
     val topic: String,
-    val payload: String
+    val payload: String,
+    val eventType: String = "",
+    val schemaVersion: String = "1"
 ) {
     fun toEntity(): OutboxEventEntity {
         return OutboxEventEntity(
@@ -16,9 +18,9 @@ data class OutboxEventInfo(
             groupId = groupId,
             topic = topic,
             payload = payload,
+            eventType = eventType,
+            schemaVersion = schemaVersion,
             status = OutboxEventStatus.INIT
         )
     }
-
-
 }

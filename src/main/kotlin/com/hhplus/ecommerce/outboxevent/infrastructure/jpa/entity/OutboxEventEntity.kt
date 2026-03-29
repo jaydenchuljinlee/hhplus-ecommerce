@@ -17,6 +17,10 @@ class OutboxEventEntity(
     var topic: String,
     @Column(name = "payload")
     var payload: String,
+    @Column(name = "event_type")
+    var eventType: String = "",
+    @Column(name = "schema_version")
+    var schemaVersion: String = "1",
     @Column(name = "status") @Enumerated(EnumType.STRING)
     var status: OutboxEventStatus = OutboxEventStatus.INIT,
     @Column(name = "retry_cnt")

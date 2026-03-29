@@ -11,6 +11,8 @@ data class OutboxResult(
     var groupId: String,
     var topic: String,
     var payload: String,
+    var eventType: String,
+    var schemaVersion: String,
     var status: OutboxEventStatus,
     var retryCnt: Int,
     var createdAt: LocalDateTime
@@ -22,6 +24,8 @@ data class OutboxResult(
                 groupId = entity.groupId,
                 topic = entity.topic,
                 payload = entity.payload,
+                eventType = entity.eventType,
+                schemaVersion = entity.schemaVersion,
                 status = entity.status,
                 retryCnt = entity.retryCnt,
                 createdAt = entity.createdAt
@@ -34,7 +38,9 @@ data class OutboxResult(
             id = id,
             groupId = groupId,
             topic = topic,
-            payload = payload
+            payload = payload,
+            eventType = eventType,
+            schemaVersion = schemaVersion
         )
     }
 }

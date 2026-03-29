@@ -8,6 +8,7 @@ interface IOrderRepository {
     fun findById(orderId: Long): OrderEntity
     fun findByIdAndStatus(orderId: Long, status: OrderStatus): OrderEntity
     fun findDetailsById(orderId: Long): List<OrderDetailEntity>
+    fun findAllByStatus(status: OrderStatus): List<OrderEntity>
 
     fun insertOrUpdate(entity: OrderEntity): OrderEntity
     fun deleteOrderDetail(orderId: Long, productId: Long)

@@ -44,3 +44,6 @@ hhplus:
     order:
       group-id: OUTBOX_TEST
       topic: ORDER_STOCK_FAIL_TEST
+    notification:
+      group-id: OUTBOX_TEST
+      topic: NOTIFICATION_TEST

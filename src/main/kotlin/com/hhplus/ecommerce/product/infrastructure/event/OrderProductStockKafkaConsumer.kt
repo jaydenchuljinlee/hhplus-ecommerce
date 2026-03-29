@@ -8,7 +8,7 @@ import com.hhplus.ecommerce.outboxevent.domain.OutboxEventService
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEventStatus
 import com.hhplus.ecommerce.product.domain.ProductService
-import com.hhplus.ecommerce.product.domain.dto.DecreaseProductDetailStock
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderDetailDeletionEventRequest
 import com.hhplus.ecommerce.product.infrastructure.dto.OrderProductStockEventResponse
 import com.hhplus.ecommerce.product.infrastructure.exception.OutOfStockException
@@ -22,6 +22,7 @@ import java.util.*
 @Component
 class OrderProductStockKafkaConsumer(
     private var productService: ProductService,
+    private val stockReservationService: StockReservationService,
     private val outboxEventService: OutboxEventService,
     private val kafkaProducer: KafkaProducer,
     private val orderStockFailKafkaProperties: OrderStockFailKafkaProperties,
@@ -29,19 +30,27 @@ class OrderProductStockKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(OrderProductStockKafkaConsumer::class.java)
 
+    companion object {
+        private val SUPPORTED_VERSIONS = setOf("1")
+    }
+
     @KafkaListener(
         groupId = "\${hhplus.kafka.product.group-id}",
         topics = ["\${hhplus.kafka.product.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
+        if (event.schemaVersion !in SUPPORTED_VERSIONS) {
+            logger.warn("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER:UNSUPPORTED_VERSION - version=${event.schemaVersion}, eventId=${event.id}")
+            return
+        }
+
         val payload = objectMapper.readValue(event.payload, OrderProductStockEventResponse::class.java)
 
         logger.info("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: $event")
 
         payload.products.forEach {
             try {
-                val productDetailItem = DecreaseProductDetailStock.of(it)
-                productService.decreaseStock(productDetailItem)
+                stockReservationService.reserve(payload.orderId, it.productId, it.quantity)
                 productService.deleteCache(it.productId)
             } catch (e: OutOfStockException) {
                 logger.warn("PRODUCT-ORDER-STOCK:KAFKA:CONSUMER: 재고 부족으로 인한 OrderDetail 삭제 => orderId=${payload.orderId}, productId=${it.productId}")
@@ -59,7 +68,9 @@ class OrderProductStockKafkaConsumer(
             id = UUID.randomUUID(),
             groupId = orderStockFailKafkaProperties.groupId,
             topic = orderStockFailKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(orderStockFailEvent)
+            payload = objectMapper.writeValueAsString(orderStockFailEvent),
+            eventType = "OrderStockFail",
+            schemaVersion = "1"
         )
 
         val outboxEntity = outboxEvent.toEntity()

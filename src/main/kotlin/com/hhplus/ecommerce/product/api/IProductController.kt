@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
-@RequestMapping("/product")
+@RequestMapping("/api/v1/product")
 interface IProductController {
     @Tag(name = "상품 기능")
     @Operation(summary = "상품 조회 API (캐시)", description = "상품을 캐시에서 조회하는 API입니다.")

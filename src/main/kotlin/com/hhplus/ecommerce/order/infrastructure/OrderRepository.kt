@@ -31,6 +31,9 @@ class OrderRepository(
         return orderJpaRepository.save(entity)
     }
 
+    override fun findAllByStatus(status: OrderStatus): List<OrderEntity> =
+        orderJpaRepository.findAllByStatus(status)
+
     @Transactional
     override fun deleteOrderDetail(orderId: Long, productId: Long) {
         val entity = this.findById(orderId)

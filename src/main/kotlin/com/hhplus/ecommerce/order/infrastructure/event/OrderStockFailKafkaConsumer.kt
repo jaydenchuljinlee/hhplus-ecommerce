@@ -18,11 +18,19 @@ class OrderStockFailKafkaConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(OrderStockFailKafkaConsumer::class.java)
 
+    companion object {
+        private val SUPPORTED_VERSIONS = setOf("1")
+    }
+
     @KafkaListener(
         groupId = "\${hhplus.kafka.order.group-id}",
         topics = ["\${hhplus.kafka.order.topic}"]
     )
     fun listen(event: OutboxEventInfo) {
+        if (event.schemaVersion !in SUPPORTED_VERSIONS) {
+            logger.warn("ORDER-STOCK-FAILED:KAFKA:CONSUMER:UNSUPPORTED_VERSION - version=${event.schemaVersion}, eventId=${event.id}")
+            return
+        }
         try {
             logger.info("ORDER-STOCK-FAILED:KAFKA:CONSUMER: $event")
             val payload = objectMapper.readValue(event.payload, OrderStockFailEventResponse::class.java)

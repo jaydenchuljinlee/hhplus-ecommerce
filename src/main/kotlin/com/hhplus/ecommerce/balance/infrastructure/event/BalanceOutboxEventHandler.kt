@@ -29,7 +29,9 @@ class BalanceOutboxEventHandler(
             id = UUID.randomUUID(),
             groupId = balanceKafkaProperties.groupId,
             topic = balanceKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(document)
+            payload = objectMapper.writeValueAsString(document),
+            eventType = "Balance",
+            schemaVersion = "1"
         )
 
         applicationEventPublisher.publishEvent(outboxEvent)

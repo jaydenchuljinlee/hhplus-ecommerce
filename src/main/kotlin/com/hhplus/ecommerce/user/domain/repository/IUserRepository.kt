@@ -4,4 +4,5 @@ import com.hhplus.ecommerce.user.infrastructure.jpa.entity.UserEntity
 
 interface IUserRepository {
     fun findById(userId: Long): UserEntity
+    fun save(entity: UserEntity): UserEntity
 }

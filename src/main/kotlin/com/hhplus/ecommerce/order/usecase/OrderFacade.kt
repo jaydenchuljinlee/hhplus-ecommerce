@@ -11,6 +11,10 @@ import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.product.domain.ProductService
 import com.hhplus.ecommerce.product.domain.dto.DecreaseProductDetailStock
 import com.hhplus.ecommerce.user.domain.UserService
+import com.hhplus.ecommerce.notification.common.NotificationChannel
+import com.hhplus.ecommerce.notification.common.NotificationType
+import com.hhplus.ecommerce.notification.domain.INotificationEventPublisher
+import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
 import com.hhplus.ecommerce.order.usecase.dto.OrderCreation
 import com.hhplus.ecommerce.order.usecase.dto.OrderInfo
 import com.hhplus.ecommerce.order.usecase.dto.ProductStockEventRequest
@@ -28,6 +32,7 @@ class OrderFacade(
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val productStockKafkaProperties: ProductStockKafkaProperties,
     private val objectMapper: ObjectMapper,
+    private val notificationEventPublisher: INotificationEventPublisher,
 ) {
 
     @Transactional
@@ -44,10 +49,23 @@ class OrderFacade(
             id = UUID.randomUUID(),
             groupId = productStockKafkaProperties.groupId,
             topic = productStockKafkaProperties.topic,
-            payload = objectMapper.writeValueAsString(productEvent)
+            payload = objectMapper.writeValueAsString(productEvent),
+            eventType = "OrderProductStock",
+            schemaVersion = "1"
         )
 
         applicationEventPublisher.publishEvent(outboxEvent)
+
+        notificationEventPublisher.publish(
+            NotificationEvent(
+                userId = user.userId,
+                type = NotificationType.ORDER_PLACED,
+                channel = NotificationChannel.PUSH,
+                title = "주문이 접수되었습니다.",
+                body = "주문 번호 ${result.orderId}번 주문이 정상적으로 접수되었습니다.",
+                orderId = result.orderId
+            )
+        )
 
         // 주문에 대한 부가 작업이라 도메인 이벤트 발행으로 뺴는 게 좋을듯
 //        // 최근 3일 간의 Top5 캐시 갱신

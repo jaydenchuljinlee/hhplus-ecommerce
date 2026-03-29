@@ -5,7 +5,14 @@
       "Bash(./gradlew test:*)",
       "Bash(ls:*)",
       "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce -maxdepth 3 -type f \\\\\\(-name build.gradle* -o -name settings.gradle* -o -name pom.xml -o -name package.json -o -name gradle.properties \\\\\\))",
-      "Bash(grep -E \"\\\\.\\(md|txt|gradle\\)$\")"
+      "Bash(grep -E \"\\\\.\\(md|txt|gradle\\)$\")",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce/.claude/worktrees/affectionate-franklin/build -name TEST-*.xml)",
+      "Bash(./gradlew dependencies:*)",
+      "Bash(./gradlew compileKotlin)",
+      "Bash(./gradlew compileTestKotlin)"
     ]
   }
 }
