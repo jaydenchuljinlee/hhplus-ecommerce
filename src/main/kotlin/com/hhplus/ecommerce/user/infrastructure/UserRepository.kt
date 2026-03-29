@@ -13,4 +13,8 @@ class UserRepository(
     override fun findById(userId: Long): UserEntity {
         return userJpaRepository.findById(userId).orElseThrow { UserNotFoundException() }
     }
+
+    override fun save(entity: UserEntity): UserEntity {
+        return userJpaRepository.save(entity)
+    }
 }

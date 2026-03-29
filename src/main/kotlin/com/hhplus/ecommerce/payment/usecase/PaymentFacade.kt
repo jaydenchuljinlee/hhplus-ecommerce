@@ -11,6 +11,7 @@ import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
 import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
 import com.hhplus.ecommerce.notification.domain.event.INotificationEventPublisher
 import com.hhplus.ecommerce.payment.domain.repository.IPaymentSagaRepository
+import com.hhplus.ecommerce.user.domain.UserService
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaStatus
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
@@ -45,7 +46,8 @@ class PaymentFacade(
     private val orderService: OrderService,
     private val stockReservationService: StockReservationService,
     private val paymentSagaRepository: IPaymentSagaRepository,
-    private val notificationEventPublisher: INotificationEventPublisher
+    private val notificationEventPublisher: INotificationEventPublisher,
+    private val userService: UserService
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
@@ -112,6 +114,13 @@ class PaymentFacade(
             saga.transition(PaymentSagaStatus.COMPLETED)
             paymentSagaRepository.save(saga)
             logger.info("SAGA:COMPLETED orderId=${dto.orderId}")
+
+            // 누적 구매 금액 반영 + 등급 재산정 (비필수 — 실패해도 결제 결과에 영향 없음)
+            runCatching {
+                userService.addPurchaseAmount(dto.userId, order.totalPrice)
+            }.onFailure { e ->
+                logger.warn("USER:GRADE_UPDATE 실패 (비필수) userId=${dto.userId}", e)
+            }
 
             // 결제 완료 알림 발행 (비필수 — 실패해도 결제 결과에 영향 없음)
             runCatching {
