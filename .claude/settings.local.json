@@ -10,7 +10,8 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce/.claude/worktrees/affectionate-franklin/build -name TEST-*.xml)",
-      "Bash(./gradlew dependencies:*)"
+      "Bash(./gradlew dependencies:*)",
+      "Bash(./gradlew compileKotlin)"
     ]
   }
 }
