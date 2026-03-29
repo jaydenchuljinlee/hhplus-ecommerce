@@ -9,4 +9,6 @@ import java.util.Optional
 interface OrderJpaRepository: JpaRepository<OrderEntity, Long> {
     @Query("SELECT o FROM OrderEntity o JOIN FETCH o.orderDetails WHERE o.id = :id AND o.status = :status")
     fun findByIdAndStatus(id: Long, status: OrderStatus): Optional<OrderEntity>
+
+    fun findAllByStatus(status: OrderStatus): List<OrderEntity>
 }

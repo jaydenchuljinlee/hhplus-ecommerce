@@ -32,6 +32,16 @@ class OrderService(
         orderRepository.insertOrUpdate(entity)
     }
 
+    @Transactional
+    fun updateStatus(orderId: Long, status: OrderStatus) {
+        val entity = orderRepository.findById(orderId)
+        entity.status = status
+        orderRepository.insertOrUpdate(entity)
+    }
+
+    fun findAllByStatus(status: OrderStatus): List<OrderResult> =
+        orderRepository.findAllByStatus(status).map { OrderResult.from(it) }
+
     fun deleteOrderDetail(command: OrderDeletionCommand) {
         orderRepository.deleteOrderDetail(command.orderId, command.productId)
     }
