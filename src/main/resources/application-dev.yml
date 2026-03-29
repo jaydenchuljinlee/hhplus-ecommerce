@@ -45,3 +45,6 @@ hhplus:
     order:
       group-id: OUTBOX
       topic: ORDER_STOCK_FAIL
+    notification:
+      group-id: NOTIFICATION
+      topic: NOTIFICATION

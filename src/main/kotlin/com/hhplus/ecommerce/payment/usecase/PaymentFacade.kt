@@ -8,6 +8,8 @@ import com.hhplus.ecommerce.order.domain.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
+import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
+import com.hhplus.ecommerce.notification.domain.event.INotificationEventPublisher
 import com.hhplus.ecommerce.payment.domain.repository.IPaymentSagaRepository
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaStatus
@@ -42,7 +44,8 @@ class PaymentFacade(
     private val paymentService: PaymentService,
     private val orderService: OrderService,
     private val stockReservationService: StockReservationService,
-    private val paymentSagaRepository: IPaymentSagaRepository
+    private val paymentSagaRepository: IPaymentSagaRepository,
+    private val notificationEventPublisher: INotificationEventPublisher
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
@@ -109,6 +112,19 @@ class PaymentFacade(
             saga.transition(PaymentSagaStatus.COMPLETED)
             paymentSagaRepository.save(saga)
             logger.info("SAGA:COMPLETED orderId=${dto.orderId}")
+
+            // 결제 완료 알림 발행 (비필수 — 실패해도 결제 결과에 영향 없음)
+            runCatching {
+                notificationEventPublisher.publish(
+                    NotificationEvent.paymentConfirmed(
+                        userId = dto.userId,
+                        orderId = dto.orderId,
+                        amount = order.totalPrice
+                    )
+                )
+            }.onFailure { e ->
+                logger.warn("PAYMENT_CONFIRMED 알림 발행 실패 (비필수) orderId=${dto.orderId}", e)
+            }
 
             PaymentInfo.from(result)
 
