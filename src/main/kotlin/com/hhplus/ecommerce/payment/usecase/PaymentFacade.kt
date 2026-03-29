@@ -2,21 +2,24 @@ package com.hhplus.ecommerce.payment.usecase
 
 import com.hhplus.ecommerce.balance.domain.BalanceService
 import com.hhplus.ecommerce.balance.domain.dto.BalanceTransaction
+import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
+import com.hhplus.ecommerce.notification.domain.event.INotificationEventPublisher
 import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCompleteCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderQuery
+import com.hhplus.ecommerce.payment.domain.ExternalApiService
 import com.hhplus.ecommerce.payment.domain.PaymentService
 import com.hhplus.ecommerce.payment.domain.dto.CreationPaymentCommand
-import com.hhplus.ecommerce.notification.domain.dto.NotificationEvent
-import com.hhplus.ecommerce.notification.domain.event.INotificationEventPublisher
+import com.hhplus.ecommerce.payment.domain.dto.ExternalCallRequest
 import com.hhplus.ecommerce.payment.domain.repository.IPaymentSagaRepository
-import com.hhplus.ecommerce.user.domain.UserService
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaEntity
 import com.hhplus.ecommerce.payment.infrastructure.jpa.entity.PaymentSagaStatus
+import com.hhplus.ecommerce.payment.usecase.dto.PaymentBreakdown
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentCreation
 import com.hhplus.ecommerce.payment.usecase.dto.PaymentInfo
 import com.hhplus.ecommerce.product.domain.StockReservationService
+import com.hhplus.ecommerce.user.domain.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -47,7 +50,8 @@ class PaymentFacade(
     private val stockReservationService: StockReservationService,
     private val paymentSagaRepository: IPaymentSagaRepository,
     private val notificationEventPublisher: INotificationEventPublisher,
-    private val userService: UserService
+    private val userService: UserService,
+    private val externalApiService: ExternalApiService
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(PaymentFacade::class.java)
@@ -63,49 +67,72 @@ class PaymentFacade(
         val orderQuery = OrderQuery(orderId = dto.orderId, status = OrderStatus.STOCK_CONFIRMED)
         val order = orderService.getOrder(orderQuery)
 
-        val useCommand = BalanceTransaction(
-            userId = dto.userId,
-            amount = order.totalPrice,
-            type = BalanceTransaction.TransactionType.USE
-        )
-        val refundCommand = BalanceTransaction(
-            userId = dto.userId,
-            amount = order.totalPrice,
-            type = BalanceTransaction.TransactionType.CHARGE
-        )
+        // breakdown 결정: null이면 기존 잔액 단독 결제 (하위 호환)
+        val breakdown = dto.breakdown ?: PaymentBreakdown.balanceOnly(order.totalPrice)
 
-        // 1단계: 잔액 차감 — @RedisLock 내부에서 즉시 커밋
-        try {
-            balanceService.use(useCommand)
-            saga.transition(PaymentSagaStatus.BALANCE_DEDUCTED)
-            paymentSagaRepository.save(saga)
-        } catch (e: Exception) {
-            saga.transition(PaymentSagaStatus.FAILED, e.message)
-            paymentSagaRepository.save(saga)
-            logger.error("SAGA:BALANCE_DEDUCT:FAILED orderId=${dto.orderId}", e)
-            throw e
+        // 실제 결제 금액 검증 (쿠폰 할인 반영)
+        val actualPayAmount = breakdown.totalAmount - breakdown.couponDiscount
+        require(actualPayAmount == order.totalPrice) {
+            "결제 금액(${actualPayAmount})이 주문 금액(${order.totalPrice})과 일치하지 않습니다."
         }
 
-        // 2~4단계: 결제 생성 + 주문 확정 + 재고 커밋 — 실패 시 보상 트랜잭션
+        val payMethod = breakdown.payMethod
+
+        // 잔액 차감 여부 추적 (보상 트랜잭션 분기용)
+        var balanceDeducted = false
+
+        // 1단계: 잔액 차감 — balanceAmount > 0인 경우만 실행 (@RedisLock 내부에서 즉시 커밋)
+        if (breakdown.balanceAmount > 0) {
+            val useCommand = BalanceTransaction(
+                userId = dto.userId,
+                amount = breakdown.balanceAmount,
+                type = BalanceTransaction.TransactionType.USE
+            )
+            try {
+                balanceService.use(useCommand)
+                balanceDeducted = true
+                saga.transition(PaymentSagaStatus.BALANCE_DEDUCTED)
+                paymentSagaRepository.save(saga)
+            } catch (e: Exception) {
+                saga.transition(PaymentSagaStatus.FAILED, e.message)
+                paymentSagaRepository.save(saga)
+                logger.error("SAGA:BALANCE_DEDUCT:FAILED orderId=${dto.orderId}", e)
+                throw e
+            }
+        }
+
+        // 2~5단계: 카드 결제 + 결제 엔티티 생성 + 주문 확정 + 재고 커밋 — 실패 시 보상 트랜잭션
         return try {
-            // 2단계: 결제 엔티티 생성
+            // 2단계: 카드 결제 (cardAmount > 0인 경우 — 외부 PG 연동)
+            if (breakdown.cardAmount > 0) {
+                externalApiService.call(
+                    ExternalCallRequest(
+                        payId = dto.orderId,
+                        userId = dto.userId,
+                        price = breakdown.cardAmount
+                    )
+                )
+            }
+
+            // 3단계: 결제 엔티티 생성
             val result = paymentService.pay(
                 CreationPaymentCommand(
                     orderId = dto.orderId,
                     userId = dto.userId,
-                    price = order.totalPrice,
+                    price = actualPayAmount,
+                    payMethod = payMethod
                 )
             )
             saga.paymentId = result.paymentId
             saga.transition(PaymentSagaStatus.PAYMENT_CREATED)
             paymentSagaRepository.save(saga)
 
-            // 3단계: 주문 확정
+            // 4단계: 주문 확정
             orderService.orderComplete(OrderCompleteCommand(dto.orderId))
             saga.transition(PaymentSagaStatus.ORDER_CONFIRMED)
             paymentSagaRepository.save(saga)
 
-            // 4단계: 예약 재고 확정 차감 (soft reserve → commit)
+            // 5단계: 예약 재고 확정 차감 (soft reserve → commit)
             stockReservationService.commit(dto.orderId)
             saga.transition(PaymentSagaStatus.STOCK_COMMITTED)
             paymentSagaRepository.save(saga)
@@ -113,7 +140,7 @@ class PaymentFacade(
             // 완료
             saga.transition(PaymentSagaStatus.COMPLETED)
             paymentSagaRepository.save(saga)
-            logger.info("SAGA:COMPLETED orderId=${dto.orderId}")
+            logger.info("SAGA:COMPLETED orderId=${dto.orderId} payMethod=${payMethod}")
 
             // 누적 구매 금액 반영 + 등급 재산정 (비필수 — 실패해도 결제 결과에 영향 없음)
             runCatching {
@@ -144,20 +171,33 @@ class PaymentFacade(
             saga.transition(PaymentSagaStatus.COMPENSATING, e.message)
             paymentSagaRepository.save(saga)
 
-            runCatching { balanceService.charge(refundCommand) }
-                .onSuccess {
-                    saga.transition(PaymentSagaStatus.FAILED)
-                    paymentSagaRepository.save(saga)
-                    logger.info("SAGA:COMPENSATION:SUCCESS orderId=${dto.orderId}, 잔액 환불 완료")
-                }
-                .onFailure { refundEx ->
-                    saga.transition(PaymentSagaStatus.COMPENSATION_FAILED, refundEx.message)
-                    paymentSagaRepository.save(saga)
-                    logger.error(
-                        "[수동 처리 필요] SAGA:COMPENSATION:FAILED orderId=${dto.orderId}, userId=${dto.userId}, amount=${order.totalPrice}",
-                        refundEx
-                    )
-                }
+            if (balanceDeducted) {
+                // 잔액 차감이 발생한 경우에만 환불
+                val refundCommand = BalanceTransaction(
+                    userId = dto.userId,
+                    amount = breakdown.balanceAmount,
+                    type = BalanceTransaction.TransactionType.CHARGE
+                )
+                runCatching { balanceService.charge(refundCommand) }
+                    .onSuccess {
+                        saga.transition(PaymentSagaStatus.FAILED)
+                        paymentSagaRepository.save(saga)
+                        logger.info("SAGA:COMPENSATION:SUCCESS orderId=${dto.orderId}, 잔액 환불 완료 amount=${breakdown.balanceAmount}")
+                    }
+                    .onFailure { refundEx ->
+                        saga.transition(PaymentSagaStatus.COMPENSATION_FAILED, refundEx.message)
+                        paymentSagaRepository.save(saga)
+                        logger.error(
+                            "[수동 처리 필요] SAGA:COMPENSATION:FAILED orderId=${dto.orderId}, userId=${dto.userId}, amount=${breakdown.balanceAmount}",
+                            refundEx
+                        )
+                    }
+            } else {
+                // 잔액 차감 없음 — 카드 결제 취소는 외부 PG 별도 처리 (stub)
+                saga.transition(PaymentSagaStatus.FAILED)
+                paymentSagaRepository.save(saga)
+                logger.info("SAGA:COMPENSATION:SKIPPED orderId=${dto.orderId} (no balance deducted, payMethod=${payMethod})")
+            }
 
             throw e
         }

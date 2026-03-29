@@ -20,7 +20,7 @@ class PaymentService(
         val paymentEntity = PaymentEntity(
             orderId = dto.orderId,
             status = PayStatus.PAID,
-            payMethod = PayMethod.CREDIT_CARD,
+            payMethod = dto.payMethod,
             price = dto.price
         )
 
