@@ -34,8 +34,9 @@ class PaymentConcurrencyTest: IntegrationConfig() {
     @Test
     fun concurrencyDuplicationTest() {
         val totalRequests = 3
+        val userId = 6L
 
-        val balanceQuery = BalanceQuery(1)
+        val balanceQuery = BalanceQuery(userId)
 
         val original = balanceService.getBalance(balanceQuery)
 
@@ -54,17 +55,17 @@ class PaymentConcurrencyTest: IntegrationConfig() {
                     readyLatch.await()
 
                     val orderDetailCommand = OrderDetailCreation(
-                        i.toLong()+1, 1, 100
+                        i.toLong(), 1, 100
                     )
 
-                    val orderCommand = OrderCreation(1, details = listOf(orderDetailCommand))
+                    val orderCommand = OrderCreation(userId, details = listOf(orderDetailCommand))
 
                     // 주문 신청
                     val order = orderFacade.order(orderCommand)
 
                     val payCommand = PaymentCreation(
                         orderId = order.orderId,
-                        userId = 1
+                        userId
                     )
 
                     // 결제

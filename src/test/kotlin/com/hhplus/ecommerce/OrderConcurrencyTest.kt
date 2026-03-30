@@ -46,7 +46,7 @@ class OrderConcurrencyTest: IntegrationConfig() {
                     // 모든 스레드가 준비될 때까지 대기
                     readyLatch.await()
 
-                    val detailCommand = OrderDetailCreation(3L, 1, 100)
+                    val detailCommand = OrderDetailCreation(4L, 1, 100)
 
                     // 요청마다 같은 상품 ID를 사용하여 LectureCommandData 생성
                     val command = OrderCreation(i.toLong(), listOf(detailCommand))
@@ -73,7 +73,7 @@ class OrderConcurrencyTest: IntegrationConfig() {
 
         Thread.sleep(500)
 
-        val productDetail = productRepository.findById(3).get()
+        val productDetail = productRepository.findById(4).get()
 
         for (i in 1..totalRequests) {
             val orderInfo = orderRepository.findById(i.toLong())
@@ -84,7 +84,7 @@ class OrderConcurrencyTest: IntegrationConfig() {
             }
         }
 
-        assertEquals(productDetail.quantity, 0) // 수량이 남았는지 검사
+        assertEquals(productDetail.reservedQuantity, 1) // 예약 재고 수량이 1개인지 검사
         assertEquals(successUserIds.size, 1) // 5건의 요청중 가장 먼저 처리된건이 성공한다.
         assertEquals(errorUserIds.size, 4) // 나머지 요청은 실패한다.
     }

@@ -1,10 +1,16 @@
 -- 사용자 데이터 삽입
-INSERT INTO user_info (id, name, phone) VALUES
-    (1, '이철진', '010-1234-5678'),
-    (2, '이규명', '010-2345-6789'),
-    (3, '윤성민', '010-3456-7890'),
-    (4, '이정기', '010-4567-8901'),
-    (5, '김현진', '010-5678-9012');
+INSERT INTO user_info (id, name, phone, grade, point, total_purchase_amount, status) VALUES
+    (1, '이철진', '010-1234-5678', 'NORMAL', 0, 0, 'ACTIVE'),
+    (2, '이규명', '010-2345-6789', 'NORMAL', 0, 0, 'ACTIVE'),
+    (3, '윤성민', '010-3456-7890', 'NORMAL', 0, 0, 'ACTIVE'),
+    (4, '이정기', '010-4567-8901', 'NORMAL', 0, 0, 'ACTIVE'),
+    (5, '김현진', '010-5678-9012', 'NORMAL', 0, 0, 'ACTIVE'),
+
+    (6, '이철진 결제 동시성', '010-1234-5678', 'NORMAL', 0, 0, 'ACTIVE');
+
+
+
+
 
 -- 각 사용자와 매핑된 balance 데이터 삽입
 -- 예시로 각 사용자에게 10000.00의 초기 잔액을 부여
@@ -13,7 +19,8 @@ INSERT INTO balance (user_id, balance) VALUES
     (2, 10000000),
     (3, 10000000),
     (4, 10000000),
-    (5, 10000000);
+    (5, 10000000),
+    (6, 10000000);
 
 
 -- 1. Product 삽입 (상품 이름: 가방)
@@ -46,75 +53,84 @@ INSERT INTO product_option (option_name, option_value, created_at, updated_at)
 VALUES ('Color', 'Red', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 3. Product Detail 삽입 (Product와 Product Option의 ID를 참조)
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '가방'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            50,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '신발'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            10,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '옷'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '책'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '식탁'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = 'TV'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '에어컨'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
 
-INSERT INTO product_detail (product_id, product_option_id, quantity, created_at, updated_at)
+INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_quantity, created_at, updated_at)
 VALUES (
            (SELECT id FROM product WHERE name = '장롱'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
            1,
+           0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
        );
+
 
