@@ -33,32 +33,46 @@
 
 ---
 
+## 문서
+
+전체 문서 목록과 추천 읽기 순서는 **[docs/README.md](./docs/README.md)** 를 참고하세요.
+
+---
+
 ## 주요 작업 내용
 
 ### 동시성 제어
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/6)
+- [문서: 주문 동시성](./docs/concurrency/order.md) / [결제 동시성](./docs/concurrency/payment.md)
 
 ### 레디스를 통한 분산락 처리
 - [관련 PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/9)
+- [문서: 락 전략 분석](./docs/concurrency/LOCK_REPORT.md)
 
 ### 캐싱 전략
 - [관련 PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/11)
+- [문서: 캐싱 전략](./docs/performance/cache.md)
 
 ### DB 인덱스에 대한 성능 분석
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/12)
+- [문서: DB 인덱스 전략](./docs/performance/index.md)
 
 ### 공통 작업 분리
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/5)
 
 ### 서비스 규모 확장에 대한 분석
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/13)
+- [문서: 이벤트 아키텍처](./docs/architecture/event.md)
 
 ### 카프카를 통한 아웃박스 패턴
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/15)
+- [문서: Kafka 구성](./docs/infra/kafka.md)
 
 ### 부하 테스트
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/23)
+- [문서: 성능 테스트 시나리오](./docs/performance/perf.md) / [부하 테스트 결과](./docs/performance/load_test.md)
 
 ### 프로메테우스 & 그라파나를 통한 모니터링 및 장애 대응
 - [관련_PR](https://github.com/jaydenchuljinlee/hhplus-ecommerce/pull/24)
+- [문서: 모니터링 & 장애 대응](./docs/infra/monitoring.md)
 

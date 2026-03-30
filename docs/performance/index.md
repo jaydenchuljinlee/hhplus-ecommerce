@@ -80,15 +80,15 @@
 ---
 ## 인덱스 성능 측정 (위 best top 5 복합 쿼리 기반)
 - 인덱싱 전의 Query Plan
-  - ![before](/docs/index/best_query_before_index.png)
+  - ![before](./images/best_query_before_index.png)
   - order에서 status와 create_at에 대한 인덱싱이 안 걸려 있어, 99,781개의 데이터를 모두 확인하는 풀스캔이 발생한다.
 - 인덱싱 후의 Query Plan
-  - ![after](/docs/index/best_query_after_index.png)
+  - ![after](./images/best_query_after_index.png)
   - order에서 status와 create_at에 대한 인덱싱이 걸려 있어, 495개의 데이터만 조회하게 된다.
 - 인덱싱 전의 DB profile을 통한 성능 측정
-  - ![before](/docs/index/order_profiles_before_index.png)
+  - ![before](./images/order_profiles_before_index.png)
 - 인덱싱 후의 DB profile을 통한 성능 측정
-  - ![after](/docs/index/order_profiles_after_index.png)
+  - ![after](./images/order_profiles_after_index.png)
 
 ---
 
@@ -103,17 +103,17 @@
   - 프로시저를 통해 500만 개의 랜덤한 값을 넣어주도록 설정
   - `user_id`와 `product_id`는 성능 측정을 위해 1~100 사이의 랜덤한 같은 값을 매 분기마다 넣어줌
 - 데이터 예시
-  - ![large_data](/docs/index/large_data_sample_file.png)
+  - ![large_data](./images/large_data_sample_file.png)
 - 성능 측정 결과
   - 평균적으로 인덱스가 걸린 컬럼의 경우 빠른 조회 성능이 도출됐다.
     - 조회되는 데이터가 몇 만 건일 경우 => 0.5초 이내
-    - ![large_data](/docs/index/order_query_after_index.png)
+    - ![large_data](./images/order_query_after_index.png)
     - 단 건일 경우 => 대략 0.004 초 이내
-    - ![large_data](/docs/index/order_query_after_index_one.png)
+    - ![large_data](./images/order_query_after_index_one.png)
   - 반대로, 인덱스가 걸리지 않은 product_id의 경우 풀스캔이 발생하여 매 번 2초 정도의 조회 시간이 발생
     - 조회되는 데이터가 몇 만 건일 경우 => 풀스캔으로 인한 2초
-      - ![large_data](/docs/index/order_query_before_index.png)
+      - ![large_data](./images/order_query_before_index.png)
     - 단 건일 경우 => 1~2초. 처음 500만 건의 데이터가 쌓였을 당시에는 2초가 걸렸지만... 지속적으로 테스트를 진행하니 대략 1초 남짓 걸리게 되었네요..
-      - ![large_data](/docs/index/order_query_before_index_one.png)
+      - ![large_data](./images/order_query_before_index_one.png)
   
 
