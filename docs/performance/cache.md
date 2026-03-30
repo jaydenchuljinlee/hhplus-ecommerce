@@ -30,7 +30,7 @@
 - 성능 측정
   - 측정 DB는 Docker와 MySQL을 사용했다. 
   - 평균 속도는 `11ms`, 최대 Delay 속도는 `137ms`가 나왔다. 
-![DB](/docs/cache/product_db_perf.png)
+![DB](./images/product_db_perf.png)
 
 ### Default 캐시 조회
 - Spring Cache에서 제공해주는 `기본 캐싱 방식`이다.
@@ -41,7 +41,7 @@
 - 성능 측정
   - Docker로 띄운 Redis 서버를 사용헀다.
   - 평균 속도는 `3.1ms`, 최대 Delay 속도는 `87ms`가 나왔다. => 일반 DB보다 확실히 빠름
-- ![Default_Cache](/docs/cache/product_default_cache_perf.png)
+- ![Default_Cache](./images/product_default_cache_perf.png)
 
 ### Custom AOP 캐시 조회
 - Spring AOP를 사용해서 직접 구현한 TTL 값을 수정하는 `커스텀 캐싱 방식`이다.
@@ -54,7 +54,7 @@
 - 성능 측정
     - Docker로 띄운 Redis 서버를 사용헀다.
     - 평균 속도는 `4.13ms`, 최대 Delay 속도는 `90ms`가 나왔다. => 일반 DB보다 확실히 빠르지만, Default 캐싱보다는 느림.
-- ![AOP_Cache](/docs/cache/product_aop_cache_perf.png)
+- ![AOP_Cache](./images/product_aop_cache_perf.png)
 
 
 ---

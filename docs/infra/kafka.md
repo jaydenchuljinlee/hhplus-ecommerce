@@ -52,10 +52,10 @@ fun testKafka() {
 ```
 
 > 토픽 생성
-![topic](/docs/kafka/kafka_topic.png)
+![topic](./images/kafka_topic.png)
 
 > 컨슈머 확인
-![consumer](/docs/kafka/kafka_consumer.png)
+![consumer](./images/kafka_consumer.png)
 
 > 개선해야할 점
 - 현재 테스트는 연동만을 위한 테스트로, main 패키지에 따로 비즈니스 로직을 만들지 않았습니다.
