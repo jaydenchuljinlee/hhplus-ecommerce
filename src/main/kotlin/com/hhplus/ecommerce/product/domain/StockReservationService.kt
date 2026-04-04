@@ -103,23 +103,36 @@ class StockReservationService(
     }
 
     /**
-     * Redisson 분산락 기반 재고 예약 (MySQL reservedQuantity 직접 관리)
+     * Redisson 분산락 기반 재고 예약 (Redis stock:available 직접 관리)
      * 성능 비교용: Lua 원자 스크립트 방식(reserve)과 응답시간 차이 측정
+     *
+     * reserve()     → Lua script: GET + DECRBY 원자적 수행 (락 없음)
+     * reserveWithLock() → Redisson 락으로 직렬화 후 GET + DECRBY 분리 수행
+     * 둘 다 동일한 stock:available:{id} Redis 키 사용
      */
     @RedisLock(key = "'stock:lock:' + #productDetailId")
     fun reserveWithLock(orderId: Long, productDetailId: Long, quantity: Int): StockReservationEntity {
-        val productDetail = productDetailRepository.findById(productDetailId)
-        productDetail.reserve(quantity) // availableQuantity 검사 + reservedQuantity 증가
-        productDetailRepository.save(productDetail)
+        val available = redisStockRepository.getAvailableStock(productDetailId)
+        if (available < quantity) throw OutOfStockException()
 
-        val reservation = StockReservationEntity(
-            orderId = orderId,
-            productDetailId = productDetailId,
-            quantity = quantity,
-            status = StockReservationStatus.RESERVED,
-            expiredAt = LocalDateTime.now().plusMinutes(30)
-        )
-        return stockReservationRepository.save(reservation)
+        redisStockRepository.decreaseStock(productDetailId, quantity)
+
+        try {
+            redisStockRepository.saveReservationInfo(orderId, productDetailId, quantity)
+            val reservation = StockReservationEntity(
+                orderId = orderId,
+                productDetailId = productDetailId,
+                quantity = quantity,
+                status = StockReservationStatus.RESERVED,
+                expiredAt = LocalDateTime.now().plusMinutes(30)
+            )
+            return stockReservationRepository.save(reservation)
+        } catch (e: Exception) {
+            logger.error("STOCK:RESERVE_WITH_LOCK:ROLLBACK - orderId={}, productDetailId={}", orderId, productDetailId, e)
+            redisStockRepository.increaseStock(productDetailId, quantity)
+            redisStockRepository.removeReservationInfo(orderId)
+            throw e
+        }
     }
 
     /**
@@ -127,9 +140,7 @@ class StockReservationService(
      */
     @RedisLock(key = "'stock:lock:' + #productDetailId")
     fun releaseByLock(productDetailId: Long, quantity: Int) {
-        val productDetail = productDetailRepository.findById(productDetailId)
-        productDetail.release(quantity)
-        productDetailRepository.save(productDetail)
+        redisStockRepository.increaseStock(productDetailId, quantity)
     }
 
     @Transactional

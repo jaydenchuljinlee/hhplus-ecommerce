@@ -40,6 +40,14 @@ class RedisStockRepository(
         )
     }
 
+    override fun decreaseStock(productDetailId: Long, quantity: Int) {
+        redissonClient.getAtomicLong("$AVAILABLE_KEY_PREFIX$productDetailId").addAndGet(-quantity.toLong())
+    }
+
+    override fun increaseStock(productDetailId: Long, quantity: Int) {
+        redissonClient.getAtomicLong("$AVAILABLE_KEY_PREFIX$productDetailId").addAndGet(quantity.toLong())
+    }
+
     override fun getAvailableStock(productDetailId: Long): Int {
         val key = "$AVAILABLE_KEY_PREFIX$productDetailId"
         return redissonClient.getAtomicLong(key).get().toInt()
