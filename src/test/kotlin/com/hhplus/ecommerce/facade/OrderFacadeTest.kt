@@ -2,9 +2,6 @@ package com.hhplus.ecommerce.facade
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.balance.domain.BalanceService
-import com.hhplus.ecommerce.cart.domain.CartService
-import com.hhplus.ecommerce.cart.domain.dto.CartResult
-import com.hhplus.ecommerce.cart.domain.dto.ProductIdCartQuery
 import com.hhplus.ecommerce.common.properties.ProductStockKafkaProperties
 import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
@@ -13,6 +10,7 @@ import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.domain.dto.OrderResult
 import com.hhplus.ecommerce.product.domain.ProductService
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import com.hhplus.ecommerce.product.domain.dto.ProductDetailQuery
 import com.hhplus.ecommerce.product.domain.dto.ProductDetailResult
 import com.hhplus.ecommerce.user.domain.UserService
@@ -42,6 +40,10 @@ class OrderFacadeTest {
     @Mock
     private lateinit var orderService: OrderService
     @Mock
+    private lateinit var stockReservationService: StockReservationService
+    @Mock
+    private lateinit var productService: ProductService
+    @Mock
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
     @Mock
     private lateinit var objectMapper: ObjectMapper
@@ -57,7 +59,7 @@ class OrderFacadeTest {
             topic = "test-product-topic"
         }
         BDDMockito.given(objectMapper.writeValueAsString(ArgumentMatchers.any())).willReturn("{}")
-        orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper, notificationEventPublisher)
+        orderFacade = OrderFacade(userService, balanceService, orderService, stockReservationService, productService, applicationEventPublisher, productStockKafkaProperties, objectMapper, notificationEventPublisher)
     }
 
     @DisplayName("주문 정합성 테스트")
@@ -105,6 +107,7 @@ class OrderFacadeTest {
         )
 
         BDDMockito.given(orderService.order(orderCommand)).willReturn(orderResult)
+        BDDMockito.given(productService.getProductDetail(ProductDetailQuery(productResult.productId))).willReturn(productResult)
 
         val orderDetailCreation = OrderDetailCreation(
             productId = productResult.productId,
