@@ -4,6 +4,12 @@ spring:
     username: ironjin
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 3000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   sql:
     init:
       mode: always

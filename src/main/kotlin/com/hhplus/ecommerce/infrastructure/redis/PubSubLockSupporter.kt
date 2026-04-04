@@ -10,7 +10,7 @@ class PubSubLockSupporter(
     private val redissonClient: RedissonClient
 ): IRedisLockSupporter {
     private val waitTime = 10L
-    private val releaseTime = 1L
+    private val releaseTime = 10L
 
     private val logger = LoggerFactory.getLogger(PubSubLockSupporter::class.java);
 
@@ -24,8 +24,11 @@ class PubSubLockSupporter(
 
         return try {
             logger.info("REDIS:PUB_SUB:ACQUIRE:INFO:$key")
-            action()  // 락 획득 성공 시 `action`의 결과 반환
+            action()
         } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
             logger.info("REDIS:PUB_SUB:UNLOCK:INFO:$key")
         }
     }
