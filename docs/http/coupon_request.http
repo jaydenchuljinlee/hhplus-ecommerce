@@ -1,0 +1,12 @@
+### 쿠폰 발급
+POST http://localhost:8888/api/v1/coupon/1/issue
+Content-Type: application/json
+
+{
+  "userId": 1
+}
+
+###
+
+### 내 쿠폰 목록 조회
+GET http://localhost:8888/api/v1/coupon/my?userId=1

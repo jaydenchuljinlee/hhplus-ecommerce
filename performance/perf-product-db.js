@@ -9,7 +9,7 @@ export let options = {
     ],
 };
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://localhost:8080/api/v1';
 
 export default function () {
     // DB 조회 엔드포인트

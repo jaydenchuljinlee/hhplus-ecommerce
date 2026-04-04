@@ -1,13 +1,14 @@
-POST http://localhost:8888/order
+### 주문 생성
+POST http://localhost:8888/api/v1/order
 Content-Type: application/json
 
 {
   "userId": 1,
   "details": [
     {
-      "productId": 3,
-      "quantity": 1,
-      "price": 1000
+      "productId": 1,
+      "quantity": 2,
+      "price": 10000
     }
   ]
 }
