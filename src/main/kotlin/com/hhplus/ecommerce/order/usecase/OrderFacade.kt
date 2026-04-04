@@ -82,4 +82,57 @@ class OrderFacade(
         return result
     }
 
+    /**
+     * Redisson 분산락 기반 주문 (성능 비교용)
+     * reserve() — Lua 원자 스크립트 + Redis 재고
+     * orderWithLock() — Redisson 분산락 + MySQL reservedQuantity
+     */
+    fun orderWithLock(info: OrderCreation): OrderInfo {
+        val user = userService.getUserById(info.toUserQuery())
+        balanceService.validateBalanceToUse(info.toBalanceTransaction())
+
+        val order = orderService.order(info.toOrderCreationCommand())
+        val result = OrderInfo.from(order)
+
+        val reservedDetails = mutableListOf<Pair<Long, Int>>() // (productDetailId, quantity)
+        try {
+            info.details.forEach { detail ->
+                val productDetail = productService.getProductDetail(detail.toProductDetailQuery())
+                stockReservationService.reserveWithLock(result.orderId, productDetail.productDetailId, detail.quantity)
+                reservedDetails.add(productDetail.productDetailId to detail.quantity)
+            }
+        } catch (e: Exception) {
+            logger.warn("재고 점유 실패(lock) - orderId=${result.orderId}, 재고 해제 및 주문 취소 진행", e)
+            reservedDetails.forEach { (productDetailId, quantity) ->
+                stockReservationService.releaseByLock(productDetailId, quantity)
+            }
+            orderService.updateStatus(result.orderId, OrderStatus.CANCELED)
+            throw e
+        }
+
+        val productEvent = ProductStockEventRequest.of(result)
+        val outboxEvent = OutboxEventInfo(
+            id = UUID.randomUUID(),
+            groupId = productStockKafkaProperties.groupId,
+            topic = productStockKafkaProperties.topic,
+            payload = objectMapper.writeValueAsString(productEvent),
+            eventType = "OrderProductStock",
+            schemaVersion = "1"
+        )
+        applicationEventPublisher.publishEvent(outboxEvent)
+
+        notificationEventPublisher.publish(
+            NotificationEvent(
+                userId = user.userId,
+                type = NotificationType.ORDER_PLACED,
+                channel = NotificationChannel.PUSH,
+                title = "주문이 접수되었습니다.",
+                body = "주문 번호 ${result.orderId}번 주문이 정상적으로 접수되었습니다.",
+                orderId = result.orderId
+            )
+        )
+
+        return result
+    }
+
 }

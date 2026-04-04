@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.product.domain
 
+import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.product.domain.repository.IProductDetailRepository
 import com.hhplus.ecommerce.product.domain.repository.IRedisStockRepository
 import com.hhplus.ecommerce.product.domain.repository.IStockReservationRepository
@@ -99,6 +100,36 @@ class StockReservationService(
         val reservations = stockReservationRepository.findAllByOrderIdAndStatus(orderId, StockReservationStatus.RESERVED)
         reservations.forEach { it.status = StockReservationStatus.RELEASED }
         stockReservationRepository.saveAll(reservations)
+    }
+
+    /**
+     * Redisson 분산락 기반 재고 예약 (MySQL reservedQuantity 직접 관리)
+     * 성능 비교용: Lua 원자 스크립트 방식(reserve)과 응답시간 차이 측정
+     */
+    @RedisLock(key = "'stock:lock:' + #productDetailId")
+    fun reserveWithLock(orderId: Long, productDetailId: Long, quantity: Int): StockReservationEntity {
+        val productDetail = productDetailRepository.findById(productDetailId)
+        productDetail.reserve(quantity) // availableQuantity 검사 + reservedQuantity 증가
+        productDetailRepository.save(productDetail)
+
+        val reservation = StockReservationEntity(
+            orderId = orderId,
+            productDetailId = productDetailId,
+            quantity = quantity,
+            status = StockReservationStatus.RESERVED,
+            expiredAt = LocalDateTime.now().plusMinutes(30)
+        )
+        return stockReservationRepository.save(reservation)
+    }
+
+    /**
+     * Redisson 분산락 기반 재고 해제
+     */
+    @RedisLock(key = "'stock:lock:' + #productDetailId")
+    fun releaseByLock(productDetailId: Long, quantity: Int) {
+        val productDetail = productDetailRepository.findById(productDetailId)
+        productDetail.release(quantity)
+        productDetailRepository.save(productDetail)
     }
 
     @Transactional
