@@ -1,11 +1,6 @@
 package com.hhplus.ecommerce.facade
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.hhplus.ecommerce.balance.domain.BalanceService
-import com.hhplus.ecommerce.cart.domain.CartService
-import com.hhplus.ecommerce.cart.domain.dto.CartResult
-import com.hhplus.ecommerce.cart.domain.dto.ProductIdCartQuery
-import com.hhplus.ecommerce.common.properties.ProductStockKafkaProperties
 import com.hhplus.ecommerce.order.common.OrderStatus
 import com.hhplus.ecommerce.order.domain.OrderService
 import com.hhplus.ecommerce.order.domain.dto.OrderCreationCommand
@@ -13,7 +8,7 @@ import com.hhplus.ecommerce.order.domain.dto.OrderDetailCreationCommand
 import com.hhplus.ecommerce.order.domain.dto.OrderDetailResult
 import com.hhplus.ecommerce.order.domain.dto.OrderResult
 import com.hhplus.ecommerce.product.domain.ProductService
-import com.hhplus.ecommerce.product.domain.dto.ProductDetailQuery
+import com.hhplus.ecommerce.product.domain.StockReservationService
 import com.hhplus.ecommerce.product.domain.dto.ProductDetailResult
 import com.hhplus.ecommerce.user.domain.UserService
 import com.hhplus.ecommerce.user.domain.dto.UserQuery
@@ -28,9 +23,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
 import org.mockito.Mock
-import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.context.ApplicationEventPublisher
 import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
@@ -42,9 +36,9 @@ class OrderFacadeTest {
     @Mock
     private lateinit var orderService: OrderService
     @Mock
-    private lateinit var applicationEventPublisher: ApplicationEventPublisher
+    private lateinit var stockReservationService: StockReservationService
     @Mock
-    private lateinit var objectMapper: ObjectMapper
+    private lateinit var productService: ProductService
     @Mock
     private lateinit var notificationEventPublisher: INotificationEventPublisher
 
@@ -52,12 +46,7 @@ class OrderFacadeTest {
 
     @BeforeEach
     fun before() {
-        val productStockKafkaProperties = ProductStockKafkaProperties().apply {
-            groupId = "test-product-group"
-            topic = "test-product-topic"
-        }
-        BDDMockito.given(objectMapper.writeValueAsString(ArgumentMatchers.any())).willReturn("{}")
-        orderFacade = OrderFacade(userService, balanceService, orderService, applicationEventPublisher, productStockKafkaProperties, objectMapper, notificationEventPublisher)
+        orderFacade = OrderFacade(userService, balanceService, orderService, stockReservationService, productService, notificationEventPublisher)
     }
 
     @DisplayName("주문 정합성 테스트")
@@ -127,5 +116,7 @@ class OrderFacadeTest {
             assertEquals(info.price, orderDetailResult.price)
             assertEquals(info.quantity, orderDetailResult.quantity)
         }
+
+        verify(stockReservationService).reserve(orderResult.orderId, productResult.productId, orderDetailCommand.quantity)
     }
 }

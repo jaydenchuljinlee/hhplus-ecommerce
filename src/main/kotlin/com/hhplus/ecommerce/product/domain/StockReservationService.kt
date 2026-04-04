@@ -1,5 +1,6 @@
 package com.hhplus.ecommerce.product.domain
 
+import com.hhplus.ecommerce.common.anotation.RedisLock
 import com.hhplus.ecommerce.product.domain.repository.IProductDetailRepository
 import com.hhplus.ecommerce.product.domain.repository.IStockReservationRepository
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.StockReservationEntity
@@ -14,7 +15,7 @@ class StockReservationService(
     private val productDetailRepository: IProductDetailRepository
 ) {
 
-    @Transactional
+    @RedisLock(key = "'stock:' + #productDetailId")
     fun reserve(orderId: Long, productDetailId: Long, quantity: Int): StockReservationEntity {
         val productDetail = productDetailRepository.findById(productDetailId)
         productDetail.reserve(quantity)

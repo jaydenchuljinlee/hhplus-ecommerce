@@ -12,7 +12,9 @@
       "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce/.claude/worktrees/affectionate-franklin/build -name TEST-*.xml)",
       "Bash(./gradlew dependencies:*)",
       "Bash(./gradlew compileKotlin)",
-      "Bash(./gradlew compileTestKotlin)"
+      "Bash(./gradlew compileTestKotlin)",
+      "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce/.claude/worktrees/ecstatic-golick -type f \\\\\\(-name *.js -o -name logback*.xml -o -name application*.yml -o -name application*.properties \\\\\\))",
+      "Bash(find /Users/icheoljin/hanghae/hhplus-ecommerce/src/main/kotlin/com/hhplus/ecommerce/payment -name *Service.kt -type f)"
     ]
   }
 }

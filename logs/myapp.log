@@ -4710,3 +4710,915 @@ org.apache.kafka.common.errors.DisconnectException: null
 2026-03-29 19:55:31 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-03-29 19:55:31 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2026-03-29 19:55:31 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-04 14:03:28 [Test worker] INFO  c.h.ecommerce.OrderConcurrencyTest - Starting OrderConcurrencyTest using Java 17.0.12 with PID 99400 (started by icheoljin in /Users/icheoljin/hanghae/hhplus-ecommerce/.claude/worktrees/ecstatic-golick)
+2026-04-04 14:03:28 [Test worker] DEBUG c.h.ecommerce.OrderConcurrencyTest - Running with Spring Boot v3.3.4, Spring v6.1.13
+2026-04-04 14:03:28 [Test worker] INFO  c.h.ecommerce.OrderConcurrencyTest - The following 1 profile is active: "test"
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.mongodb.BalanceHistoryMongoRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.mongodb.PaymentHistoryMongoRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 133 ms. Found 18 JPA repository interfaces.
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.jpa.BalanceHistoryJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.jpa.BalanceJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.cart.infrastructure.jpa.CartJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.coupon.infrastructure.jpa.CouponPolicyJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.coupon.infrastructure.jpa.UserCouponJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.order.infrastructure.jpa.OrderDetailRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.order.infrastructure.jpa.OrderJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.outboxevent.infrastructure.jpa.OutboxEventJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentHistoryJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentSagaJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductDetailJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductOptionJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.StockReservationJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.shipment.infrastructure.jpa.ShipmentJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.user.infrastructure.jpa.UserAddressJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.user.infrastructure.jpa.UserJpaRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 16 ms. Found 2 MongoDB repository interfaces.
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.jpa.BalanceHistoryJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.jpa.BalanceJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.balance.infrastructure.mongodb.BalanceHistoryMongoRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.cart.infrastructure.jpa.CartJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.coupon.infrastructure.jpa.CouponPolicyJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.coupon.infrastructure.jpa.UserCouponJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.order.infrastructure.jpa.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.order.infrastructure.jpa.OrderJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.outboxevent.infrastructure.jpa.OutboxEventJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentHistoryJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.jpa.PaymentSagaJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.payment.infrastructure.mongodb.PaymentHistoryMongoRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductDetailJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.ProductOptionJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.product.infrastructure.jpa.StockReservationJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.shipment.infrastructure.jpa.ShipmentJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.user.infrastructure.jpa.UserAddressJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.hhplus.ecommerce.user.infrastructure.jpa.UserJpaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-04-04 14:03:29 [Test worker] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 8 ms. Found 0 Redis repository interfaces.
+2026-04-04 14:03:29 [Test worker] INFO  o.testcontainers.images.PullPolicy - Image pull policy will be performed by: DefaultPullPolicy()
+2026-04-04 14:03:29 [Test worker] INFO  o.t.utility.ImageNameSubstitutor - Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2026-04-04 14:03:29 [Test worker] INFO  o.t.d.DockerClientProviderStrategy - Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+2026-04-04 14:03:29 [Test worker] INFO  o.t.d.DockerClientProviderStrategy - Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2026-04-04 14:03:29 [Test worker] INFO  o.testcontainers.DockerClientFactory - Docker host IP address is localhost
+2026-04-04 14:03:29 [Test worker] INFO  o.testcontainers.DockerClientFactory - Connected to docker: 
+  Server Version: 24.0.7
+  API Version: 1.43
+  Operating System: Docker Desktop
+  Total Memory: 7846 MB
+2026-04-04 14:03:29 [Test worker] INFO  tc.testcontainers/ryuk:0.7.0 - Creating container for image: testcontainers/ryuk:0.7.0
+2026-04-04 14:03:29 [Test worker] INFO  o.t.utility.RegistryAuthLocator - Failure when attempting to lookup auth config. Please ignore if you don't have images in an authenticated registry. Details: (dockerImageName: testcontainers/ryuk:0.7.0, configFile: /Users/icheoljin/.docker/config.json, configEnv: DOCKER_AUTH_CONFIG). Falling back to docker-java default behaviour. Exception message: Could not execute [docker-credential-desktop, get]. Error=2, No such file or directory
+2026-04-04 14:03:34 [Test worker] INFO  tc.testcontainers/ryuk:0.7.0 - Container testcontainers/ryuk:0.7.0 is starting: fdc8cf3430ac535eac07512768f936262fbace09cd8b3e8d804e85012e48c0c3
+2026-04-04 14:03:34 [Test worker] INFO  tc.testcontainers/ryuk:0.7.0 - Container testcontainers/ryuk:0.7.0 started in PT5.126288S
+2026-04-04 14:03:34 [Test worker] INFO  o.t.utility.RyukResourceReaper - Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2026-04-04 14:03:34 [Test worker] INFO  o.testcontainers.DockerClientFactory - Checking the system...
+2026-04-04 14:03:34 [Test worker] INFO  o.testcontainers.DockerClientFactory - ✔︎ Docker server version should be at least 1.6.0
+2026-04-04 14:03:34 [Test worker] INFO  tc.confluentinc/cp-kafka:7.5.1 - Creating container for image: confluentinc/cp-kafka:7.5.1
+2026-04-04 14:03:34 [Test worker] WARN  tc.confluentinc/cp-kafka:7.5.1 - Reuse was requested but the environment does not support the reuse of containers
+To enable reuse of containers, you must set 'testcontainers.reuse.enable=true' in a file located at /Users/icheoljin/.testcontainers.properties
+2026-04-04 14:03:34 [Test worker] INFO  tc.confluentinc/cp-kafka:7.5.1 - Container confluentinc/cp-kafka:7.5.1 is starting: 7855cda52029a2d11d6f580af8556fe86cfc917e13920946e36416e1e9f9e0cf
+2026-04-04 14:03:37 [Test worker] INFO  tc.confluentinc/cp-kafka:7.5.1 - Container confluentinc/cp-kafka:7.5.1 started in PT2.900429S
+2026-04-04 14:03:37 [Test worker] INFO  tc.mysql:8.0 - Creating container for image: mysql:8.0
+2026-04-04 14:03:37 [Test worker] INFO  tc.mysql:8.0 - Container mysql:8.0 is starting: c56bb16d9de928fb9bdfad3e2c8372c07736131c7764bfbcc83dfe9c41b96a84
+2026-04-04 14:03:38 [Test worker] INFO  tc.mysql:8.0 - Waiting for database connection to become available at jdbc:mysql://localhost:50976/testdb using query 'SELECT 1'
+2026-04-04 14:03:43 [Test worker] INFO  tc.mysql:8.0 - Container mysql:8.0 started in PT6.021019S
+2026-04-04 14:03:43 [Test worker] INFO  tc.mysql:8.0 - Container is started (JDBC URL: jdbc:mysql://localhost:50976/testdb)
+2026-04-04 14:03:43 [Test worker] INFO  tc.redis:latest - Creating container for image: redis:latest
+2026-04-04 14:03:43 [Test worker] INFO  tc.redis:latest - Container redis:latest is starting: eaf6e04818cfa8d90dc64ebbf1383fec4f196d9eda43043fe04699a373de8c51
+2026-04-04 14:03:44 [Test worker] INFO  tc.redis:latest - Container redis:latest started in PT0.33829S
+2026-04-04 14:03:44 [Test worker] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-04 14:03:44 [Test worker] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-04 14:03:44 [Test worker] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-04 14:03:44 [Test worker] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-04 14:03:44 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-04 14:03:44 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@38293d23
+2026-04-04 14:03:44 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-04 14:03:45 [Test worker] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-04 14:03:45 [Test worker] WARN  o.h.t.s.i.ExceptionHandlerLoggedImpl - GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table order_detail 
+       drop 
+       foreign key FK3kvmkirad4ws1mhf99x4ho6ob" via JDBC [Table 'testdb.order_detail' doesn't exist]
+org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table order_detail 
+       drop 
+       foreign key FK3kvmkirad4ws1mhf99x4ho6ob" via JDBC [Table 'testdb.order_detail' doesn't exist]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.Helper.applySqlString(Helper.java:233)
+	at org.hibernate.tool.schema.internal.Helper.applySqlStrings(Helper.java:217)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.applyConstraintDropping(SchemaDropperImpl.java:476)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.dropConstraintsTablesSequences(SchemaDropperImpl.java:242)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.dropFromMetadata(SchemaDropperImpl.java:215)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.performDrop(SchemaDropperImpl.java:185)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.doDrop(SchemaDropperImpl.java:155)
+	at org.hibernate.tool.schema.internal.SchemaDropperImpl.doDrop(SchemaDropperImpl.java:115)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:238)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1421)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:119)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:94)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:89)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:62)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at jdk.proxy1/jdk.proxy1.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:193)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:119)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:66)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+Caused by: java.sql.SQLSyntaxErrorException: Table 'testdb.order_detail' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:770)
+	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:653)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 131 common frames omitted
+2026-04-04 14:03:45 [Test worker] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-04 14:03:45 [Test worker] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-04 14:03:46 [cluster-ClusterId{value='69d09bb2f77207252c42fb15', description='null'}-localhost:27017] INFO  org.mongodb.driver.cluster - Exception in monitor thread while connecting to server localhost:27017
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.internal.connection.SocketStream.lambda$open$0(SocketStream.java:86)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:86)
+	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:201)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:193)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:153)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:554)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:76)
+	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:105)
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:80)
+	... 4 common frames omitted
+2026-04-04 14:03:46 [Test worker] INFO  org.mongodb.driver.client - MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.0.1"}, "os": {"type": "Darwin", "name": "Mac OS X", "architecture": "aarch64", "version": "15.7.4"}, "platform": "Java/Amazon.com Inc./17.0.12+7-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=MongoCredential{mechanism=null, userName='ironjin', source='admin', password=<hidden>, mechanismProperties=<hidden>}, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@52ce11b5], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@7896b4d0, com.mongodb.Jep395RecordCodecProvider@31c8bd8b, com.mongodb.KotlinCodecProvider@33ab9bbf]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@34d20206], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2026-04-04 14:03:46 [Test worker] INFO  org.redisson.Version - Redisson 3.20.0
+2026-04-04 14:03:46 [Test worker] WARN  i.n.r.d.DnsServerAddressStreamProviders - Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+2026-04-04 14:03:46 [redisson-netty-2-6] INFO  o.r.c.p.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:51030
+2026-04-04 14:03:46 [redisson-netty-2-24] INFO  o.r.c.pool.MasterConnectionPool - 10 connections initialized for localhost/127.0.0.1:51030
+2026-04-04 14:03:47 [Test worker] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-04 14:03:47 [Test worker] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 14 endpoints beneath base path '/actuator'
+2026-04-04 14:03:47 [Test worker] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [PLAINTEXT://localhost:50974]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-OUTBOX_TEST-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = OUTBOX_TEST
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+2026-04-04 14:03:47 [Test worker] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.7.1
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: e2494e6ffb89f828
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1775279027984
+2026-04-04 14:03:47 [Test worker] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Subscribed to topic(s): NOTIFICATION_TEST
+2026-04-04 14:03:47 [Test worker] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [PLAINTEXT://localhost:50974]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-OUTBOX_TEST-2
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = OUTBOX_TEST
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+2026-04-04 14:03:47 [Test worker] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.7.1
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: e2494e6ffb89f828
+2026-04-04 14:03:47 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1775279027998
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Subscribed to topic(s): PAYMENT_HISTORY_TEST
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [PLAINTEXT://localhost:50974]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-OUTBOX_TEST-3
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = OUTBOX_TEST
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.7.1
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: e2494e6ffb89f828
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1775279028005
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Subscribed to topic(s): BALANCE_HISTORY_TEST
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [PLAINTEXT://localhost:50974]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-OUTBOX_TEST-4
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = OUTBOX_TEST
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.7.1
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: e2494e6ffb89f828
+2026-04-04 14:03:48 [Test worker] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1775279028010
+2026-04-04 14:03:48 [Test worker] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Subscribed to topic(s): BALANCE_HISTORY_TEST
+2026-04-04 14:03:48 [Test worker] INFO  c.h.ecommerce.OrderConcurrencyTest - Started OrderConcurrencyTest in 19.549 seconds (process running for 20.023)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 2 : {BALANCE_HISTORY_TEST=UNKNOWN_TOPIC_OR_PARTITION}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Cluster ID: CHebuqsCQj26wLqS2_rDBA
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 2 : {NOTIFICATION_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Cluster ID: CHebuqsCQj26wLqS2_rDBA
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 2 : {BALANCE_HISTORY_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Cluster ID: CHebuqsCQj26wLqS2_rDBA
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 2 : {PAYMENT_HISTORY_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Cluster ID: CHebuqsCQj26wLqS2_rDBA
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 5 : {NOTIFICATION_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 5 : {BALANCE_HISTORY_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 5 : {BALANCE_HISTORY_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Error while fetching metadata with correlation id 5 : {PAYMENT_HISTORY_TEST=LEADER_NOT_AVAILABLE}
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:ACQUIRE:INFO:stock:4
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:UNLOCK:INFO:stock:4
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.k.c.producer.ProducerConfig - ProducerConfig values: 
+	acks = -1
+	auto.include.jmx.reporter = true
+	batch.size = 16384
+	bootstrap.servers = [PLAINTEXT://localhost:50974]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-1
+	compression.type = none
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.springframework.kafka.support.serializer.JsonSerializer
+
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.k.clients.producer.KafkaProducer - [Producer clientId=producer-1] Instantiated an idempotent producer.
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.7.1
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: e2494e6ffb89f828
+2026-04-04 14:03:48 [pool-3-thread-5] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1775279028571
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Discovered group coordinator localhost:50974 (id: 2147483646 rack: null)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [kafka-producer-network-thread | producer-1] INFO  org.apache.kafka.clients.Metadata - [Producer clientId=producer-1] Cluster ID: CHebuqsCQj26wLqS2_rDBA
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Discovered group coordinator localhost:50974 (id: 2147483646 rack: null)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Request joining group due to: need to re-join with the given member-id: consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Request joining group due to: need to re-join with the given member-id: consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [kafka-producer-network-thread | producer-1] INFO  o.a.k.c.p.i.TransactionManager - [Producer clientId=producer-1] ProducerId set to 0 with epoch 0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Discovered group coordinator localhost:50974 (id: 2147483646 rack: null)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Discovered group coordinator localhost:50974 (id: 2147483646 rack: null)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=1, memberId='consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=1, memberId='consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Request joining group due to: need to re-join with the given member-id: consumer-OUTBOX_TEST-1-621514cf-7f77-4526-95f5-6d06d2e339a7
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Request joining group due to: need to re-join with the given member-id: consumer-OUTBOX_TEST-3-01329b4c-c07b-44bd-9f66-9c78e92882cf
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Finished assignment for group at generation 1: {consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9=Assignment(partitions=[BALANCE_HISTORY_TEST-0]), consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500=Assignment(partitions=[PAYMENT_HISTORY_TEST-0])}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] SyncGroup failed: The group began another rebalance. Need to re-join the group. Sent generation was Generation{generationId=1, memberId='consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] SyncGroup failed: The group began another rebalance. Need to re-join the group. Sent generation was Generation{generationId=1, memberId='consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Request joining group due to: rebalance failed due to 'The group is rebalancing, so a rejoin is needed.' (RebalanceInProgressException)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Request joining group due to: rebalance failed due to 'The group is rebalancing, so a rejoin is needed.' (RebalanceInProgressException)
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] (Re-)joining group
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-3-01329b4c-c07b-44bd-9f66-9c78e92882cf', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Successfully joined group with generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-1-621514cf-7f77-4526-95f5-6d06d2e339a7', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Finished assignment for group at generation 2: {consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9=Assignment(partitions=[]), consumer-OUTBOX_TEST-3-01329b4c-c07b-44bd-9f66-9c78e92882cf=Assignment(partitions=[BALANCE_HISTORY_TEST-0]), consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500=Assignment(partitions=[PAYMENT_HISTORY_TEST-0]), consumer-OUTBOX_TEST-1-621514cf-7f77-4526-95f5-6d06d2e339a7=Assignment(partitions=[NOTIFICATION_TEST-0])}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Successfully synced group in generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-3-01329b4c-c07b-44bd-9f66-9c78e92882cf', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Notifying assignor about the new Assignment(partitions=[BALANCE_HISTORY_TEST-0])
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Successfully synced group in generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-1-621514cf-7f77-4526-95f5-6d06d2e339a7', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Adding newly assigned partitions: BALANCE_HISTORY_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Notifying assignor about the new Assignment(partitions=[NOTIFICATION_TEST-0])
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Adding newly assigned partitions: NOTIFICATION_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Successfully synced group in generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Notifying assignor about the new Assignment(partitions=[PAYMENT_HISTORY_TEST-0])
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Adding newly assigned partitions: PAYMENT_HISTORY_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Successfully synced group in generation Generation{generationId=2, memberId='consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9', protocol='range'}
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Notifying assignor about the new Assignment(partitions=[])
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Adding newly assigned partitions: 
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Found no committed offset for partition NOTIFICATION_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Found no committed offset for partition BALANCE_HISTORY_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Found no committed offset for partition PAYMENT_HISTORY_TEST-0
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.SubscriptionState - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Resetting offset for partition PAYMENT_HISTORY_TEST-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:50974 (id: 1 rack: null)], epoch=0}}.
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.SubscriptionState - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Resetting offset for partition NOTIFICATION_TEST-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:50974 (id: 1 rack: null)], epoch=0}}.
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.SubscriptionState - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Resetting offset for partition BALANCE_HISTORY_TEST-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:50974 (id: 1 rack: null)], epoch=0}}.
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  c.h.e.n.i.e.NotificationKafkaConsumer - NOTIFICATION:KAFKA:CONSUMER - type=ORDER_PLACED, userId=5
+2026-04-04 14:03:48 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  c.h.e.n.domain.NotificationService - NOTIFICATION:SEND - type=ORDER_PLACED, channel=PUSH, userId=5, orderId=1, title=주문이 접수되었습니다.
+2026-04-04 14:03:49 [pool-3-thread-3] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:ACQUIRE:INFO:stock:4
+2026-04-04 14:03:49 [pool-3-thread-3] ERROR c.h.e.c.a.aspect.RedisLockAspect - REDIS:LOCK:ERROR:stock:4 -> 트랜잭션 롤백 발생
+2026-04-04 14:03:49 [pool-3-thread-3] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:UNLOCK:INFO:stock:4
+2026-04-04 14:03:50 [pool-3-thread-2] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:ACQUIRE:INFO:stock:4
+2026-04-04 14:03:50 [pool-3-thread-2] ERROR c.h.e.c.a.aspect.RedisLockAspect - REDIS:LOCK:ERROR:stock:4 -> 트랜잭션 롤백 발생
+2026-04-04 14:03:50 [pool-3-thread-2] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:UNLOCK:INFO:stock:4
+2026-04-04 14:03:51 [pool-3-thread-1] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:ACQUIRE:INFO:stock:4
+2026-04-04 14:03:51 [pool-3-thread-1] ERROR c.h.e.c.a.aspect.RedisLockAspect - REDIS:LOCK:ERROR:stock:4 -> 트랜잭션 롤백 발생
+2026-04-04 14:03:51 [pool-3-thread-1] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:UNLOCK:INFO:stock:4
+2026-04-04 14:03:52 [pool-3-thread-4] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:ACQUIRE:INFO:stock:4
+2026-04-04 14:03:52 [pool-3-thread-4] ERROR c.h.e.c.a.aspect.RedisLockAspect - REDIS:LOCK:ERROR:stock:4 -> 트랜잭션 롤백 발생
+2026-04-04 14:03:52 [pool-3-thread-4] INFO  c.h.e.i.redis.PubSubLockSupporter - REDIS:PUB_SUB:UNLOCK:INFO:stock:4
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Member consumer-OUTBOX_TEST-4-a0fe509f-f774-4f02-ac2b-a88be8eeded9 sending LeaveGroup request to coordinator localhost:50974 (id: 2147483646 rack: null) due to the consumer unsubscribed from all topics
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Revoke previously assigned partitions PAYMENT_HISTORY_TEST-0
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Revoke previously assigned partitions BALANCE_HISTORY_TEST-0
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Unsubscribed all topics or patterns and assigned partitions
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Revoke previously assigned partitions NOTIFICATION_TEST-0
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Member consumer-OUTBOX_TEST-1-621514cf-7f77-4526-95f5-6d06d2e339a7 sending LeaveGroup request to coordinator localhost:50974 (id: 2147483646 rack: null) due to the consumer unsubscribed from all topics
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Member consumer-OUTBOX_TEST-2-b998978b-1593-4830-8ab5-50ee039c5500 sending LeaveGroup request to coordinator localhost:50974 (id: 2147483646 rack: null) due to the consumer unsubscribed from all topics
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Member consumer-OUTBOX_TEST-3-01329b4c-c07b-44bd-9f66-9c78e92882cf sending LeaveGroup request to coordinator localhost:50974 (id: 2147483646 rack: null) due to the consumer unsubscribed from all topics
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Unsubscribed all topics or patterns and assigned partitions
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Unsubscribed all topics or patterns and assigned partitions
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.LegacyKafkaConsumer - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Unsubscribed all topics or patterns and assigned partitions
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-2, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-1, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Resetting generation and member id due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-3, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-OUTBOX_TEST-4, groupId=OUTBOX_TEST] Request joining group due to: consumer pro-actively leaving the group
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-OUTBOX_TEST-4 unregistered
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-OUTBOX_TEST-3 unregistered
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#3-0-C-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-OUTBOX_TEST-2 unregistered
+2026-04-04 14:03:52 [org.springframework.kafka.KafkaListenerEndpointContainer#2-0-C-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-OUTBOX_TEST-1 unregistered
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.k.clients.producer.KafkaProducer - [Producer clientId=producer-1] Closing the Kafka producer with timeoutMillis = 30000 ms.
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2026-04-04 14:03:52 [SpringApplicationShutdownHook] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.producer for producer-1 unregistered
+2026-04-04 14:03:53 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-04 14:03:53 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-04 14:03:53 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
