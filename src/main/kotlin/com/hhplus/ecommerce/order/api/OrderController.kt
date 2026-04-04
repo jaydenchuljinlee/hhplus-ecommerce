@@ -20,4 +20,9 @@ class OrderController(
         val result = orderFacade.orderWithLock(request.toOrderCreation())
         return CustomApiResponse.success(OrderResponse.from(result))
     }
+
+    override fun prepareOrderWithSpinLock(request: OrderCreationRequest): CustomApiResponse<OrderResponse> {
+        val result = orderFacade.orderWithSpinLock(request.toOrderCreation())
+        return CustomApiResponse.success(OrderResponse.from(result))
+    }
 }

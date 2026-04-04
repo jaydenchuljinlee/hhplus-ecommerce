@@ -1,6 +1,7 @@
 package com.hhplus.ecommerce.product.domain
 
 import com.hhplus.ecommerce.common.anotation.RedisLock
+import com.hhplus.ecommerce.common.anotation.aspect.enums.RedisLockStrategy
 import com.hhplus.ecommerce.product.domain.repository.IProductDetailRepository
 import com.hhplus.ecommerce.product.domain.repository.IRedisStockRepository
 import com.hhplus.ecommerce.product.domain.repository.IStockReservationRepository
@@ -140,6 +141,41 @@ class StockReservationService(
      */
     @RedisLock(key = "'stock:lock:' + #productDetailId")
     fun releaseByLock(productDetailId: Long, quantity: Int) {
+        redisStockRepository.increaseStock(productDetailId, quantity)
+    }
+
+    /**
+     * Redisson 스핀락 기반 재고 예약 (성능 비교용)
+     * spinLock: 락 획득 실패 시 busy-wait(폴링) 방식으로 재시도
+     * pubSubLock: 락 해제 시 pub/sub 알림으로 대기 스레드 깨움
+     */
+    @RedisLock(key = "'stock:spin:' + #productDetailId", strategy = RedisLockStrategy.SPIN)
+    fun reserveWithSpinLock(orderId: Long, productDetailId: Long, quantity: Int): StockReservationEntity {
+        val available = redisStockRepository.getAvailableStock(productDetailId)
+        if (available < quantity) throw OutOfStockException()
+
+        redisStockRepository.decreaseStock(productDetailId, quantity)
+
+        try {
+            redisStockRepository.saveReservationInfo(orderId, productDetailId, quantity)
+            val reservation = StockReservationEntity(
+                orderId = orderId,
+                productDetailId = productDetailId,
+                quantity = quantity,
+                status = StockReservationStatus.RESERVED,
+                expiredAt = LocalDateTime.now().plusMinutes(30)
+            )
+            return stockReservationRepository.save(reservation)
+        } catch (e: Exception) {
+            logger.error("STOCK:RESERVE_WITH_SPIN:ROLLBACK - orderId={}, productDetailId={}", orderId, productDetailId, e)
+            redisStockRepository.increaseStock(productDetailId, quantity)
+            redisStockRepository.removeReservationInfo(orderId)
+            throw e
+        }
+    }
+
+    @RedisLock(key = "'stock:spin:' + #productDetailId", strategy = RedisLockStrategy.SPIN)
+    fun releaseBySpinLock(productDetailId: Long, quantity: Int) {
         redisStockRepository.increaseStock(productDetailId, quantity)
     }
 

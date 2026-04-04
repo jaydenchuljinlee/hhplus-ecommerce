@@ -1,7 +1,10 @@
 package com.hhplus.ecommerce.common.anotation.aspect
 
 import com.hhplus.ecommerce.common.anotation.RedisLock
+import com.hhplus.ecommerce.common.anotation.aspect.enums.RedisLockStrategy
 import com.hhplus.ecommerce.infrastructure.redis.IRedisLockSupporter
+import com.hhplus.ecommerce.infrastructure.redis.PubSubLockSupporter
+import com.hhplus.ecommerce.infrastructure.redis.SpinLockSupporter
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -19,7 +22,8 @@ import org.springframework.transaction.support.TransactionTemplate
 @Aspect
 @Component
 class RedisLockAspect(
-    private val pubSubLockSupporter: IRedisLockSupporter,
+    private val pubSubLockSupporter: PubSubLockSupporter,
+    private val spinLockSupporter: SpinLockSupporter,
     private val transactionManager: PlatformTransactionManager
 ) {
     private val logger = LoggerFactory.getLogger(RedisLockAspect::class.java)
@@ -34,8 +38,12 @@ class RedisLockAspect(
     @Around("@annotation(redisLock)")
     fun around(joinPoint: ProceedingJoinPoint, redisLock: RedisLock): Any? {
         val key = parseKey(redisLock.key, joinPoint)
+        val supporter = when (redisLock.strategy) {
+            RedisLockStrategy.SPIN -> spinLockSupporter
+            else -> pubSubLockSupporter
+        }
 
-        return pubSubLockSupporter.withLock(key) {
+        return supporter.withLock(key) {
             transactionTemplate.execute { transactionStatus ->
                 try {
                     joinPoint.proceed()
