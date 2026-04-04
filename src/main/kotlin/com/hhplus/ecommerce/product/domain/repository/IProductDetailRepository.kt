@@ -5,5 +5,6 @@ import com.hhplus.ecommerce.product.infrastructure.jpa.entity.ProductDetailEntit
 interface IProductDetailRepository {
     fun findById(productDetailId: Long): ProductDetailEntity
     fun findByIdForUpdate(productDetailId: Long): ProductDetailEntity = findById(productDetailId)
+    fun findAll(): List<ProductDetailEntity>
     fun save(entity: ProductDetailEntity?): ProductDetailEntity
 }

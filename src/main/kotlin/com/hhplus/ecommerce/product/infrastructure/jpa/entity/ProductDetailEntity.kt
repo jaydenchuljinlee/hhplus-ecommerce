@@ -51,6 +51,11 @@ class ProductDetailEntity(
         quantity -= amount
     }
 
+    fun decreaseQuantity(amount: Int) {
+        require(amount <= quantity) { "감소 수량($amount)이 실재고($quantity)를 초과합니다." }
+        quantity -= amount
+    }
+
     fun release(amount: Int) {
         require(amount <= reservedQuantity) { "release 수량($amount)이 예약 수량($reservedQuantity)을 초과합니다." }
         reservedQuantity -= amount

@@ -1,19 +1,20 @@
 package com.hhplus.ecommerce.domain.product
 
 import com.hhplus.ecommerce.product.domain.StockReservationService
+import com.hhplus.ecommerce.product.domain.repository.IProductDetailRepository
+import com.hhplus.ecommerce.product.domain.repository.IRedisStockRepository
 import com.hhplus.ecommerce.product.domain.repository.IStockReservationRepository
 import com.hhplus.ecommerce.product.infrastructure.exception.OutOfStockException
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.ProductDetailEntity
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.StockReservationEntity
 import com.hhplus.ecommerce.product.infrastructure.jpa.entity.StockReservationStatus
-import com.hhplus.ecommerce.product.domain.repository.IProductDetailRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.then
+import org.mockito.BDDMockito.willDoNothing
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import java.time.LocalDateTime
@@ -28,29 +29,25 @@ class StockReservationServiceTest {
     @Mock
     private lateinit var productDetailRepository: IProductDetailRepository
 
+    @Mock
+    private lateinit var redisStockRepository: IRedisStockRepository
+
     private lateinit var stockReservationService: StockReservationService
 
     @BeforeEach
     fun before() {
-        stockReservationService = StockReservationService(stockReservationRepository, productDetailRepository)
+        stockReservationService = StockReservationService(stockReservationRepository, productDetailRepository, redisStockRepository)
     }
 
-    @DisplayName("reserve 호출 시 StockReservationEntity가 RESERVED 상태로 생성되고 ProductDetail의 reservedQuantity가 증가한다.")
+    @DisplayName("reserve 호출 시 Redis에서 재고를 차감하고 StockReservationEntity가 RESERVED 상태로 생성된다.")
     @Test
-    fun reserveCreatesReservedEntityAndIncreasesReservedQuantity() {
+    fun reserveCreatesReservedEntityViaRedis() {
         // Given
         val orderId = 1L
         val productDetailId = 10L
         val quantity = 3
 
-        val productDetailEntity = ProductDetailEntity(
-            id = productDetailId,
-            productId = 1L,
-            productOptionId = 1L,
-            quantity = 10
-        )
-
-        given(productDetailRepository.findById(productDetailId)).willReturn(productDetailEntity)
+        given(redisStockRepository.reserve(productDetailId, quantity)).willReturn(true)
 
         val savedReservation = StockReservationEntity(
             id = 1L,
@@ -58,7 +55,7 @@ class StockReservationServiceTest {
             productDetailId = productDetailId,
             quantity = quantity,
             status = StockReservationStatus.RESERVED,
-            expiredAt = LocalDateTime.now().plusMinutes(10)
+            expiredAt = LocalDateTime.now().plusMinutes(30)
         )
         given(stockReservationRepository.save(org.mockito.ArgumentMatchers.any())).willReturn(savedReservation)
 
@@ -72,7 +69,23 @@ class StockReservationServiceTest {
         assertEquals(quantity, result.quantity)
     }
 
-    @DisplayName("commit 호출 시 해당 orderId의 예약이 COMMITTED 상태로 전환되고 실재고가 차감된다.")
+    @DisplayName("reserve 호출 시 Redis 재고가 부족하면 OutOfStockException이 발생한다.")
+    @Test
+    fun reserveThrowsOutOfStockWhenRedisStockInsufficient() {
+        // Given
+        val orderId = 1L
+        val productDetailId = 10L
+        val quantity = 5
+
+        given(redisStockRepository.reserve(productDetailId, quantity)).willReturn(false)
+
+        // When & Then
+        assertThrows<OutOfStockException> {
+            stockReservationService.reserve(orderId, productDetailId, quantity)
+        }
+    }
+
+    @DisplayName("commit 호출 시 예약이 COMMITTED 상태로 전환되고 MySQL 실재고가 차감된다.")
     @Test
     fun commitTransitionsReservationToCommittedAndDecreasesActualStock() {
         // Given
@@ -86,7 +99,6 @@ class StockReservationServiceTest {
             productOptionId = 1L,
             quantity = 10
         )
-        productDetailEntity.reserve(quantity)
 
         val reservation = StockReservationEntity(
             id = 1L,
@@ -94,37 +106,28 @@ class StockReservationServiceTest {
             productDetailId = productDetailId,
             quantity = quantity,
             status = StockReservationStatus.RESERVED,
-            expiredAt = LocalDateTime.now().plusMinutes(10)
+            expiredAt = LocalDateTime.now().plusMinutes(30)
         )
 
         given(stockReservationRepository.findAllByOrderIdAndStatus(orderId, StockReservationStatus.RESERVED))
             .willReturn(listOf(reservation))
-        given(productDetailRepository.findById(productDetailId)).willReturn(productDetailEntity)
+        given(productDetailRepository.findByIdForUpdate(productDetailId)).willReturn(productDetailEntity)
 
         // When
         stockReservationService.commit(orderId)
 
         // Then
         assertEquals(StockReservationStatus.COMMITTED, reservation.status)
-        assertEquals(0, productDetailEntity.reservedQuantity)
         assertEquals(7, productDetailEntity.quantity)
     }
 
-    @DisplayName("release 호출 시 해당 orderId의 예약이 RELEASED 상태로 전환되고 예약재고가 복원된다.")
+    @DisplayName("release 호출 시 Redis 재고가 복원되고 예약이 RELEASED 상태로 전환된다.")
     @Test
-    fun releaseTransitionsReservationToReleasedAndRestoresReservedStock() {
+    fun releaseRestoresRedisStockAndTransitionsToReleased() {
         // Given
         val orderId = 1L
         val productDetailId = 10L
         val quantity = 4
-
-        val productDetailEntity = ProductDetailEntity(
-            id = productDetailId,
-            productId = 1L,
-            productOptionId = 1L,
-            quantity = 10
-        )
-        productDetailEntity.reserve(quantity)
 
         val reservation = StockReservationEntity(
             id = 1L,
@@ -132,36 +135,26 @@ class StockReservationServiceTest {
             productDetailId = productDetailId,
             quantity = quantity,
             status = StockReservationStatus.RESERVED,
-            expiredAt = LocalDateTime.now().plusMinutes(10)
+            expiredAt = LocalDateTime.now().plusMinutes(30)
         )
 
+        given(redisStockRepository.getReservationInfo(orderId)).willReturn(mapOf(productDetailId to quantity))
         given(stockReservationRepository.findAllByOrderIdAndStatus(orderId, StockReservationStatus.RESERVED))
             .willReturn(listOf(reservation))
-        given(productDetailRepository.findById(productDetailId)).willReturn(productDetailEntity)
 
         // When
         stockReservationService.release(orderId)
 
         // Then
         assertEquals(StockReservationStatus.RELEASED, reservation.status)
-        assertEquals(0, productDetailEntity.reservedQuantity)
-        assertEquals(10, productDetailEntity.availableQuantity)
     }
 
-    @DisplayName("expireOverdue 호출 시 만료된 예약이 EXPIRED 처리되고 예약재고가 반납된다.")
+    @DisplayName("expireOverdue 호출 시 만료된 예약이 EXPIRED 처리되고 Redis 재고가 복원된다.")
     @Test
-    fun expireOverdueProcessesExpiredReservationsAndReturnsReservedStock() {
+    fun expireOverdueProcessesExpiredReservationsAndRestoresRedisStock() {
         // Given
         val productDetailId = 10L
         val quantity = 2
-
-        val productDetailEntity = ProductDetailEntity(
-            id = productDetailId,
-            productId = 1L,
-            productOptionId = 1L,
-            quantity = 10
-        )
-        productDetailEntity.reserve(quantity)
 
         val expiredReservation = StockReservationEntity(
             id = 1L,
@@ -176,7 +169,6 @@ class StockReservationServiceTest {
             org.mockito.ArgumentMatchers.eq(StockReservationStatus.RESERVED),
             org.mockito.ArgumentMatchers.any()
         )).willReturn(listOf(expiredReservation))
-        given(productDetailRepository.findById(productDetailId)).willReturn(productDetailEntity)
 
         // When
         val expiredCount = stockReservationService.expireOverdue()
@@ -184,7 +176,6 @@ class StockReservationServiceTest {
         // Then
         assertEquals(1, expiredCount)
         assertEquals(StockReservationStatus.EXPIRED, expiredReservation.status)
-        assertEquals(0, productDetailEntity.reservedQuantity)
     }
 
     @DisplayName("이미 COMMITTED 상태의 예약에 commit을 시도하면 예외가 발생한다.")

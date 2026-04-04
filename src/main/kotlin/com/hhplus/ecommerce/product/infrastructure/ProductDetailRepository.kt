@@ -11,9 +11,9 @@ class ProductDetailRepository(
     private val productDetailJpaRepository: ProductDetailJpaRepository
 ) : IProductDetailRepository {
 
-    @Transactional
+    @Transactional(readOnly = true)
     override fun findById(productDetailId: Long): ProductDetailEntity {
-        return productDetailJpaRepository.findByIdWithLock(productDetailId)
+        return productDetailJpaRepository.findById(productDetailId)
             .orElseThrow { RuntimeException("상품 상세 정보를 찾을 수 없습니다. id=$productDetailId") }
     }
 
@@ -21,6 +21,11 @@ class ProductDetailRepository(
     override fun findByIdForUpdate(productDetailId: Long): ProductDetailEntity {
         return productDetailJpaRepository.findByIdWithLock(productDetailId)
             .orElseThrow { RuntimeException("상품 상세 정보를 찾을 수 없습니다. id=$productDetailId") }
+    }
+
+    @Transactional(readOnly = true)
+    override fun findAll(): List<ProductDetailEntity> {
+        return productDetailJpaRepository.findAll()
     }
 
     @Transactional
