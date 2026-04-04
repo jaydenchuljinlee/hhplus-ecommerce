@@ -3,14 +3,13 @@ import { check } from 'k6';
 
 export let options = {
     scenarios: {
-        order_stress: {
-            executor: 'ramping-vus',
-            startVUs: 10,
-            stages: [
-                { duration: '30s', target: 100 },
-                { duration: '30s', target: 200 },
-                { duration: '30s', target: 500 },
-            ],
+        order_test: {
+            executor: 'constant-arrival-rate',
+            rate: 100,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 200,
+            maxVUs: 500,
         },
     },
 };
