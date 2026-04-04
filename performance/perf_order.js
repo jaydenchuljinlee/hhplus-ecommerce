@@ -1,15 +1,16 @@
 import http from 'k6/http';
-import { sleep, check } from 'k6';
+import { check } from 'k6';
 
 export let options = {
     scenarios: {
-        order_test: {
-            executor: 'constant-arrival-rate',
-            rate: 100, // 초당 50개의 요청
-            timeUnit: '1s', // 요청 간격
-            duration: '1m', // 10초 동안 실행
-            preAllocatedVUs: 200, // 사전 할당된 VUs
-            maxVUs: 500, // 최대 VUs
+        order_stress: {
+            executor: 'ramping-vus',
+            startVUs: 10,
+            stages: [
+                { duration: '30s', target: 100 },
+                { duration: '30s', target: 200 },
+                { duration: '30s', target: 500 },
+            ],
         },
     },
 };
@@ -37,5 +38,4 @@ export default function () {
         'Order response time < 500ms': (r) => r.timings.duration < 500,
     });
 
-    sleep(0.1); // 요청 간 짧은 간격
 }
