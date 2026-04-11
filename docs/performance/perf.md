@@ -52,9 +52,9 @@
 ### 부하 테스트 결과
 - 상품 조회 API 기준, Spring Warm-UP 전과 후로 max의 지표가 굉장히 많이 달라짐을 느꼈다.
 - Warm-UP 전
-  - ![before_warm_up.png](/docs/perf/before_warm_up.png)
+  - ![before_warm_up.png](./images/before_warm_up.png)
 - Warm-UP 후
-    - ![after_warm_up.png](/docs/perf/after_warm_up.png)
+    - ![after_warm_up.png](./images/after_warm_up.png)
 
 ### Docker 실행 옵션에 따른 성능 비교
   - 이 부분은 테스트 하기가 조금 까다로웠다.
