@@ -9,6 +9,10 @@ class KafkaProducer(
     private val kafkaTemplate: KafkaTemplate<String, OutboxEventInfo>
 ) {
     fun sendOutboxEvent(event: OutboxEventInfo) {
-        kafkaTemplate.send(event.topic, event)
+        if (event.partitionKey != null) {
+            kafkaTemplate.send(event.topic, event.partitionKey, event)
+        } else {
+            kafkaTemplate.send(event.topic, event)
+        }
     }
 }

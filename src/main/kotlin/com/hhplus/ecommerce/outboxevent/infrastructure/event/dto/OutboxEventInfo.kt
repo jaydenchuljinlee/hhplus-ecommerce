@@ -10,7 +10,8 @@ data class OutboxEventInfo(
     val topic: String,
     val payload: String,
     val eventType: String = "",
-    val schemaVersion: String = "1"
+    val schemaVersion: String = "1",
+    val partitionKey: String? = null  // Q63: 동일 주문 이벤트를 같은 파티션으로 라우팅
 ) {
     fun toEntity(): OutboxEventEntity {
         return OutboxEventEntity(
