@@ -8,6 +8,7 @@ import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import com.hhplus.ecommerce.outboxevent.infrastructure.jpa.entity.enums.OutboxEventStatus
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 
 @Component
@@ -25,11 +26,21 @@ class BalanceKafkaConsumer(
     @KafkaListener(
         groupId = "\${hhplus.kafka.balance.group-id}",
         topics = ["\${hhplus.kafka.balance.topic}"])
-    fun listener(event: OutboxEventInfo) {
+    fun listener(event: OutboxEventInfo, ack: Acknowledgment) {  // Q68: manual commit
         if (event.schemaVersion !in SUPPORTED_VERSIONS) {
             logger.warn("BALANCE:KAFKA:CONSUMER:UNSUPPORTED_VERSION - version=${event.schemaVersion}, eventId=${event.id}")
+            ack.acknowledge()
             return
         }
+
+        // Q64: eventId 기반 멱등성 검증 — 이미 처리된 이벤트 중복 방지
+        val outboxEvent = outboxEventRepository.findById(event.id)
+        if (outboxEvent.status == OutboxEventStatus.SUCCESS) {
+            logger.warn("BALANCE:KAFKA:CONSUMER:DUPLICATE - eventId=${event.id}, skipping")
+            ack.acknowledge()
+            return
+        }
+
         try {
             val payload = objectMapper.readValue(event.payload, BalanceHistoryDocument::class.java)
 
@@ -43,16 +54,14 @@ class BalanceKafkaConsumer(
             // 외부 MongoDB에 이력 데이터를 저장
             balanceHistoryMongoRepository.save(payload)
 
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.SUCCESS)
             outboxEventRepository.insertOrUpdate(outboxEvent)
-        } catch(e: Exception) {
+            ack.acknowledge()  // Q68: 처리 완료 후 offset commit
+        } catch (e: Exception) {
             logger.error("BALANCE:KAFKA:CONSUMER:ERROR", e)
-            val outboxEvent = outboxEventRepository.findById(event.id)
             outboxEvent.updateStatus(OutboxEventStatus.FAILED)
             outboxEventRepository.insertOrUpdate(outboxEvent)
+            // ack 미호출 → DLQ ErrorHandler가 재시도 후 DLT로 이동 (Q65)
         }
     }
-
-
 }
