@@ -1,0 +1,39 @@
+### 배송지 추가
+POST http://localhost:8888/api/v1/user/address
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "alias": "집",
+  "receiverName": "홍길동",
+  "phone": "010-1234-5678",
+  "address": "서울특별시 강남구 테헤란로 123",
+  "zipCode": "06234",
+  "isDefault": true
+}
+
+###
+
+### 배송지 수정
+PUT http://localhost:8888/api/v1/user/address/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "alias": "회사",
+  "receiverName": "홍길동",
+  "phone": "010-1234-5678",
+  "address": "서울특별시 서초구 서초대로 456",
+  "zipCode": "06626",
+  "isDefault": false
+}
+
+###
+
+### 배송지 삭제
+DELETE http://localhost:8888/api/v1/user/address/1
+
+###
+
+### 배송지 목록 조회
+GET http://localhost:8888/api/v1/user/address?userId=1

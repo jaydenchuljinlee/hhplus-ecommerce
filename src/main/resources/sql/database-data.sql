@@ -57,7 +57,7 @@ INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_qu
 VALUES (
            (SELECT id FROM product WHERE name = '가방'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
-           50,
+           10000, -- perf_order.js: 초당 100건 x 60초 = 최대 6,000건 커버
            0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
@@ -67,7 +67,7 @@ INSERT INTO product_detail (product_id, product_option_id, quantity, reserved_qu
 VALUES (
            (SELECT id FROM product WHERE name = '신발'),
            (SELECT id FROM product_option WHERE option_name = 'Color' AND option_value = 'Red'),
-           10,
+           50, -- perf-order.js: VU 12개 커버
            0,
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP

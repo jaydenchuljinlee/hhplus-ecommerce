@@ -1,0 +1,18 @@
+### 잔액 충전
+PATCH http://localhost:8888/api/v1/balance/charge
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "amount": 10000
+}
+
+###
+
+### 잔액 조회
+GET http://localhost:8888/api/v1/balance
+Content-Type: application/json
+
+{
+  "userId": 1
+}

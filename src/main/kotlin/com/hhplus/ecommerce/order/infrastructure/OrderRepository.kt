@@ -31,6 +31,11 @@ class OrderRepository(
         return orderJpaRepository.save(entity)
     }
 
+    @Transactional
+    override fun updateStatus(orderId: Long, status: OrderStatus) {
+        orderJpaRepository.updateStatusById(orderId, status)
+    }
+
     override fun findAllByStatus(status: OrderStatus): List<OrderEntity> =
         orderJpaRepository.findAllByStatus(status)
 

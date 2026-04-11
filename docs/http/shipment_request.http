@@ -1,0 +1,2 @@
+### 배송 상태 조회
+GET http://localhost:8888/api/v1/shipment/1

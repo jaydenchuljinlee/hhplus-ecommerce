@@ -1,7 +1,25 @@
-POST http://localhost:8888/payment
+### 결제 처리 (잔액 전액 차감)
+POST http://localhost:8888/api/v1/payment
 Content-Type: application/json
 
 {
   "orderId": 1,
   "userId": 1
+}
+
+###
+
+### 결제 처리 (복합 결제 - 잔액 + 포인트 + 쿠폰 할인)
+POST http://localhost:8888/api/v1/payment
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "userId": 1,
+  "breakdown": {
+    "balanceAmount": 8000,
+    "pointAmount": 1000,
+    "cardAmount": 0,
+    "couponDiscount": 1000
+  }
 }

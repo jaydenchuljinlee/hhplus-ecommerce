@@ -2,25 +2,26 @@ import http from 'k6/http';
 import { check } from 'k6';
 import { Counter, Trend } from 'k6/metrics';
 
-// 커스텀 메트릭
 const orderSuccess = new Counter('order_success');
 const orderStockOut = new Counter('order_stock_out');
 const orderServerError = new Counter('order_server_error');
 const orderSuccessDuration = new Trend('order_success_duration');
 
 /**
- * 초당 부하 성능 테스트
+ * Redisson 스핀락 기반 주문 부하 테스트 (성능 비교용)
  *
- * 데이터 기준:
- * - 상품 1 (가방): 재고 10,000개 (productId=1)
- * - 사용자 1~5: 잔액 각 10,000,000원
- * - 상품 가격: 50,000원
+ * 비교 대상:
+ * - perf_order.js      → POST /api/v1/order       (Lua 원자 스크립트)
+ * - perf_order_lock.js → POST /api/v1/order/lock  (Redisson PubSub 분산락)
+ * - perf_order_spin.js → POST /api/v1/order/spin  (Redisson 스핀락)
  *
- * 초당 100건 × 90초 = 최대 9,000건 (재고 10,000건 이내)
+ * PubSub vs Spin 차이:
+ * - PubSub: 락 해제 시 Redis pub/sub 알림으로 대기 스레드 깨움 (event-driven)
+ * - Spin:   락 획득 실패 시 exponential backoff로 polling 재시도 (busy-wait)
  */
 export let options = {
     scenarios: {
-        order_load: {
+        order_spin_load: {
             executor: 'constant-arrival-rate',
             rate: 100,
             timeUnit: '1s',
@@ -50,13 +51,12 @@ export default function () {
     });
 
     let headers = { 'Content-Type': 'application/json' };
-    let res = http.post(`${BASE_URL}/order`, payload, { headers });
+    let res = http.post(`${BASE_URL}/order/spin`, payload, { headers });
 
     if (res.status === 200) {
         orderSuccess.add(1);
         orderSuccessDuration.add(res.timings.duration);
     } else if (res.status === 500) {
-        // 재고 부족 / 잔액 부족 (RepositoryException → 500)
         orderStockOut.add(1);
     } else {
         orderServerError.add(1);

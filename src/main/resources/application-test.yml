@@ -4,6 +4,9 @@ spring:
   sql:
     init:
       mode: always
+  jpa:
+    properties:
+      "[hibernate.hbm2ddl.halt_on_error]": "false"
   data:
     mongodb:
       uri: mongodb://ironjin:1234@localhost:27017/hhplus?authSource=admin

@@ -12,9 +12,17 @@ class OrderController(
     private val orderFacade: OrderFacade
 ): IOrderController {
     override fun prepareOrder(request: OrderCreationRequest): CustomApiResponse<OrderResponse> {
-
         val result = orderFacade.order(request.toOrderCreation())
+        return CustomApiResponse.success(OrderResponse.from(result))
+    }
 
+    override fun prepareOrderWithLock(request: OrderCreationRequest): CustomApiResponse<OrderResponse> {
+        val result = orderFacade.orderWithLock(request.toOrderCreation())
+        return CustomApiResponse.success(OrderResponse.from(result))
+    }
+
+    override fun prepareOrderWithSpinLock(request: OrderCreationRequest): CustomApiResponse<OrderResponse> {
+        val result = orderFacade.orderWithSpinLock(request.toOrderCreation())
         return CustomApiResponse.success(OrderResponse.from(result))
     }
 }

@@ -39,5 +39,6 @@ logging:
   level:
     root: INFO                    # 기본 로그 레벨 (INFO)
     # org.hibernate.SQL: DEBUG
-    org.springframework.web: DEBUG # 특정 패키지에 대한 로그 레벨 (예: Spring MVC 관련)
+    org.springframework.web: INFO # Spring MVC 관련 DEBUG 로그 억제
+    org.springframework.kafka: WARN # Kafka partition assigned 등 INFO 로그 억제
     com.hhplus.ecommerce: DEBUG

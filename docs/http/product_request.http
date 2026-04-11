@@ -1,0 +1,17 @@
+### 상품 조회 (캐시)
+GET http://localhost:8888/api/v1/product/cache?productId=1
+
+###
+
+### 상품 조회 (DB)
+GET http://localhost:8888/api/v1/product/db?productId=1
+
+###
+
+### 인기 상품 TOP 5 조회 (캐시) - 최근 3일 기준
+GET http://localhost:8888/api/v1/product/list/top_five/cache
+
+###
+
+### 인기 상품 TOP 5 조회 (DB) - 최근 3일 기준
+GET http://localhost:8888/api/v1/product/list/top_five/db

@@ -29,4 +29,30 @@ interface IOrderController {
     fun prepareOrder(
         @RequestBody request: OrderCreationRequest
     ): CustomApiResponse<OrderResponse>
+
+    @Tag(name = "주문 기능")
+    @Operation(summary = "주문 API (Redisson 분산락)", description = "Redisson 분산락 기반 재고 점유 주문 API (Lua 스크립트 방식과 성능 비교용)")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "주문 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "429", description = "요청 한도 초과", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
+        ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
+    ])
+    @PostMapping("/lock")
+    @RateLimit(key = "#request.userId", limit = 20, seconds = 60)
+    fun prepareOrderWithLock(
+        @RequestBody request: OrderCreationRequest
+    ): CustomApiResponse<OrderResponse>
+
+    @Tag(name = "주문 기능")
+    @Operation(summary = "주문 API (Redisson 스핀락)", description = "Redisson 스핀락 기반 재고 점유 주문 API (Lua/PubSub 방식과 성능 비교용)")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "주문 성공", useReturnTypeSchema = true),
+        ApiResponse(responseCode = "429", description = "요청 한도 초과", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
+        ApiResponse(responseCode = "500", description = "서버 오류", content = [Content(schema = Schema(implementation = CustomErrorResponse::class))]),
+    ])
+    @PostMapping("/spin")
+    @RateLimit(key = "#request.userId", limit = 20, seconds = 60)
+    fun prepareOrderWithSpinLock(
+        @RequestBody request: OrderCreationRequest
+    ): CustomApiResponse<OrderResponse>
 }

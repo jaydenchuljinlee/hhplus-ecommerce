@@ -34,9 +34,7 @@ class OrderService(
 
     @Transactional
     fun updateStatus(orderId: Long, status: OrderStatus) {
-        val entity = orderRepository.findById(orderId)
-        entity.status = status
-        orderRepository.insertOrUpdate(entity)
+        orderRepository.updateStatus(orderId, status)
     }
 
     fun findAllByStatus(status: OrderStatus): List<OrderResult> =

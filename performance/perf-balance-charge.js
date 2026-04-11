@@ -8,7 +8,7 @@ export const options = {
 };
 
 export default function () {
-    const url = 'http://localhost:8080/balance/charge';
+    const url = 'http://localhost:8080/api/v1/balance/charge';
 
     const payload = JSON.stringify({
         userId: 1,
