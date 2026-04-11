@@ -17,7 +17,7 @@ const orderSuccessDuration = new Trend('order_success_duration');
  *
  * 데이터 기준:
  * - 상품 1 (가방): 재고 10,000개
- * - 초당 100건 × 90초 = 최대 9,000건 (재고 이내)
+ * - 초당 100건 × 60초 = 최대 6,000건 (재고 이내)
  */
 export let options = {
     scenarios: {
@@ -25,7 +25,7 @@ export let options = {
             executor: 'constant-arrival-rate',
             rate: 100,
             timeUnit: '1s',
-            duration: '90s',
+            duration: '60s',
             preAllocatedVUs: 100,
             maxVUs: 300,
         },
