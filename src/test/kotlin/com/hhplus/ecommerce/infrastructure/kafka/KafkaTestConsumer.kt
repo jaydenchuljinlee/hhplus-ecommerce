@@ -2,6 +2,7 @@ package com.hhplus.ecommerce.infrastructure.kafka
 
 import com.hhplus.ecommerce.outboxevent.infrastructure.event.dto.OutboxEventInfo
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -13,10 +14,11 @@ class KafkaTestConsumer {
 
 
     @KafkaListener(topics = ["BALANCE_HISTORY_TEST"], groupId = "OUTBOX_TEST")
-    fun listen(event: OutboxEventInfo) {
+    fun listen(event: OutboxEventInfo, ack: Acknowledgment) {
         println("message => $${event.topic}")
         this.message = event.topic
         latch.countDown() // 메시지 처리 완료 신호
+        ack.acknowledge()
     }
 
     fun waitForMessage(timeout: Long, unit: TimeUnit): Boolean {
